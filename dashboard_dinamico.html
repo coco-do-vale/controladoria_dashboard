@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Controladoria — Dashboard Dinâmico</title>
+<title>Controladoria</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -11,211 +11,252 @@
   --bg:#F7F8FA;--bg2:#FFFFFF;--bg3:#F0F2F5;
   --border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.12);
   --text:#1A1D23;--text2:#5A6070;--text3:#9AA0AD;
-  --green:#0F9E5E;--green-dim:#E8F7EF;--green-mid:#D1F0E2;
-  --amber:#D97706;--amber-dim:#FEF3E2;--amber-mid:#FDE7B0;
-  --red:#DC2626;--red-dim:#FEF0F0;--red-mid:#FECACA;
-  --blue:#1D6EE8;--blue-dim:#EEF4FD;--blue-mid:#BFDBFE;
-  --purple:#7C3AED;--purple-dim:#F3EFFE;
+  --green:#0F9E5E;--green-dim:#E8F7EF;
+  --amber:#D97706;--amber-dim:#FEF3E2;
+  --red:#DC2626;--red-dim:#FEF0F0;
+  --blue:#1D6EE8;--blue-dim:#EEF4FD;
+  --purple:#7C3AED;
   --r:10px;--rs:6px;
-  --shadow:0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md:0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --hdr-h:56px;
+  --shadow:0 1px 3px rgba(0,0,0,0.07);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:13px;min-height:100vh}
 
-/* LOADING */
-#loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999}
-.spinner{width:28px;height:28px;border:2px solid var(--border2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-#loading p{font-size:13px;color:var(--text2)}
+html,body{
+  height:100%;
+  overflow:hidden;
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-size:13px;
+}
 
-/* HEADER */
-.hdr{padding:14px 20px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:var(--shadow)}
-.hdr-left{display:flex;align-items:center;gap:10px}
-.logo{width:32px;height:32px;border-radius:8px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.hdr h1{font-size:14px;font-weight:600;color:var(--text)}
-.hdr-sub{font-size:11px;color:var(--text2);font-family:'JetBrains Mono',monospace;margin-top:2px}
-.hdr-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.badge{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:500;border:1px solid}
+/* ── ANTI-PISCA: fade ao trocar dados ── */
+#app{
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  opacity:1;
+  transition:opacity .18s ease;
+}
+#app.fading{ opacity:0; }
+
+/* ── CABEÇALHO FIXO ── */
+.hdr{
+  position:fixed;
+  top:0;left:0;right:0;
+  height:var(--hdr-h);
+  z-index:100;
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  box-shadow:var(--shadow);
+  display:flex;align-items:center;
+  justify-content:space-between;
+  gap:12px;flex-wrap:nowrap;
+  padding:0 20px;
+}
+.hdr-left{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{width:30px;height:30px;border-radius:7px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.hdr h1{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-sub{font-size:10px;color:var(--text2);font-family:'JetBrains Mono',monospace;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-right{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.badge{padding:2px 9px;border-radius:999px;font-size:10px;font-weight:500;border:1px solid;white-space:nowrap}
 .badge-meta{background:var(--amber-dim);color:var(--amber);border-color:rgba(217,119,6,.2)}
 .badge-ok  {background:var(--green-dim);color:var(--green);border-color:rgba(15,158,94,.2)}
 .badge-warn{background:var(--amber-dim);color:var(--amber);border-color:rgba(217,119,6,.2)}
 .badge-crit{background:var(--red-dim);  color:var(--red);  border-color:rgba(220,38,38,.2)}
 .ts{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace}
 
-/* MAIN */
-.main{padding:16px 20px;display:flex;flex-direction:column;gap:14px}
+/* ── CONTAINER SCROLLÁVEL ── */
+.scroll-area{
+  position:fixed;
+  top:var(--hdr-h);
+  left:0;right:0;bottom:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  background:var(--bg);
+}
+.scroll-area::-webkit-scrollbar{width:5px}
+.scroll-area::-webkit-scrollbar-track{background:transparent}
+.scroll-area::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px}
 
-/* KPIs */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
-.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.main{padding:14px 20px 20px;display:flex;flex-direction:column;gap:12px}
+
+/* ── KPIs ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;box-shadow:var(--shadow);position:relative;overflow:hidden}
 .kpi::after{content:'';position:absolute;top:0;left:0;width:3px;bottom:0;border-radius:var(--r) 0 0 var(--r)}
 .kpi.c-green::after{background:var(--green)}
 .kpi.c-amber::after{background:var(--amber)}
 .kpi.c-red::after  {background:var(--red)}
 .kpi.c-blue::after {background:var(--blue)}
 .kpi.c-purple::after{background:var(--purple)}
-.kpi-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;font-weight:500;margin-bottom:8px}
-.kpi-val{font-size:22px;font-weight:600;font-family:'JetBrains Mono',monospace;line-height:1;color:var(--text)}
+.kpi-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;font-weight:500;margin-bottom:6px}
+.kpi-val{font-size:20px;font-weight:600;font-family:'JetBrains Mono',monospace;line-height:1;color:var(--text)}
 .kpi-val.green{color:var(--green)}
 .kpi-val.amber{color:var(--amber)}
 .kpi-val.red  {color:var(--red)}
 .kpi-val.blue {color:var(--blue)}
-.kpi-sub{font-size:10px;color:var(--text3);margin-top:5px}
+.kpi-sub{font-size:10px;color:var(--text3);margin-top:4px}
 
-/* SECTION */
+/* ── SECTION ── */
 .sec{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
-.sec-hd{padding:11px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--bg2)}
-.sec-title{font-size:11px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.05em}
-.sec-hint{font-size:11px;color:var(--text3)}
-.sec-body{padding:14px 16px}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:580px){.two-col{grid-template-columns:1fr}}
+.sec-hd{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sec-title{font-size:10px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.06em}
+.sec-hint{font-size:10px;color:var(--text3)}
+.sec-body{padding:12px 14px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:560px){.two-col{grid-template-columns:1fr}}
 
-/* TABS */
+/* ── TABS ── */
 .tabs{display:flex;gap:2px;background:var(--bg3);padding:2px;border-radius:var(--rs)}
-.tab{padding:4px 10px;border-radius:4px;font-size:11px;font-weight:500;cursor:pointer;color:var(--text2);border:none;background:transparent;font-family:'Inter',sans-serif;transition:all .15s}
+.tab{padding:3px 9px;border-radius:4px;font-size:10px;font-weight:500;cursor:pointer;color:var(--text2);border:none;background:transparent;font-family:'Inter',sans-serif;transition:all .12s}
 .tab.on{background:var(--bg2);color:var(--text);box-shadow:var(--shadow)}
 
-/* CHART */
+/* ── CHART ── */
 .ch-wrap{position:relative;width:100%}
 
-/* BAR TABLE */
-.bt{display:flex;flex-direction:column;gap:10px}
-.bt-row{display:flex;flex-direction:column;gap:4px}
-.bt-hd{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.bt-name{font-size:12px;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:170px}
-.bt-stats{display:flex;gap:8px;font-size:11px;color:var(--text2);font-family:'JetBrains Mono',monospace;flex-shrink:0}
-.bt-track{height:5px;background:var(--bg3);border-radius:999px;overflow:hidden}
-.bt-fill{height:100%;border-radius:999px;transition:width .5s cubic-bezier(.4,0,.2,1)}
-.pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:600;border:1px solid transparent}
+/* ── BAR TABLE ── */
+.bt{display:flex;flex-direction:column;gap:9px}
+.bt-row{display:flex;flex-direction:column;gap:3px}
+.bt-hd{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.bt-name{font-size:11px;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:165px}
+.bt-stats{display:flex;gap:6px;font-size:10px;color:var(--text2);font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.bt-track{height:4px;background:var(--bg3);border-radius:999px;overflow:hidden}
+.bt-fill{height:100%;border-radius:999px}
+.pill{display:inline-block;padding:1px 7px;border-radius:999px;font-size:10px;font-weight:600;border:1px solid transparent}
 .pg{background:var(--green-dim);color:var(--green);border-color:rgba(15,158,94,.2)}
 .pa{background:var(--amber-dim);color:var(--amber);border-color:rgba(217,119,6,.2)}
 .pr{background:var(--red-dim);  color:var(--red);  border-color:rgba(220,38,38,.2)}
-.pn{background:var(--bg3);color:var(--text3);border-color:var(--border)}
+.pn{background:var(--bg3);color:var(--text3)}
 
-/* TABLE */
-.tbl-wrap{overflow-x:auto;max-height:300px;overflow-y:auto}
-.tbl-wrap::-webkit-scrollbar{width:4px;height:4px}
-.tbl-wrap::-webkit-scrollbar-track{background:var(--bg3)}
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto}
+.tbl-wrap::-webkit-scrollbar{height:4px}
 .tbl-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th{padding:8px 10px;text-align:left;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg3)}
-td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text2)}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{padding:7px 10px;text-align:left;font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--bg3)}
+td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text2)}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(--bg3)}
-.td-uf {color:var(--text);font-weight:600;font-family:'JetBrains Mono',monospace;font-size:13px}
+.td-uf {color:var(--text);font-weight:600;font-family:'JetBrains Mono',monospace;font-size:12px}
 .td-num{font-family:'JetBrains Mono',monospace;color:var(--text)}
 .td-dp {color:var(--red);  font-family:'JetBrains Mono',monospace;font-weight:500}
 .td-dn {color:var(--green);font-family:'JetBrains Mono',monospace;font-weight:500}
 
-/* DIVIDER */
-.divider{border:none;border-top:1px solid var(--border);margin:12px 0}
+/* ── FOOTER ── */
+.ftr{padding:10px 20px;border-top:1px solid var(--border);background:var(--bg2);display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+.ftr span{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace}
 
-/* FOOTER */
-.ftr{padding:10px 20px;border-top:1px solid var(--border);background:var(--bg2);display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--text3)}
-.ftr span{font-family:'JetBrains Mono',monospace}
-
-/* NO DATA */
-.no-data{text-align:center;padding:2rem;color:var(--text3);font-size:12px}
+.no-data{text-align:center;padding:1.5rem;color:var(--text3);font-size:12px}
 </style>
 </head>
 <body>
 
-<div id="loading"><div class="spinner"></div><p>Carregando dados...</p></div>
+<div id="app">
 
-<div id="app" style="display:none">
-
-<div class="hdr">
-  <div class="hdr-left">
-    <div class="logo">📦</div>
-    <div>
-      <h1>Controladoria — Lead Time & On-Time</h1>
-      <div class="hdr-sub" id="hdrSub">—</div>
+  <!-- CABEÇALHO FIXO -->
+  <div class="hdr">
+    <div class="hdr-left">
+      <div class="logo">📦</div>
+      <div>
+        <h1>Controladoria — Lead Time & On-Time</h1>
+        <div class="hdr-sub" id="hdrSub">—</div>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <span class="badge badge-meta">meta: 70%</span>
+      <span class="badge" id="badgeStatus">—</span>
+      <span class="ts" id="hdrTs">—</span>
     </div>
   </div>
-  <div class="hdr-right">
-    <span class="badge badge-meta">meta: 70%</span>
-    <span class="badge" id="badgeStatus">—</span>
-    <span class="ts" id="hdrTs">—</span>
-  </div>
-</div>
 
-<div class="main">
+  <!-- ÁREA SCROLLÁVEL -->
+  <div class="scroll-area">
+    <div class="main">
 
-  <!-- KPIs -->
-  <div class="kpi-grid" id="kpiGrid"></div>
+      <div class="kpi-grid" id="kpiGrid"></div>
 
-  <!-- Evolução + Transportadoras -->
-  <div class="two-col">
-    <div class="sec">
-      <div class="sec-hd">
-        <span class="sec-title">Evolução mensal</span>
-        <div class="tabs">
-          <button class="tab on" onclick="switchTab('ot',this)">On-Time %</button>
-          <button class="tab" onclick="switchTab('lead',this)">Lead time</button>
+      <div class="two-col">
+        <div class="sec">
+          <div class="sec-hd">
+            <span class="sec-title">Evolução mensal</span>
+            <div class="tabs">
+              <button class="tab on" onclick="switchTab('ot',this)">On-Time %</button>
+              <button class="tab" onclick="switchTab('lead',this)">Lead time</button>
+            </div>
+          </div>
+          <div class="sec-body">
+            <div class="ch-wrap" style="height:180px">
+              <canvas id="cMes" role="img" aria-label="Evolução mensal">Gráfico mensal.</canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec">
+          <div class="sec-hd">
+            <span class="sec-title">Transportadoras</span>
+            <span class="sec-hint">On-Time % (R$) · decrescente</span>
+          </div>
+          <div class="sec-body">
+            <div class="bt" id="transpBt"></div>
+          </div>
         </div>
       </div>
-      <div class="sec-body">
-        <div class="ch-wrap" style="height:190px">
-          <canvas id="cMes" role="img" aria-label="Evolução mensal">Gráfico mensal.</canvas>
+
+      <div class="sec">
+        <div class="sec-hd">
+          <span class="sec-title">Delta lead por mês</span>
+          <span class="sec-hint">realizado − prometido (dias) — vermelho = atraso</span>
+        </div>
+        <div class="sec-body">
+          <div class="ch-wrap" style="height:130px">
+            <canvas id="cDelta" role="img" aria-label="Delta lead">Gráfico delta.</canvas>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="sec">
-      <div class="sec-hd">
-        <span class="sec-title">Transportadoras</span>
-        <span class="sec-hint">On-Time % (R$)</span>
+      <div class="sec">
+        <div class="sec-hd">
+          <span class="sec-title">Desempenho por UF</span>
+          <span class="sec-hint">ordenado por valor NF</span>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>UF</th><th>NFs</th><th>Valor NF</th>
+              <th>On-Time %</th><th>Delta</th><th>No prazo</th><th>Atrasadas</th>
+            </tr></thead>
+            <tbody id="ufTb"></tbody>
+          </table>
+        </div>
       </div>
-      <div class="sec-body">
-        <div class="bt" id="transpBt"></div>
+
+      <div class="ftr">
+        <span>coco-do-vale · Controladoria Lead Time</span>
+        <span id="ftrTs">—</span>
       </div>
+
     </div>
   </div>
-
-  <!-- Delta -->
-  <div class="sec">
-    <div class="sec-hd">
-      <span class="sec-title">Delta lead por mês</span>
-      <span class="sec-hint">realizado − prometido (dias)</span>
-    </div>
-    <div class="sec-body">
-      <div class="ch-wrap" style="height:140px">
-        <canvas id="cDelta" role="img" aria-label="Delta lead">Gráfico delta.</canvas>
-      </div>
-    </div>
-  </div>
-
-  <!-- UF -->
-  <div class="sec">
-    <div class="sec-hd">
-      <span class="sec-title">Desempenho por UF</span>
-      <span class="sec-hint">ordenado por valor NF</span>
-    </div>
-    <div class="tbl-wrap">
-      <table>
-        <thead><tr>
-          <th>UF</th><th>NFs</th><th>Valor NF</th>
-          <th>On-Time %</th><th>Delta</th><th>No prazo</th><th>Atrasadas</th>
-        </tr></thead>
-        <tbody id="ufTb"></tbody>
-      </table>
-    </div>
-  </div>
-
-</div>
-
-<div class="ftr">
-  <span>coco-do-vale · Controladoria Lead Time</span>
-  <span id="ftrTs">—</span>
-</div>
 
 </div>
 
 <script>
+/* ── ANTI-PISCA ──
+   Guarda os últimos parâmetros; só redesenha se algo mudou.
+   Na primeira carga faz fade-in suave. */
+let lastParams = null;
+
 function getParam(n){return new URL(location.href).searchParams.get(n)||''}
 function parseRows(raw){return raw?raw.split('~').filter(Boolean).map(r=>r.split('|')):[]}
+
+function paramsChanged(){
+  const cur = location.search;
+  if(cur === lastParams) return false;
+  lastParams = cur;
+  return true;
+}
 
 function otColor(v){
   if(v==null||isNaN(v))return '#9AA0AD';
@@ -226,9 +267,8 @@ function otPill(v){
   const cls=v>=70?'pg':v>=40?'pa':'pr';
   return `<span class="pill ${cls}">${v.toFixed(1)}%</span>`;
 }
-function fmtM(vK){const v=vK/1000;return v>=1?'R$ '+v.toFixed(1)+'M':'R$ '+vK.toFixed(0)+'K'}
 
-let cMes=null,cDelta=null,mesMode='ot';
+let cMes=null, cDelta=null, mesMode='ot';
 
 function buildMes(meses){
   const labels=meses.map(r=>r[0]);
@@ -236,39 +276,30 @@ function buildMes(meses){
   const ctx=document.getElementById('cMes').getContext('2d');
   if(mesMode==='ot'){
     const data=meses.map(r=>parseFloat(r[3]));
-    cMes=new Chart(ctx,{
-      type:'line',
-      data:{labels,datasets:[
-        {label:'On-Time %',data,borderColor:'#1D6EE8',backgroundColor:'rgba(29,110,232,0.06)',
-         borderWidth:2,pointRadius:4,fill:true,tension:0.3,spanGaps:true,
-         pointBackgroundColor:data.map(v=>otColor(v)),pointBorderColor:data.map(v=>otColor(v)),
-         pointBorderWidth:2,pointBackgroundColor:data.map(v=>otColor(v))},
-        {label:'Meta 70%',data:meses.map(()=>70),borderColor:'rgba(217,119,6,0.5)',
-         borderWidth:1.5,borderDash:[6,3],pointRadius:0,fill:false}
-      ]},
-      options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false}},
-        scales:{
-          x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,0.04)'}},
-          y:{min:0,max:100,ticks:{color:'#9AA0AD',font:{size:9},callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.04)'}}
-        }}
-    });
+    cMes=new Chart(ctx,{type:'line',data:{labels,datasets:[
+      {label:'On-Time %',data,borderColor:'#1D6EE8',backgroundColor:'rgba(29,110,232,0.05)',
+       borderWidth:2,pointRadius:4,fill:true,tension:0.3,spanGaps:true,
+       pointBackgroundColor:data.map(v=>otColor(v)),pointBorderColor:data.map(v=>otColor(v)),pointBorderWidth:2},
+      {label:'Meta 70%',data:meses.map(()=>70),borderColor:'rgba(217,119,6,0.5)',
+       borderWidth:1.5,borderDash:[6,3],pointRadius:0,fill:false}
+    ]},options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,0.04)'}},
+        y:{min:0,max:100,ticks:{color:'#9AA0AD',font:{size:9},callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.04)'}}
+      }}});
   } else {
     const lr=meses.map(r=>parseFloat(r[4]));
     const lp=meses.map(r=>parseFloat(r[5]));
-    cMes=new Chart(ctx,{
-      type:'line',
-      data:{labels,datasets:[
-        {label:'Realizado',data:lr,borderColor:'#DC2626',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.3},
-        {label:'Prometido',data:lp,borderColor:'#0F9E5E',backgroundColor:'transparent',borderWidth:1.5,borderDash:[5,3],pointRadius:0,tension:0.3}
-      ]},
-      options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false}},
-        scales:{
-          x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,0.04)'}},
-          y:{ticks:{color:'#9AA0AD',font:{size:9},callback:v=>v+'d'},grid:{color:'rgba(0,0,0,0.04)'}}
-        }}
-    });
+    cMes=new Chart(ctx,{type:'line',data:{labels,datasets:[
+      {label:'Realizado',data:lr,borderColor:'#DC2626',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.3},
+      {label:'Prometido',data:lp,borderColor:'#0F9E5E',backgroundColor:'transparent',borderWidth:1.5,borderDash:[5,3],pointRadius:0,tension:0.3}
+    ]},options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,0.04)'}},
+        y:{ticks:{color:'#9AA0AD',font:{size:9},callback:v=>v+'d'},grid:{color:'rgba(0,0,0,0.04)'}}
+      }}});
   }
 }
 
@@ -277,19 +308,15 @@ function buildDelta(meses){
   const labels=meses.map(r=>r[0]);
   const deltas=meses.map(r=>parseFloat((parseFloat(r[4])-parseFloat(r[5])).toFixed(2)));
   const ctx=document.getElementById('cDelta').getContext('2d');
-  cDelta=new Chart(ctx,{
-    type:'bar',
-    data:{labels,datasets:[{
-      label:'Delta (dias)',data:deltas,borderRadius:4,
-      backgroundColor:deltas.map(d=>d>2?'rgba(220,38,38,0.7)':d>0?'rgba(217,119,6,0.7)':'rgba(15,158,94,0.7)')
-    }]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{
-        x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,0.04)'}},
-        y:{ticks:{color:'#9AA0AD',font:{size:9},callback:v=>(v>0?'+':'')+v+'d'},grid:{color:'rgba(0,0,0,0.04)'}}
-      }}
-  });
+  cDelta=new Chart(ctx,{type:'bar',data:{labels,datasets:[{
+    label:'Delta',data:deltas,borderRadius:4,
+    backgroundColor:deltas.map(d=>d>2?'rgba(220,38,38,0.65)':d>0?'rgba(217,119,6,0.65)':'rgba(15,158,94,0.65)')
+  }]},options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,0.04)'}},
+      y:{ticks:{color:'#9AA0AD',font:{size:9},callback:v=>(v>=0?'+':'')+v+'d'},grid:{color:'rgba(0,0,0,0.04)'}}
+    }}});
 }
 
 function switchTab(mode,btn){
@@ -304,40 +331,16 @@ function renderKPIs(ot,lr,lp,nfs,val,np,at){
   const delta=(lrN-lpN).toFixed(1);
   const otCls=otN>=70?'green':otN>=40?'amber':'red';
   const kC=otN>=70?'c-green':otN>=40?'c-amber':'c-red';
-  const dCls=delta>2?'red':delta>0?'amber':'green';
-  const dC=delta>2?'c-red':delta>0?'c-amber':'c-green';
-  const total=parseInt(np)+parseInt(at);
+  const dCls=parseFloat(delta)>2?'red':parseFloat(delta)>0?'amber':'green';
+  const dC=parseFloat(delta)>2?'c-red':parseFloat(delta)>0?'c-amber':'c-green';
+  const tot=parseInt(np)+parseInt(at);
   document.getElementById('kpiGrid').innerHTML=`
-    <div class="kpi ${kC}">
-      <div class="kpi-lbl">On-Time % (R$)</div>
-      <div class="kpi-val ${otCls}">${otN.toFixed(1)}%</div>
-      <div class="kpi-sub">meta 70% · ${otN>=70?'✓ atingida':'✗ abaixo'}</div>
-    </div>
-    <div class="kpi c-blue">
-      <div class="kpi-lbl">Total NFs</div>
-      <div class="kpi-val blue">${parseInt(nfs).toLocaleString('pt-BR')}</div>
-      <div class="kpi-sub">R$ ${parseFloat(val).toFixed(1)}M em valor</div>
-    </div>
-    <div class="kpi c-green">
-      <div class="kpi-lbl">No prazo</div>
-      <div class="kpi-val green">${parseInt(np).toLocaleString('pt-BR')}</div>
-      <div class="kpi-sub">${total>0?Math.round(parseInt(np)/total*100):0}% do entregue</div>
-    </div>
-    <div class="kpi c-red">
-      <div class="kpi-lbl">Atrasadas</div>
-      <div class="kpi-val red">${parseInt(at).toLocaleString('pt-BR')}</div>
-      <div class="kpi-sub">${total>0?Math.round(parseInt(at)/total*100):0}% do entregue</div>
-    </div>
-    <div class="kpi c-amber">
-      <div class="kpi-lbl">Lead realizado</div>
-      <div class="kpi-val">${lrN.toFixed(1)}d</div>
-      <div class="kpi-sub">prometido: ${lpN.toFixed(1)}d</div>
-    </div>
-    <div class="kpi ${dC}">
-      <div class="kpi-lbl">Delta lead</div>
-      <div class="kpi-val ${dCls}">+${delta}d</div>
-      <div class="kpi-sub">real − prometido</div>
-    </div>`;
+    <div class="kpi ${kC}"><div class="kpi-lbl">On-Time % (R$)</div><div class="kpi-val ${otCls}">${otN.toFixed(1)}%</div><div class="kpi-sub">meta 70% · ${otN>=70?'✓ atingida':'✗ abaixo'}</div></div>
+    <div class="kpi c-blue"><div class="kpi-lbl">Total NFs</div><div class="kpi-val blue">${parseInt(nfs).toLocaleString('pt-BR')}</div><div class="kpi-sub">R$ ${parseFloat(val).toFixed(1)}M em valor</div></div>
+    <div class="kpi c-green"><div class="kpi-lbl">No prazo</div><div class="kpi-val green">${parseInt(np).toLocaleString('pt-BR')}</div><div class="kpi-sub">${tot>0?Math.round(parseInt(np)/tot*100):0}% do entregue</div></div>
+    <div class="kpi c-red"><div class="kpi-lbl">Atrasadas</div><div class="kpi-val red">${parseInt(at).toLocaleString('pt-BR')}</div><div class="kpi-sub">${tot>0?Math.round(parseInt(at)/tot*100):0}% do entregue</div></div>
+    <div class="kpi c-amber"><div class="kpi-lbl">Lead realizado</div><div class="kpi-val">${lrN.toFixed(1)}d</div><div class="kpi-sub">prometido: ${lpN.toFixed(1)}d</div></div>
+    <div class="kpi ${dC}"><div class="kpi-lbl">Delta lead</div><div class="kpi-val ${dCls}">+${delta}d</div><div class="kpi-sub">real − prometido</div></div>`;
 }
 
 function renderTransp(transp){
@@ -345,16 +348,9 @@ function renderTransp(transp){
   const maxOT=Math.max(...sorted.map(r=>parseFloat(r[2])||0));
   document.getElementById('transpBt').innerHTML=sorted.length
     ?sorted.map(r=>{
-      const otV=parseFloat(r[2]);
-      const bw=maxOT>0?Math.round(otV/maxOT*100):0;
+      const otV=parseFloat(r[2]),bw=maxOT>0?Math.round(otV/maxOT*100):0;
       const fc=otV>=70?'#0F9E5E':otV>=40?'#D97706':'#DC2626';
-      return `<div class="bt-row">
-        <div class="bt-hd">
-          <span class="bt-name">${r[0]}</span>
-          <div class="bt-stats">${otPill(otV)}<span>${parseInt(r[1]).toLocaleString('pt-BR')} NFs</span><span>${parseFloat(r[3]).toFixed(1)}d</span></div>
-        </div>
-        <div class="bt-track"><div class="bt-fill" style="width:${bw}%;background:${fc}"></div></div>
-      </div>`;
+      return `<div class="bt-row"><div class="bt-hd"><span class="bt-name">${r[0]}</span><div class="bt-stats">${otPill(otV)}<span>${parseInt(r[1]).toLocaleString('pt-BR')} NFs</span><span>${parseFloat(r[3]).toFixed(1)}d</span></div></div><div class="bt-track"><div class="bt-fill" style="width:${bw}%;background:${fc}"></div></div></div>`;
     }).join('')
     :'<div class="no-data">Sem dados</div>';
 }
@@ -363,22 +359,16 @@ function renderUF(ufs){
   const rows=ufs.slice().sort((a,b)=>parseFloat(b[3])-parseFloat(a[3]));
   document.getElementById('ufTb').innerHTML=rows.length
     ?rows.map(r=>{
-      const dlt=parseFloat(r[1]),nfs=parseInt(r[2]),val=parseFloat(r[3]),ot=parseFloat(r[4]);
+      const dlt=parseFloat(r[1]),ot=parseFloat(r[4]);
       const dCls=dlt>2?'td-dp':dlt<0?'td-dn':'';
-      return `<tr>
-        <td class="td-uf">${r[0]}</td>
-        <td class="td-num">${nfs.toLocaleString('pt-BR')}</td>
-        <td class="td-num">R$ ${val.toFixed(2)}M</td>
-        <td>${otPill(ot)}</td>
-        <td class="${dCls}">+${dlt.toFixed(1)}d</td>
-        <td class="td-num" style="color:var(--green)">${r[5]||'—'}</td>
-        <td class="td-num" style="color:var(--red)">${r[6]||'—'}</td>
-      </tr>`;
+      return `<tr><td class="td-uf">${r[0]}</td><td class="td-num">${parseInt(r[2]).toLocaleString('pt-BR')}</td><td class="td-num">R$ ${parseFloat(r[3]).toFixed(2)}M</td><td>${otPill(ot)}</td><td class="${dCls}">${dlt>=0?'+':''}${dlt.toFixed(1)}d</td><td class="td-num" style="color:var(--green)">${r[5]||'—'}</td><td class="td-num" style="color:var(--red)">${r[6]||'—'}</td></tr>`;
     }).join('')
     :'<tr><td colspan="7" class="no-data">Sem dados</td></tr>';
 }
 
-window.addEventListener('DOMContentLoaded',()=>{
+function render(){
+  if(!paramsChanged()) return; /* sem mudança = sem pisca */
+
   const ot=getParam('ot')||'0',lr=getParam('lr')||'0',lp=getParam('lp')||'0';
   const nfs=getParam('nfs')||'0',val=getParam('val')||'0';
   const np=getParam('np')||'0',at=getParam('at')||'0';
@@ -387,26 +377,39 @@ window.addEventListener('DOMContentLoaded',()=>{
   const ufs=parseRows(getParam('u'));
   window._meses=meses;
 
-  const otN=parseFloat(ot);
-  const periods=meses.length?`${meses[0][0]} → ${meses[meses.length-1][0]}`:'—';
-  document.getElementById('hdrSub').textContent=`${periods} · ${parseInt(nfs).toLocaleString('pt-BR')} NFs · R$ ${parseFloat(val).toFixed(1)}M`;
-  document.getElementById('hdrTs').textContent=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
-  document.getElementById('ftrTs').textContent='Atualizado: '+new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
+  /* fade suave */
+  const app=document.getElementById('app');
+  app.classList.add('fading');
 
-  const bs=document.getElementById('badgeStatus');
-  if(otN>=70){bs.textContent='✓ Meta atingida';bs.className='badge badge-ok'}
-  else if(otN>=40){bs.textContent='⚠ Atenção';bs.className='badge badge-warn'}
-  else{bs.textContent='✗ Crítico';bs.className='badge badge-crit'}
+  setTimeout(()=>{
+    const otN=parseFloat(ot);
+    const periods=meses.length?`${meses[0][0]} → ${meses[meses.length-1][0]}`:'—';
+    document.getElementById('hdrSub').textContent=`${periods} · ${parseInt(nfs).toLocaleString('pt-BR')} NFs · R$ ${parseFloat(val).toFixed(1)}M`;
+    document.getElementById('hdrTs').textContent=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
+    document.getElementById('ftrTs').textContent='Atualizado: '+new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
 
-  renderKPIs(ot,lr,lp,nfs,val,np,at);
-  buildMes(meses);
-  buildDelta(meses);
-  renderTransp(transp);
-  renderUF(ufs);
+    const bs=document.getElementById('badgeStatus');
+    if(otN>=70){bs.textContent='✓ Meta atingida';bs.className='badge badge-ok'}
+    else if(otN>=40){bs.textContent='⚠ Atenção';bs.className='badge badge-warn'}
+    else{bs.textContent='✗ Crítico';bs.className='badge badge-crit'}
 
-  document.getElementById('loading').style.display='none';
-  document.getElementById('app').style.display='block';
-});
+    renderKPIs(ot,lr,lp,nfs,val,np,at);
+    buildMes(meses);
+    buildDelta(meses);
+    renderTransp(transp);
+    renderUF(ufs);
+
+    app.classList.remove('fading');
+  }, 150); /* espera 150ms = fade out completo, então redesenha e faz fade in */
+}
+
+/* ── INIT ── */
+window.addEventListener('DOMContentLoaded', render);
+
+/* ── POLL: detecta mudança de URL sem reload da página ──
+   O HTML Viewer do Power BI muda o src do iframe; o navegador
+   não dispara popstate. Verificamos a cada 300ms. */
+setInterval(render, 300);
 </script>
 </body>
 </html>
