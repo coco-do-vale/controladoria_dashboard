@@ -13,119 +13,173 @@
   --text:#1A1D23;--text2:#5A6070;--text3:#9AA0AD;
   --green:#0F9E5E;--gdim:#E8F7EF;
   --amber:#D97706;--adim:#FEF3E2;
-  --red:#DC2626;  --rdim:#FEF0F0;
-  --blue:#1D6EE8; --bdim:#EEF4FD;
-  --hh:52px;--fh:38px;
+  --red:#DC2626;--rdim:#FEF0F0;
+  --blue:#1D6EE8;--bdim:#EEF4FD;
+  --hh:48px;--sw:200px;
   --sh:0 1px 3px rgba(0,0,0,.07);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
 
-.hdr{position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:200;
+/* ── HEADER ── */
+.hdr{
+  position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:300;
   background:var(--bg2);border-bottom:1px solid var(--border);box-shadow:var(--sh);
-  display:flex;align-items:center;padding:0 16px;gap:10px}
-.logo{width:28px;height:28px;border-radius:7px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+  display:flex;align-items:center;padding:0 14px;gap:10px
+}
+.logo{width:26px;height:26px;border-radius:7px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
 .hdr-info{flex:1;min-width:0}
 .hdr h1{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hdr-sub{font-size:10px;color:var(--text2);font-family:'JetBrains Mono',monospace}
 .hdr-right{display:flex;gap:6px;align-items:center;flex-shrink:0}
-.badge{padding:2px 9px;border-radius:999px;font-size:10px;font-weight:500;border:1px solid;white-space:nowrap}
+.badge{padding:2px 8px;border-radius:999px;font-size:10px;font-weight:500;border:1px solid;white-space:nowrap}
 .bg-meta{background:var(--adim);color:var(--amber);border-color:rgba(217,119,6,.2)}
-.bg-ok  {background:var(--gdim);color:var(--green);border-color:rgba(15,158,94,.2)}
+.bg-ok{background:var(--gdim);color:var(--green);border-color:rgba(15,158,94,.2)}
 .bg-warn{background:var(--adim);color:var(--amber);border-color:rgba(217,119,6,.2)}
-.bg-crit{background:var(--rdim);color:var(--red);  border-color:rgba(220,38,38,.2)}
+.bg-crit{background:var(--rdim);color:var(--red);border-color:rgba(220,38,38,.2)}
 
-.fbar{position:fixed;top:var(--hh);left:0;right:0;z-index:190;
-  background:var(--bg2);border-bottom:1px solid var(--border);
-  padding:6px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.fl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
-.chips{display:flex;gap:4px;flex-wrap:wrap}
-.chip{padding:3px 9px;border-radius:999px;font-size:11px;font-weight:500;cursor:pointer;
-  background:var(--bg3);color:var(--text2);border:1px solid var(--border2);transition:all .12s;user-select:none}
-.chip:hover{background:var(--bg4)}
-.chip.on{background:var(--bdim);color:var(--blue);border-color:rgba(29,110,232,.3);font-weight:600}
-.chip.clr{background:transparent;color:var(--text3);border-color:transparent;font-size:10px}
-.chip.clr:hover{color:var(--red)}
-.fsep{width:1px;height:18px;background:var(--border2);flex-shrink:0}
+/* ── LAYOUT ── */
+.layout{
+  position:fixed;top:var(--hh);left:0;right:0;bottom:0;
+  display:flex;
+}
 
-.scroll{position:fixed;left:0;right:0;bottom:0;overflow-y:auto;overflow-x:hidden;background:var(--bg)}
-.scroll::-webkit-scrollbar{width:5px}
-.scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px}
-.main{padding:12px 16px 20px;display:flex;flex-direction:column;gap:10px}
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sw);flex-shrink:0;
+  background:var(--bg2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.sb-head{
+  padding:10px 12px 8px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0
+}
+.sb-title{font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+.sb-clr{font-size:10px;color:var(--text3);cursor:pointer;padding:2px 6px;border-radius:4px;border:none;background:none;font-family:'Inter',sans-serif}
+.sb-clr:hover{color:var(--red);background:var(--rdim)}
+.sb-scroll{flex:1;overflow-y:auto;padding:8px 0}
+.sb-scroll::-webkit-scrollbar{width:3px}
+.sb-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px}
 
-.banner{display:none;background:var(--bdim);border:1px solid rgba(29,110,232,.2);
-  border-radius:8px;padding:6px 12px;font-size:11px;color:var(--blue);
-  align-items:center;justify-content:space-between;gap:8px}
-.banner.show{display:flex}
-.banner button{background:none;border:none;color:var(--blue);font-size:11px;cursor:pointer;font-weight:600}
+.fg{padding:0 0 10px}
+.fg-label{
+  font-size:9px;font-weight:600;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.06em;
+  padding:6px 12px 5px;display:flex;align-items:center;gap:6px
+}
+.fg-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.chips{display:flex;flex-direction:column;gap:2px;padding:0 8px}
+.chip{
+  padding:5px 10px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;
+  background:transparent;color:var(--text2);border:1px solid transparent;
+  transition:all .1s;user-select:none;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.chip:hover{background:var(--bg3);color:var(--text)}
+.chip.on{background:var(--bdim);color:var(--blue);border-color:rgba(29,110,232,.2);font-weight:600}
 
-.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
-.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:10px;
-  padding:11px 13px;box-shadow:var(--sh);position:relative;overflow:hidden}
+.banner{
+  margin:8px 12px 0;display:none;
+  background:var(--bdim);border:1px solid rgba(29,110,232,.2);
+  border-radius:6px;padding:5px 8px;font-size:10px;color:var(--blue);line-height:1.4
+}
+.banner.show{display:block}
+
+/* ── MAIN SCROLL ── */
+.main-wrap{
+  flex:1;overflow-y:auto;overflow-x:hidden;background:var(--bg);
+  display:flex;flex-direction:column;min-height:0
+}
+.main-wrap::-webkit-scrollbar{width:5px}
+.main-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px}
+.main{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+
+/* ── FOOTER ── */
+.ftr{
+  flex-shrink:0;padding:7px 14px;border-top:1px solid var(--border);
+  background:var(--bg2);display:flex;justify-content:space-between;align-items:center
+}
+.ftr span{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+
+/* ── KPIs ── */
+.kgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kpi{
+  background:var(--bg2);border:1px solid var(--border);border-radius:10px;
+  padding:10px 12px;box-shadow:var(--sh);position:relative;overflow:hidden
+}
 .kpi::after{content:'';position:absolute;top:0;left:0;width:3px;bottom:0;border-radius:10px 0 0 10px}
 .kg::after{background:var(--green)}.ka::after{background:var(--amber)}
 .kr::after{background:var(--red)}.kb::after{background:var(--blue)}
-.kl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:5px}
-.kv{font-size:20px;font-weight:600;font-family:'JetBrains Mono',monospace;line-height:1}
+.kl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:4px}
+.kv{font-size:19px;font-weight:600;font-family:'JetBrains Mono',monospace;line-height:1}
 .kv.g{color:var(--green)}.kv.a{color:var(--amber)}.kv.r{color:var(--red)}.kv.b{color:var(--blue)}
-.ks{font-size:9px;color:var(--text3);margin-top:4px}
+.ks{font-size:9px;color:var(--text3);margin-top:3px}
 
+/* ── SECTIONS ── */
 .sec{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--sh)}
-.sh{padding:9px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sh{padding:8px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
 .st{font-size:10px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.05em}
 .si{font-size:10px;color:var(--text3)}
-.sb{padding:12px 13px}
+.sb{padding:10px 12px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(max-width:560px){.two{grid-template-columns:1fr}}
+@media(max-width:680px){.two{grid-template-columns:1fr}.kgrid{grid-template-columns:repeat(2,1fr)}}
 
+/* ── TABS ── */
 .tabs{display:flex;gap:2px;background:var(--bg3);padding:2px;border-radius:6px}
-.tab{padding:3px 9px;border-radius:4px;font-size:10px;font-weight:500;cursor:pointer;
+.tab{padding:3px 8px;border-radius:4px;font-size:10px;font-weight:500;cursor:pointer;
   color:var(--text2);border:none;background:transparent;font-family:'Inter',sans-serif;transition:all .12s}
 .tab.on{background:var(--bg2);color:var(--text);box-shadow:var(--sh)}
 
-.bt{display:flex;flex-direction:column;gap:8px}
+/* ── BAR TABLE ── */
+.bt{display:flex;flex-direction:column;gap:6px}
 .br{display:flex;flex-direction:column;gap:3px;cursor:pointer;padding:4px 6px;
   border-radius:6px;border:1px solid transparent;transition:all .12s}
 .br:hover{background:var(--bg3)}
 .br.on{background:var(--bdim);border-color:rgba(29,110,232,.2)}
 .bh{display:flex;justify-content:space-between;align-items:center;gap:6px}
-.bn{font-size:11px;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
-.bs{display:flex;gap:6px;font-size:10px;color:var(--text2);font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.bn{font-size:11px;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px}
+.bs{display:flex;gap:5px;font-size:10px;color:var(--text2);font-family:'JetBrains Mono',monospace;flex-shrink:0}
 .btr{height:4px;background:var(--bg3);border-radius:999px;overflow:hidden}
 .bf{height:100%;border-radius:999px}
-.pill{display:inline-block;padding:1px 7px;border-radius:999px;font-size:10px;font-weight:600;border:1px solid transparent}
+.pill{display:inline-block;padding:1px 6px;border-radius:999px;font-size:10px;font-weight:600;border:1px solid transparent}
 .pg{background:var(--gdim);color:var(--green);border-color:rgba(15,158,94,.2)}
 .pa{background:var(--adim);color:var(--amber);border-color:rgba(217,119,6,.2)}
-.pr{background:var(--rdim);color:var(--red);  border-color:rgba(220,38,38,.2)}
+.pr{background:var(--rdim);color:var(--red);border-color:rgba(220,38,38,.2)}
 .pn{background:var(--bg3);color:var(--text3)}
 
+/* ── TABLE ── */
 .tw{overflow-x:auto}
 .tw::-webkit-scrollbar{height:4px}
 .tw::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px}
 table{width:100%;border-collapse:collapse;font-size:11px}
-th{padding:7px 10px;text-align:left;font-size:9px;font-weight:600;color:var(--text3);
+th{padding:6px 10px;text-align:left;font-size:9px;font-weight:600;color:var(--text3);
   text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);
-  white-space:nowrap;background:var(--bg3);cursor:pointer;user-select:none}
+  white-space:nowrap;background:var(--bg3);cursor:pointer;user-select:none;position:sticky;top:0;z-index:1}
 th:hover{background:var(--bg4)}
-td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text2)}
+td{padding:5px 10px;border-bottom:1px solid var(--border);color:var(--text2)}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(--bg3);cursor:pointer}
 tr.on td{background:var(--bdim)!important}
+tfoot td{
+  padding:6px 10px;font-size:10px;font-weight:600;
+  background:var(--bg3);border-top:1px solid var(--border2);
+  position:sticky;bottom:0;z-index:1;color:var(--text)
+}
 .tuf{color:var(--text);font-weight:600;font-family:'JetBrains Mono',monospace;font-size:12px}
 .tn{font-family:'JetBrains Mono',monospace;color:var(--text)}
 .tdp{color:var(--red);font-family:'JetBrains Mono',monospace;font-weight:500}
 .tdn{color:var(--green);font-family:'JetBrains Mono',monospace;font-weight:500}
 
-.ftr{padding:9px 16px;border-top:1px solid var(--border);background:var(--bg2);
-  display:flex;justify-content:space-between;align-items:center;margin-top:4px}
-.ftr span{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+/* tabela UF com scroll interno */
+.uf-wrap{max-height:280px;overflow-y:auto;overflow-x:auto}
+.uf-wrap::-webkit-scrollbar{width:4px;height:4px}
+.uf-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px}
 
-.nd{text-align:center;padding:1.5rem;color:var(--text3);font-size:12px}
 .ch{position:relative;width:100%}
 </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <div class="hdr">
   <div class="logo">📦</div>
   <div class="hdr-info">
@@ -138,118 +192,111 @@ tr.on td{background:var(--bdim)!important}
   </div>
 </div>
 
-<div class="fbar" id="fbar">
-  <span class="fl">Ano</span>
-  <div class="chips" id="cAno"></div>
-  <div class="fsep"></div>
-  <span class="fl">Mês</span>
-  <div class="chips" id="cMes"></div>
-  <div class="fsep"></div>
-  <span class="fl">UF</span>
-  <div class="chips" id="cUF"></div>
-  <div class="fsep"></div>
-  <span class="chip clr" onclick="clearAll()">✕ Limpar</span>
-</div>
+<!-- LAYOUT -->
+<div class="layout">
 
-<div class="scroll" id="scroll">
-<div class="main">
-
-  <div class="banner" id="banner">
-    <span id="bannerTxt"></span>
-    <button onclick="clearAll()">✕ Limpar</button>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-head">
+      <span class="sb-title">Filtros</span>
+      <button class="sb-clr" onclick="clearAll()">✕ Limpar</button>
+    </div>
+    <div class="sb-scroll">
+      <div class="banner" id="banner" id="bannerTxt"></div>
+      <div class="fg">
+        <div class="fg-label">Ano</div>
+        <div class="chips" id="cAno"></div>
+      </div>
+      <div class="fg">
+        <div class="fg-label">Mês</div>
+        <div class="chips" id="cMes"></div>
+      </div>
+      <div class="fg">
+        <div class="fg-label">UF</div>
+        <div class="chips" id="cUF"></div>
+      </div>
+    </div>
   </div>
 
-  <div class="kgrid" id="kgrid"></div>
+  <!-- MAIN AREA -->
+  <div class="main-wrap" id="mainWrap">
+    <div class="main">
 
-  <div class="two">
-    <div class="sec">
-      <div class="sh">
-        <span class="st">Evolução mensal</span>
-        <div class="tabs">
-          <button class="tab on" onclick="setMode('ot',this)">On-Time %</button>
-          <button class="tab" onclick="setMode('lead',this)">Lead time</button>
+      <div class="kgrid" id="kgrid"></div>
+
+      <div class="two">
+        <div class="sec">
+          <div class="sh">
+            <span class="st">Evolução mensal</span>
+            <div class="tabs">
+              <button class="tab on" onclick="setMode('ot',this)">On-Time %</button>
+              <button class="tab" onclick="setMode('lead',this)">Lead time</button>
+            </div>
+          </div>
+          <div class="sb">
+            <div class="ch" style="height:160px"><canvas id="cMesC" role="img" aria-label="Evolução mensal"></canvas></div>
+            <div style="font-size:10px;color:var(--text3);margin-top:4px;text-align:center">clique em um mês para filtrar</div>
+          </div>
+        </div>
+        <div class="sec">
+          <div class="sh"><span class="st">Transportadoras</span><span class="si">clique para filtrar</span></div>
+          <div class="sb"><div class="bt" id="tBt"></div></div>
         </div>
       </div>
-      <div class="sb">
-        <div class="ch" style="height:175px"><canvas id="cMesC" role="img" aria-label="Evolução mensal">Gráfico mensal.</canvas></div>
-        <div style="font-size:10px;color:var(--text3);margin-top:5px;text-align:center">clique em um mês para filtrar</div>
+
+      <div class="sec">
+        <div class="sh"><span class="st">Delta lead por mês</span><span class="si">realizado − prometido · clique para filtrar</span></div>
+        <div class="sb"><div class="ch" style="height:110px"><canvas id="cDeltaC" role="img" aria-label="Delta lead"></canvas></div></div>
       </div>
+
+      <!-- TABELA UF com scroll interno + tfoot fixo -->
+      <div class="sec">
+        <div class="sh"><span class="st">Desempenho por UF</span><span class="si">cabeçalho para ordenar · clique para filtrar</span></div>
+        <div class="uf-wrap">
+          <table id="ufTbl">
+            <thead><tr>
+              <th onclick="sortUF('uf')">UF</th>
+              <th onclick="sortUF('nfs')">NFs</th>
+              <th onclick="sortUF('val')">Valor NF</th>
+              <th onclick="sortUF('ot')">On-Time %</th>
+              <th onclick="sortUF('delta')">Delta</th>
+              <th onclick="sortUF('np')">No prazo</th>
+              <th onclick="sortUF('at')">Atrasadas</th>
+            </tr></thead>
+            <tbody id="ufTb"></tbody>
+            <tfoot id="ufTf"></tfoot>
+          </table>
+        </div>
+      </div>
+
     </div>
-    <div class="sec">
-      <div class="sh"><span class="st">Transportadoras</span><span class="si">clique para filtrar</span></div>
-      <div class="sb"><div class="bt" id="tBt"></div></div>
+
+    <!-- FOOTER FIXO no fundo do main-wrap -->
+    <div class="ftr">
+      <span>coco-do-vale · Controladoria Lead Time</span>
+      <span id="ftrTs"></span>
     </div>
   </div>
 
-  <div class="sec">
-    <div class="sh"><span class="st">Delta lead por mês</span><span class="si">realizado − prometido · clique para filtrar</span></div>
-    <div class="sb"><div class="ch" style="height:120px"><canvas id="cDeltaC" role="img" aria-label="Delta lead">Gráfico delta.</canvas></div></div>
-  </div>
-
-  <div class="sec">
-    <div class="sh"><span class="st">Desempenho por UF</span><span class="si">clique para filtrar · cabeçalho para ordenar</span></div>
-    <div class="tw">
-      <table id="ufTbl">
-        <thead><tr>
-          <th onclick="sortUF('uf')">UF</th>
-          <th onclick="sortUF('nfs')">NFs</th>
-          <th onclick="sortUF('val')">Valor NF</th>
-          <th onclick="sortUF('ot')">On-Time %</th>
-          <th onclick="sortUF('delta')">Delta</th>
-          <th onclick="sortUF('np')">No prazo</th>
-          <th onclick="sortUF('at')">Atrasadas</th>
-        </tr></thead>
-        <tbody id="ufTb"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="ftr">
-    <span>coco-do-vale · Controladoria Lead Time</span>
-    <span id="ftrTs"></span>
-  </div>
-
-</div>
 </div>
 
 <script>
 function pN(s){return parseFloat((s||'0').replace(',','.'))||0}
 function pI(s){return parseInt((s||'0').replace(/\./g,''))||0}
 function pRows(s){return s?s.split(';').filter(Boolean).map(r=>r.split('|')):[]}
+function getParam(n){try{return new URL(location.href).searchParams.get(n)||''}catch(e){return ''}}
 
-function getParam(n){
-  try{return new URL(location.href).searchParams.get(n)||''}
-  catch(e){return ''}
-}
+const _m=(getParam('m')||'').replace(/~/g,';')||'jan/25|705|9226|43,1|9,70|7,68|260|431;fev/25|790|13111|40,3|9,79|7,13|285|488;mar/25|1167|13143|46,7|10,10|7,66|503|648;abr/25|945|12176|40,9|10,82|6,58|320|612;mai/25|1383|13927|48,3|10,60|7,67|575|794;jun/25|1278|13127|50,8|9,45|7,60|498|742;jul/25|1001|14323|54,2|8,67|7,40|489|499;ago/25|1116|12769|40,5|10,41|7,30|409|667;set/25|701|12089|42,9|10,46|6,63|267|412;out/25|748|12297|34,0|12,10|6,95|207|519;nov/25|650|12455|32,3|11,84|6,87|148|479;dez/25|521|9018|27,7|13,06|7,24|89|363;jan/26|730|11686|41,7|10,75|6,80|208|507;fev/26|640|10002|27,5|10,32|6,21|146|482;mar/26|811|12775|35,6|11,86|5,86|238|550;abr/26|798|12855|37,7|9,99|6,22|292|444;mai/26|569|7532|55,0|7,23|7,14|70|120';
+const _t=(getParam('t')||'').replace(/~/g,';')||'ALIA TRANSPORTES|7053|41,0|10,20|7,39|2607|4259;GRUPOPRIMA LOGISTICA|2822|38,7|10,51|6,95|817|1663;RODOMILLI|1288|55,8|8,37|7,06|684|583;SHELBY TRANSPORTES|1121|38,3|8,41|4,99|255|797;RACA|445|29,7|18,13|13,72|106|286;SERVIMAR TRANSPORTES|428|87,6|2,33|3,91|336|83;BOMFIM|384|13,7|12,94|6,12|76|279;TECMAR|293|11,4|20,41|5,18|38|254;CDJ EXPRESS E LOGIST|264|0,0|30,13|9,35|0|251;RODOPRIMA|216|46,3|9,49|6,42|64|148;LOG-IN|61|0,0|26,73|16,00|0|61';
+const _u=(getParam('u')||'').replace(/~/g,';')||'SP|3,8|4549|51,46|31;MG|1,2|1040|35,07|65;RJ|2,4|2408|35,30|45;SC|2,7|817|20,09|27;ES|0,0|1225|9,94|70;GO|4,4|1200|8,39|36;PE|-1,3|461|8,12|85;BA|12,3|869|7,19|6;DF|5,1|352|5,13|38;CE|4,1|263|2,49|17;RS|4,6|251|2,28|13;MA|7,2|151|2,09|31;PR|5,4|93|2,05|16;PA|8,7|150|1,93|11;PI|3,3|110|1,60|31;AP|12,8|215|3,38|16;AM|20,0|163|3,33|;PB|1,4|88|1,06|22;TO|13,6|62|0,80|12;SE|14,8|55|0,41|;MS|7,3|11|0,15|13;RR|17,7|10|0,13|;AL|10,0|5|0,11|;RN|-2,5|3|0,01|100;MT|14,0|2|0,01|';
 
-const _ot  = getParam('ot')  || '41,1';
-const _lr  = getParam('lr')  || '10,50';
-const _lp  = getParam('lp')  || '7,00';
-const _nfs = getParam('nfs') || '14553';
-const _val = getParam('val') || '202,51';
-const _np  = getParam('np')  || '5004';
-const _at  = getParam('at')  || '8757';
-const _m   = (getParam('m')||'').replace(/~/g,';') || 'jan/25|705|9226|43,1|9,70|7,68|260|431;fev/25|790|13111|40,3|9,79|7,13|285|488;mar/25|1167|13143|46,7|10,10|7,66|503|648;abr/25|945|12176|40,9|10,82|6,58|320|612;mai/25|1383|13927|48,3|10,60|7,67|575|794;jun/25|1278|13127|50,8|9,45|7,60|498|742;jul/25|1001|14323|54,2|8,67|7,40|489|499;ago/25|1116|12769|40,5|10,41|7,30|409|667;set/25|701|12089|42,9|10,46|6,63|267|412;out/25|748|12297|34,0|12,10|6,95|207|519;nov/25|650|12455|32,3|11,84|6,87|148|479;dez/25|521|9018|27,7|13,06|7,24|89|363;jan/26|730|11686|41,7|10,75|6,80|208|507;fev/26|640|10002|27,5|10,32|6,21|146|482;mar/26|811|12775|35,6|11,86|5,86|238|550;abr/26|798|12855|37,7|9,99|6,22|292|444;mai/26|569|7532|55,0|7,23|7,14|70|120';
-const _t   = (getParam('t')||'').replace(/~/g,';') || 'ALIA TRANSPORTES|7053|41,0|10,20|7,39|2607|4259;GRUPOPRIMA LOGISTICA|2822|38,7|10,51|6,95|817|1663;RODOMILLI|1288|55,8|8,37|7,06|684|583;SHELBY TRANSPORTES|1121|38,3|8,41|4,99|255|797;RACA|445|29,7|18,13|13,72|106|286;SERVIMAR TRANSPORTES|428|87,6|2,33|3,91|336|83;BOMFIM|384|13,7|12,94|6,12|76|279;TECMAR|293|11,4|20,41|5,18|38|254;CDJ EXPRESS E LOGIST|264|0,0|30,13|9,35|0|251;RODOPRIMA|216|46,3|9,49|6,42|64|148;LOG-IN|61|0,0|26,73|16,00|0|61';
-const _u   = (getParam('u')||'').replace(/~/g,';') || 'SP|3,8|4549|51,46|31;MG|1,2|1040|35,07|65;RJ|2,4|2408|35,30|45;SC|2,7|817|20,09|27;ES|0,0|1225|9,94|70;GO|4,4|1200|8,39|36;PE|-1,3|461|8,12|85;BA|12,3|869|7,19|6;DF|5,1|352|5,13|38;CE|4,1|263|2,49|17;RS|4,6|251|2,28|13;MA|7,2|151|2,09|31;PR|5,4|93|2,05|16;PA|8,7|150|1,93|11;PI|3,3|110|1,60|31;AP|12,8|215|3,38|16;AM|20,0|163|3,33|;PB|1,4|88|1,06|22;TO|13,6|62|0,80|12;SE|14,8|55|0,41|;MS|7,3|11|0,15|13;RR|17,7|10|0,13|;AL|10,0|5|0,11|;RN|-2,5|3|0,01|100;MT|14,0|2|0,01|';
+const MESES=pRows(_m).map(r=>({label:r[0],ano:parseInt('20'+(r[0].split('/')[1]||'25')),mes:r[0].split('/')[0],nfs:pI(r[1]),val:pN(r[2]),ot:pN(r[3]),lr:pN(r[4]),lp:pN(r[5]),np:pI(r[6]),at:pI(r[7])}));
+const TRANSP=pRows(_t).map(r=>({nome:r[0],nfs:pI(r[1]),ot:pN(r[2]),lr:pN(r[3]),lp:pN(r[4]),np:pI(r[5]),at:pI(r[6])}));
+const UF=pRows(_u).filter(r=>r[0]&&r[0].length===2).map(r=>({uf:r[0],delta:pN(r[1]),nfs:pI(r[2]),val:pN(r[3]),ot:pN(r[4]),np:pI(r[5]||'0'),at:pI(r[6]||'0')}));
 
-const MESES = pRows(_m).map(r=>({
-  label:r[0], ano:parseInt('20'+(r[0].split('/')[1]||'25')),
-  mes:r[0].split('/')[0],
-  nfs:pI(r[1]),val:pN(r[2]),ot:pN(r[3]),lr:pN(r[4]),lp:pN(r[5]),np:pI(r[6]),at:pI(r[7])
-}));
-const TRANSP = pRows(_t).map(r=>({
-  nome:r[0],nfs:pI(r[1]),ot:pN(r[2]),lr:pN(r[3]),lp:pN(r[4]),np:pI(r[5]),at:pI(r[6])
-}));
-const UF = pRows(_u).filter(r=>r[0]&&r[0].length===2).map(r=>({
-  uf:r[0],delta:pN(r[1]),nfs:pI(r[2]),val:pN(r[3]),ot:pN(r[4]),np:pI(r[5]||'0'),at:pI(r[6]||'0')
-}));
-
-let sAnos=new Set(), sMes=new Set(), sUF=new Set(), sTr=new Set();
-let ufKey='val', ufDir=-1, mesMode='ot';
-
-/* ── CHARTS: criados uma vez, depois só atualizados ── */
-let cMesI=null, cDeltaI=null;
+let sAnos=new Set(),sMes=new Set(),sUF=new Set(),sTr=new Set();
+let ufKey='val',ufDir=-1,mesMode='ot';
+let cMesI=null,cDeltaI=null;
 
 function otC(v){return!v||isNaN(v)?'#9AA0AD':v>=70?'#0F9E5E':v>=40?'#D97706':'#DC2626'}
 function otP(v){
@@ -263,12 +310,12 @@ function fUF(){return UF.filter(r=>!sUF.size||sUF.has(r.uf))}
 function agg(){
   const m=fMeses().length?fMeses():MESES;
   const nfs=m.reduce((s,r)=>s+r.nfs,0);
-  const val=m.reduce((s,r)=>s+r.val,0)/1000;
   const np=m.reduce((s,r)=>s+r.np,0);
   const at=m.reduce((s,r)=>s+r.at,0);
   const lrW=m.reduce((s,r)=>s+r.lr*r.nfs,0);
   const lpW=m.reduce((s,r)=>s+r.lp*r.nfs,0);
   const valW=m.reduce((s,r)=>s+(r.val||0),0);
+  const val=valW/1000;
   const ot=valW>0?m.filter(r=>r.ot>0).reduce((s,r)=>s+r.ot*(r.val||0),0)/valW:0;
   return{ot,lr:nfs>0?lrW/nfs:0,lp:nfs>0?lpW/nfs:0,nfs,val,np,at};
 }
@@ -281,7 +328,6 @@ function mkChips(){
   document.getElementById('cAno').innerHTML=anos.map(a=>`<span class="chip${sAnos.has(a)?' on':''}" onclick="tog('ano',${a},this)">${a}</span>`).join('');
   document.getElementById('cMes').innerHTML=meses.map(m=>`<span class="chip${sMes.has(m)?' on':''}" onclick="tog('mes','${m}',this)">${m}</span>`).join('');
   document.getElementById('cUF').innerHTML=ufs.map(u=>`<span class="chip${sUF.has(u)?' on':''}" onclick="tog('uf','${u}',this)">${u}</span>`).join('');
-  posScroll();
 }
 
 function tog(t,v,el){
@@ -303,9 +349,8 @@ function mkBanner(){
   if(sAnos.size)p.push('Ano: '+[...sAnos].join(', '));
   if(sMes.size)p.push('Mês: '+[...sMes].join(', '));
   if(sUF.size)p.push('UF: '+[...sUF].join(', '));
-  if(sTr.size)p.push('Transp: '+[...sTr].map(n=>n.split(' ')[0]).join(', '));
   const b=document.getElementById('banner');
-  if(p.length){b.classList.add('show');document.getElementById('bannerTxt').textContent='Filtro: '+p.join(' · ')}
+  if(p.length){b.classList.add('show');b.textContent=p.join(' · ')}
   else b.classList.remove('show');
 }
 
@@ -319,7 +364,7 @@ function mkKPI(){
   const tot=k.np+k.at;
   document.getElementById('kgrid').innerHTML=`
     <div class="kpi ${kc}"><div class="kl">On-Time % (R$)</div><div class="kv ${oc}">${ot.toFixed(1)}%</div><div class="ks">meta 70% · ${ot>=70?'✓ atingida':'✗ abaixo'}</div></div>
-    <div class="kpi kb"><div class="kl">Total NFs</div><div class="kv b">${k.nfs.toLocaleString('pt-BR')}</div><div class="ks">R$ ${typeof k.val==='number'?(k.val>1?k.val.toFixed(1):(k.val*1000).toFixed(0)):k.val}M</div></div>
+    <div class="kpi kb"><div class="kl">Total NFs</div><div class="kv b">${k.nfs.toLocaleString('pt-BR')}</div><div class="ks">R$ ${k.val.toFixed(1)}M</div></div>
     <div class="kpi kg"><div class="kl">No prazo</div><div class="kv g">${k.np.toLocaleString('pt-BR')}</div><div class="ks">${tot>0?Math.round(k.np/tot*100):0}% do entregue</div></div>
     <div class="kpi kr"><div class="kl">Atrasadas</div><div class="kv r">${k.at.toLocaleString('pt-BR')}</div><div class="ks">${tot>0?Math.round(k.at/tot*100):0}% do entregue</div></div>
     <div class="kpi ka"><div class="kl">Lead realizado</div><div class="kv">${lr.toFixed(1)}d</div><div class="ks">prometido: ${lp.toFixed(1)}d</div></div>
@@ -330,7 +375,6 @@ function mkKPI(){
   else{b.textContent='✗ Crítico';b.className='badge bg-crit'}
 }
 
-/* ── GRÁFICO MÊS: cria uma vez, atualiza com 'none' (sem animação) ── */
 function mkMes(){
   const d=fMeses().length?fMeses():MESES;
   const lb=d.map(r=>r.label);
@@ -340,70 +384,50 @@ function mkMes(){
     sMes.has(m)?sMes.delete(m):sMes.add(m);
     mkChips();refresh();
   };
-
   if(!cMesI){
-    /* Primeira vez: cria o chart */
     const ctx=document.getElementById('cMesC').getContext('2d');
     if(mesMode==='ot'){
       const vals=d.map(r=>r.ot);
       cMesI=new Chart(ctx,{type:'line',data:{labels:lb,datasets:[
-        {label:'On-Time %',data:vals,borderColor:'#1D6EE8',backgroundColor:'rgba(29,110,232,0.05)',
-         borderWidth:2,pointRadius:4,fill:true,tension:0.3,spanGaps:true,
-         pointBackgroundColor:vals.map(v=>otC(v)),pointBorderColor:vals.map(v=>otC(v)),
-         pointBorderWidth:2,pointHoverRadius:6},
-        {label:'Meta 70%',data:d.map(()=>70),borderColor:'rgba(217,119,6,0.4)',
-         borderWidth:1.5,borderDash:[6,3],pointRadius:0,fill:false}
+        {label:'On-Time %',data:vals,borderColor:'#1D6EE8',backgroundColor:'rgba(29,110,232,0.05)',borderWidth:2,pointRadius:4,fill:true,tension:0.3,spanGaps:true,pointBackgroundColor:vals.map(v=>otC(v)),pointBorderColor:vals.map(v=>otC(v)),pointBorderWidth:2,pointHoverRadius:6},
+        {label:'Meta 70%',data:d.map(()=>70),borderColor:'rgba(217,119,6,0.4)',borderWidth:1.5,borderDash:[6,3],pointRadius:0,fill:false}
       ]},options:{responsive:true,maintainAspectRatio:false,onClick:clickFn,animation:false,
         plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toFixed(1)}%`}}},
-        scales:{
-          x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},
-          y:{min:0,max:100,ticks:{color:'#9AA0AD',font:{size:9},callback:v=>v+'%'},grid:{color:'rgba(0,0,0,.04)'}}
-        }}});
+        scales:{x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},y:{min:0,max:100,ticks:{color:'#9AA0AD',font:{size:9},callback:v=>v+'%'},grid:{color:'rgba(0,0,0,.04)'}}}}});
     }else{
       cMesI=new Chart(ctx,{type:'line',data:{labels:lb,datasets:[
         {label:'Realizado',data:d.map(r=>r.lr),borderColor:'#DC2626',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.3,pointHoverRadius:5},
         {label:'Prometido',data:d.map(r=>r.lp),borderColor:'#0F9E5E',backgroundColor:'transparent',borderWidth:1.5,borderDash:[5,3],pointRadius:0,tension:0.3}
       ]},options:{responsive:true,maintainAspectRatio:false,onClick:clickFn,animation:false,
         plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toFixed(1)}d`}}},
-        scales:{
-          x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},
-          y:{ticks:{color:'#9AA0AD',font:{size:9},callback:v=>v+'d'},grid:{color:'rgba(0,0,0,.04)'}}
-        }}});
+        scales:{x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},y:{ticks:{color:'#9AA0AD',font:{size:9},callback:v=>v+'d'},grid:{color:'rgba(0,0,0,.04)'}}}}});
     }
     return;
   }
-
-  /* Atualizações subsequentes: só muda dados, sem recriar */
   if(mesMode==='ot'){
     const vals=d.map(r=>r.ot);
     cMesI.data.labels=lb;
     cMesI.data.datasets[0].data=vals;
     cMesI.data.datasets[0].pointBackgroundColor=vals.map(v=>otC(v));
     cMesI.data.datasets[0].pointBorderColor=vals.map(v=>otC(v));
-    if(cMesI.data.datasets.length<2){
-      cMesI.data.datasets.push({label:'Meta 70%',data:d.map(()=>70),borderColor:'rgba(217,119,6,0.4)',
-        borderWidth:1.5,borderDash:[6,3],pointRadius:0,fill:false});
-    }else{
-      cMesI.data.datasets[1].data=d.map(()=>70);
-    }
+    if(cMesI.data.datasets.length<2)cMesI.data.datasets.push({label:'Meta 70%',data:d.map(()=>70),borderColor:'rgba(217,119,6,0.4)',borderWidth:1.5,borderDash:[6,3],pointRadius:0,fill:false});
+    else cMesI.data.datasets[1].data=d.map(()=>70);
   }else{
     cMesI.data.labels=lb;
     cMesI.data.datasets[0].data=d.map(r=>r.lr);
     if(cMesI.data.datasets.length>1)cMesI.data.datasets[1].data=d.map(r=>r.lp);
   }
-  cMesI.update('none'); /* 'none' = atualiza sem animação → sem piscar */
+  cMesI.update('none');
 }
 
 function setMode(m,btn){
   mesMode=m;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   btn.classList.add('on');
-  /* Ao trocar de modo precisa reconfigurar datasets/escalas → destrói só neste caso */
   if(cMesI){cMesI.destroy();cMesI=null;}
   mkMes();
 }
 
-/* ── GRÁFICO DELTA: mesma abordagem ── */
 function mkDelta(){
   const d=fMeses().length?fMeses():MESES;
   const deltas=d.map(r=>parseFloat((r.lr-r.lp).toFixed(2)));
@@ -415,21 +439,14 @@ function mkDelta(){
     sMes.has(mes)?sMes.delete(mes):sMes.add(mes);
     mkChips();refresh();
   };
-
   if(!cDeltaI){
     const ctx=document.getElementById('cDeltaC').getContext('2d');
-    cDeltaI=new Chart(ctx,{type:'bar',data:{labels:d.map(r=>r.label),datasets:[{
-      label:'Delta',data:deltas,borderRadius:4,
-      backgroundColor:bgColors,hoverBackgroundColor:hoverColors
-    }]},options:{responsive:true,maintainAspectRatio:false,onClick:clickFn,animation:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` Delta: ${c.raw>=0?'+':''}${c.raw}d`}}},
-      scales:{
-        x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},
-        y:{ticks:{color:'#9AA0AD',font:{size:9},callback:v=>(v>=0?'+':'')+v+'d'},grid:{color:'rgba(0,0,0,.04)'}}
-      }}});
+    cDeltaI=new Chart(ctx,{type:'bar',data:{labels:d.map(r=>r.label),datasets:[{label:'Delta',data:deltas,borderRadius:4,backgroundColor:bgColors,hoverBackgroundColor:hoverColors}]},
+      options:{responsive:true,maintainAspectRatio:false,onClick:clickFn,animation:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` Delta: ${c.raw>=0?'+':''}${c.raw}d`}}},
+        scales:{x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},y:{ticks:{color:'#9AA0AD',font:{size:9},callback:v=>(v>=0?'+':'')+v+'d'},grid:{color:'rgba(0,0,0,.04)'}}}}});
     return;
   }
-
   cDeltaI.data.labels=d.map(r=>r.label);
   cDeltaI.data.datasets[0].data=deltas;
   cDeltaI.data.datasets[0].backgroundColor=bgColors;
@@ -452,26 +469,27 @@ function mkTransp(){
   }).join('');
 }
 
-function togTr(n,el){
-  sTr.has(n)?sTr.delete(n):sTr.add(n);
-  el.classList.toggle('on');
-  mkBanner();
-}
+function togTr(n,el){sTr.has(n)?sTr.delete(n):sTr.add(n);el.classList.toggle('on');mkBanner();}
 
 function sortUF(k){
-  ufKey===k?ufDir*=-1:(ufKey=k,ufDir=-1);
-  mkUF();
-  document.querySelectorAll('#ufTbl th').forEach((th,i)=>{
-    const keys=['uf','nfs','val','ot','delta','np','at'];
-    th.className=keys[i]===k?(ufDir===-1?'sort-desc':'sort-asc'):'';
-  });
+  ufKey===k?ufDir*=-1:(ufKey=k,ufDir=-1);mkUF();
 }
 
 function mkUF(){
-  let rows=(fUF().length?fUF():UF).slice().sort((a,b)=>{
+  const rows=(fUF().length?fUF():UF).slice().sort((a,b)=>{
     const av=a[ufKey],bv=b[ufKey];
     return(typeof av==='string'?av.localeCompare(bv):(bv-av))*ufDir;
   });
+
+  /* Totais para tfoot */
+  const vis=fUF().length?fUF():UF;
+  const totNfs=vis.reduce((s,r)=>s+r.nfs,0);
+  const totVal=vis.reduce((s,r)=>s+r.val,0);
+  const totNp=vis.reduce((s,r)=>s+r.np,0);
+  const totAt=vis.reduce((s,r)=>s+r.at,0);
+  const totOt=totNfs>0?vis.reduce((s,r)=>s+r.ot*r.nfs,0)/totNfs:0;
+  const totDelta=totNfs>0?vis.reduce((s,r)=>s+(r.delta||0)*r.nfs,0)/totNfs:0;
+
   document.getElementById('ufTb').innerHTML=rows.map(r=>{
     const dc=r.delta>2?'tdp':r.delta<0?'tdn':'';
     const on=sUF.has(r.uf)?' class="on"':'';
@@ -485,27 +503,30 @@ function mkUF(){
       <td class="tn" style="color:var(--red)">${r.at||'—'}</td>
     </tr>`;
   }).join('');
+
+  const dc2=totDelta>2?'color:var(--red)':totDelta<0?'color:var(--green)':'';
+  document.getElementById('ufTf').innerHTML=`<tr>
+    <td>TOTAL</td>
+    <td class="tn">${totNfs.toLocaleString('pt-BR')}</td>
+    <td class="tn">R$ ${totVal.toFixed(2)}M</td>
+    <td>${otP(totOt)}</td>
+    <td style="font-family:'JetBrains Mono',monospace;font-weight:600;${dc2}">${totDelta>=0?'+':''}${totDelta.toFixed(1)}d</td>
+    <td class="tn" style="color:var(--green);font-weight:600">${totNp.toLocaleString('pt-BR')}</td>
+    <td class="tn" style="color:var(--red);font-weight:600">${totAt.toLocaleString('pt-BR')}</td>
+  </tr>`;
 }
 
 function togUF(u,tr){
-  sUF.has(u)?sUF.delete(u):(sUF.add(u));
+  sUF.has(u)?sUF.delete(u):sUF.add(u);
   tr.className=sUF.has(u)?'on':'';
   mkChips();mkBanner();
 }
 
-function posScroll(){
-  const fh=document.getElementById('fbar').offsetHeight;
-  document.getElementById('scroll').style.top=(52+fh)+'px';
-}
-
-function refresh(){
-  mkBanner();mkKPI();mkMes();mkDelta();mkUF();
-}
+function refresh(){mkBanner();mkKPI();mkMes();mkDelta();mkUF();}
 
 window.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('ftrTs').textContent='Atualizado: '+new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
   mkChips();mkTransp();refresh();
-  window.addEventListener('resize',posScroll);
 });
 </script>
 </body>
