@@ -16,7 +16,7 @@
   --red:#DC2626;--rdim:#FEF0F0;
   --blue:#1D6EE8;--bdim:#EEF4FD;
   --pbi-blue:#0078D4;--pbi-sel:#DEECF9;--pbi-hover:#F0F6FC;
-  --hh:48px;--sw:200px;
+  --hh:48px;--sw:172px;
   --sh:0 1px 3px rgba(0,0,0,.07);
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -49,12 +49,12 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:
 
 .slicer{display:flex;flex-direction:column;border-bottom:1px solid var(--border);flex-shrink:0;}
 .slicer-head{
-  padding:7px 10px 5px;display:flex;align-items:center;justify-content:space-between;
+  padding:6px 8px 4px;display:flex;align-items:center;justify-content:space-between;
   background:var(--bg2);cursor:default;user-select:none;
 }
-.slicer-title{font-size:11px;font-weight:600;color:var(--text);}
-.slicer-clr{font-size:10px;color:var(--text3);cursor:pointer;background:none;border:none;
-  font-family:'Inter',sans-serif;padding:1px 4px;border-radius:3px;display:none;}
+.slicer-title{font-size:10px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.04em}
+.slicer-clr{font-size:9px;color:var(--text3);cursor:pointer;background:none;border:none;
+  font-family:'Inter',sans-serif;padding:1px 3px;border-radius:3px;display:none;}
 .slicer-clr.vis{display:block}
 .slicer-clr:hover{color:var(--red)}
 
@@ -68,10 +68,10 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:
 .slicer-search svg{flex-shrink:0;opacity:.4}
 
 /* Dropdown slicer estilo Power BI */
-.slicer-dropdown{position:relative;margin:0 8px 6px;}
+.slicer-dropdown{position:relative;margin:0 6px 5px;}
 .slicer-trigger{
   display:flex;align-items:center;justify-content:space-between;
-  border:1px solid var(--border2);border-radius:3px;padding:5px 8px;
+  border:1px solid var(--border2);border-radius:3px;padding:4px 7px;
   background:var(--bg2);cursor:pointer;font-size:11px;color:var(--text2);
   user-select:none;gap:4px;
 }
@@ -83,7 +83,7 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:
 .slicer-panel{
   position:absolute;top:calc(100% + 3px);left:0;right:0;
   background:var(--bg2);border:1px solid var(--border2);border-radius:4px;
-  box-shadow:0 4px 12px rgba(0,0,0,.12);z-index:200;
+  box-shadow:0 4px 12px rgba(0,0,0,.12);z-index:500;
   display:none;flex-direction:column;
 }
 .slicer-panel.open{display:flex}
@@ -216,9 +216,9 @@ tr.on td{background:var(--bdim)!important}
 .tdn{color:var(--green);font-family:'JetBrains Mono',monospace;font-weight:500}
 
 /* GAUGE */
-.gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:0}
-.gauge-svg{width:100%;max-width:240px;display:block}
-.gauge-legend{display:flex;align-items:center;gap:5px;justify-content:center;margin-top:2px;font-size:10px;color:var(--text2)}
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;gap:4px}
+.gauge-svg{width:100%;height:auto;display:block}
+.gauge-legend{display:flex;align-items:center;gap:5px;justify-content:center;font-size:10px;color:var(--text2)}
 .gauge-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
 .ch{position:relative;width:100%}
@@ -249,6 +249,7 @@ tr.on td{background:var(--bdim)!important}
   <div class="hdr-right">
     <span class="badge bg-meta">meta: 70%</span>
     <span class="badge bg-crit" id="hBadge">✗ Crítico</span>
+    <button onclick="clearAll()" style="display:flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:10px;font-weight:500;border:1px solid rgba(220,38,38,.3);background:var(--rdim);color:var(--red);cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap" id="btnClearAll">✕ Limpar tudo</button>
   </div>
 </div>
 
@@ -263,7 +264,7 @@ tr.on td{background:var(--bdim)!important}
         <span class="slicer-title">Transportadora</span>
         <button class="slicer-clr" id="clrTr" onclick="clearGroup('tr')">✕ Limpar</button>
       </div>
-      <div style="padding:0 8px 6px">
+      <div style="padding:0 0 4px">
         <div class="slicer-dropdown" id="ddTr">
           <div class="slicer-trigger" id="ddTrTrigger" onclick="toggleDropdown('ddTr')">
             <span class="slicer-trigger-label" id="ddTrLabel">Selecionar...</span>
@@ -290,7 +291,7 @@ tr.on td{background:var(--bdim)!important}
         <span class="slicer-title">Ano</span>
         <button class="slicer-clr" id="clrAno" onclick="clearGroup('ano')">✕ Limpar</button>
       </div>
-      <div style="padding:0 8px 6px">
+      <div style="padding:0 0 4px">
         <div class="slicer-dropdown" id="ddAno">
           <div class="slicer-trigger" id="ddAnoTrigger" onclick="toggleDropdown('ddAno')">
             <span class="slicer-trigger-label" id="ddAnoLabel">Selecionar...</span>
@@ -317,7 +318,7 @@ tr.on td{background:var(--bdim)!important}
         <span class="slicer-title">Mês</span>
         <button class="slicer-clr" id="clrMes" onclick="clearGroup('mes')">✕ Limpar</button>
       </div>
-      <div style="padding:0 8px 6px">
+      <div style="padding:0 0 4px">
         <div class="slicer-dropdown" id="ddMes">
           <div class="slicer-trigger" id="ddMesTrigger" onclick="toggleDropdown('ddMes')">
             <span class="slicer-trigger-label" id="ddMesLabel">Selecionar...</span>
@@ -344,7 +345,7 @@ tr.on td{background:var(--bdim)!important}
         <span class="slicer-title">UF</span>
         <button class="slicer-clr" id="clrUF" onclick="clearGroup('uf')">✕ Limpar</button>
       </div>
-      <div style="padding:0 8px 6px">
+      <div style="padding:0 0 4px">
         <div class="slicer-dropdown" id="ddUF">
           <div class="slicer-trigger" id="ddUFTrigger" onclick="toggleDropdown('ddUF')">
             <span class="slicer-trigger-label" id="ddUFLabel">Selecionar...</span>
@@ -401,9 +402,9 @@ tr.on td{background:var(--bdim)!important}
             <!-- GAUGE -->
             <div class="sec">
               <div class="sh"><span class="st">Status Lead Time</span><span class="si" id="gaugeLabel">—</span></div>
-              <div class="sb" style="padding:6px 12px 10px">
+              <div class="sb" style="padding:4px 10px 8px">
                 <div class="gauge-wrap">
-                  <svg class="gauge-svg" viewBox="0 0 260 150" id="gaugeSVG"></svg>
+                  <svg class="gauge-svg" viewBox="-11 -4 282 161" id="gaugeSVG" style="display:block;width:100%;height:auto"></svg>
                   <div class="gauge-legend">
                     <span class="gauge-dot" id="gaugeDot" style="background:#D97706"></span>
                     <span id="gaugeStatusTxt">—</span>
@@ -500,45 +501,41 @@ function otP(v){
 
 /* ─── FILTROS ─── */
 function fMeses(){
-  return MESES.filter(r=>(!sAnos.size||sAnos.has(r.ano))&&(!sMes.size||sMes.has(r.mes)));
+  return MESES.filter(r=>
+    (!sAnos.size||sAnos.has(r.ano))&&
+    (!sMes.size||sMes.has(r.mes))
+  );
 }
 function fUF(){return UF.filter(r=>!sUF.size||sUF.has(r.uf))}
-
-/* filtra TRANSP por slicer de transportadora (sTr) */
 function fTransp(){return TRANSP.filter(r=>!sTr.size||sTr.has(r.nome))}
 
+/* ─── AGG: agrega KPIs respeitando TODOS os filtros ─── */
 function agg(){
-  /* meses filtrados por ano+mes */
   const m=fMeses().length?fMeses():MESES;
-  /* se há filtro de transportadora, ajusta os números proporcionalmente */
-  const trRatio=sTr.size?fTransp().reduce((s,r)=>s+r.nfs,0)/TRANSP.reduce((s,r)=>s+r.nfs,0):1;
-  const nfs=Math.round(m.reduce((s,r)=>s+r.nfs,0)*trRatio);
-  const np=Math.round(m.reduce((s,r)=>s+r.np,0)*trRatio);
-  const at=Math.round(m.reduce((s,r)=>s+r.at,0)*trRatio);
-  const lrW=m.reduce((s,r)=>s+r.lr*r.nfs,0);
-  const lpW=m.reduce((s,r)=>s+r.lp*r.nfs,0);
-  const totNfs=m.reduce((s,r)=>s+r.nfs,0);
+  const tr=fTransp();
+  const totTrNfs=tr.reduce((s,r)=>s+r.nfs,0);
+  const totAllNfs=TRANSP.reduce((s,r)=>s+r.nfs,0);
+  const ratio=sTr.size&&totAllNfs>0?totTrNfs/totAllNfs:1;
+
+  const totMesNfs=m.reduce((s,r)=>s+r.nfs,0);
   const valW=m.reduce((s,r)=>s+(r.val||0),0);
-  /* on-time: média ponderada das transportadoras selecionadas */
-  let ot;
-  if(sTr.size){
-    const trSel=fTransp();
-    const totTrNfs=trSel.reduce((s,r)=>s+r.nfs,0);
-    ot=totTrNfs>0?trSel.reduce((s,r)=>s+r.ot*r.nfs,0)/totTrNfs:0;
-  }else{
-    ot=valW>0?m.filter(r=>r.ot>0).reduce((s,r)=>s+r.ot*(r.val||0),0)/valW:0;
-  }
-  /* lead: ponderado pelas transportadoras selecionadas */
-  let lr,lp;
-  if(sTr.size){
-    const trSel=fTransp();
-    const totTrNfs=trSel.reduce((s,r)=>s+r.nfs,0);
-    lr=totTrNfs>0?trSel.reduce((s,r)=>s+r.lr*r.nfs,0)/totTrNfs:0;
-    lp=totTrNfs>0?trSel.reduce((s,r)=>s+r.lp*r.nfs,0)/totTrNfs:0;
-  }else{
-    lr=totNfs>0?lrW/totNfs:0;
-    lp=totNfs>0?lpW/totNfs:0;
-  }
+
+  /* on-time ponderado por transportadora selecionada */
+  const ot=sTr.size&&totTrNfs>0
+    ? tr.reduce((s,r)=>s+r.ot*r.nfs,0)/totTrNfs
+    : valW>0?m.filter(r=>r.ot>0).reduce((s,r)=>s+r.ot*(r.val||0),0)/valW:0;
+
+  /* lead ponderado */
+  const lr=sTr.size&&totTrNfs>0
+    ? tr.reduce((s,r)=>s+r.lr*r.nfs,0)/totTrNfs
+    : totMesNfs>0?m.reduce((s,r)=>s+r.lr*r.nfs,0)/totMesNfs:0;
+  const lp=sTr.size&&totTrNfs>0
+    ? tr.reduce((s,r)=>s+r.lp*r.nfs,0)/totTrNfs
+    : totMesNfs>0?m.reduce((s,r)=>s+r.lp*r.nfs,0)/totMesNfs:0;
+
+  const nfs=Math.round(m.reduce((s,r)=>s+r.nfs,0)*ratio);
+  const np =Math.round(m.reduce((s,r)=>s+r.np,0)*ratio);
+  const at =Math.round(m.reduce((s,r)=>s+r.at,0)*ratio);
   const val=valW/1000;
   return{ot,lr,lp,nfs,val,np,at};
 }
@@ -580,7 +577,7 @@ function buildTrList(){
       sTr.has(n)?sTr.delete(n):sTr.add(n);
       buildTrList();updateTrLabel();
       document.getElementById('clrTr').classList.toggle('vis',sTr.size>0);
-      refresh();mkTransp();
+      mkTransp();updateClearBtn();refresh();
     });
     list.appendChild(el);
   });
@@ -590,7 +587,7 @@ function selectAllTr(){
   TRANSP.forEach(r=>sTr.add(r.nome));
   buildTrList();updateTrLabel();
   document.getElementById('clrTr').classList.toggle('vis',sTr.size>0);
-  refresh();mkTransp();
+  mkTransp();updateClearBtn();refresh();
 }
 
 /* ─── HELPERS DROPDOWN LABEL ─── */
@@ -607,7 +604,7 @@ function selectAll(t){
   if(t==='ano'){const anos=[...new Set(MESES.map(r=>r.ano))];anos.forEach(a=>sAnos.add(a));buildAnoList();updateDDLabel('Ano',sAnos,[...new Set(MESES.map(r=>r.ano))]);document.getElementById('clrAno').classList.toggle('vis',sAnos.size>0);}
   else if(t==='mes'){const mo=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];const meses=[...new Set(MESES.map(r=>r.mes))].sort((a,b)=>mo.indexOf(a)-mo.indexOf(b));meses.forEach(m=>sMes.add(m));buildMesList();updateDDLabel('Mes',sMes,meses);document.getElementById('clrMes').classList.toggle('vis',sMes.size>0);}
   else if(t==='uf'){const ufs=[...new Set(UF.map(r=>r.uf))].sort();ufs.forEach(u=>sUF.add(u));buildUFList();updateDDLabel('UF',sUF,ufs);document.getElementById('clrUF').classList.toggle('vis',sUF.size>0);}
-  refresh();mkTransp();
+  mkTransp();updateClearBtn();refresh();
 }
 
 /* ─── SLICERS ─── */
@@ -630,7 +627,7 @@ function buildAnoList(){
       sAnos.has(a)?sAnos.delete(a):sAnos.add(a);
       buildAnoList();updateDDLabel('Ano',sAnos,anos);
       document.getElementById('clrAno').classList.toggle('vis',sAnos.size>0);
-      refresh();
+      updateClearBtn();refresh();
     }));
   });
 }
@@ -647,7 +644,7 @@ function buildMesList(){
       sMes.has(m)?sMes.delete(m):sMes.add(m);
       buildMesList();updateDDLabel('Mes',sMes,meses);
       document.getElementById('clrMes').classList.toggle('vis',sMes.size>0);
-      refresh();
+      updateClearBtn();refresh();
     }));
   });
 }
@@ -663,7 +660,7 @@ function buildUFList(){
       sUF.has(u)?sUF.delete(u):sUF.add(u);
       buildUFList();updateDDLabel('UF',sUF,ufs);
       document.getElementById('clrUF').classList.toggle('vis',sUF.size>0);
-      refresh();
+      updateClearBtn();refresh();
     }));
   });
 }
@@ -683,18 +680,31 @@ function buildSlicers(){
 }
 
 function clearGroup(t){
-  if(t==='ano'){sAnos.clear();document.getElementById('anoSearch').value='';buildAnoList();updateDDLabel('Ano',sAnos,[...new Set(MESES.map(r=>r.ano))]);document.getElementById('clrAno').classList.remove('vis');}
-  else if(t==='mes'){sMes.clear();document.getElementById('mesSearch').value='';buildMesList();const mo=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];updateDDLabel('Mes',sMes,[...new Set(MESES.map(r=>r.mes))].sort((a,b)=>mo.indexOf(a)-mo.indexOf(b)));document.getElementById('clrMes').classList.remove('vis');}
-  else if(t==='uf'){sUF.clear();document.getElementById('ufSearch').value='';buildUFList();updateDDLabel('UF',sUF,[...new Set(UF.map(r=>r.uf))].sort());document.getElementById('clrUF').classList.remove('vis');}
-  else if(t==='tr'){sTr.clear();document.getElementById('trSearch').value='';updateTrLabel();buildTrList();document.getElementById('clrTr').classList.remove('vis');}
-  refresh();mkTransp();
+  if(t==='ano'){sAnos.clear();const el=document.getElementById('anoSearch');if(el)el.value='';buildAnoList();updateDDLabel('Ano',sAnos,[...new Set(MESES.map(r=>r.ano))]);document.getElementById('clrAno').classList.remove('vis');}
+  else if(t==='mes'){sMes.clear();const el=document.getElementById('mesSearch');if(el)el.value='';buildMesList();const mo=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];updateDDLabel('Mes',sMes,[...new Set(MESES.map(r=>r.mes))].sort((a,b)=>mo.indexOf(a)-mo.indexOf(b)));document.getElementById('clrMes').classList.remove('vis');}
+  else if(t==='uf'){sUF.clear();const el=document.getElementById('ufSearch');if(el)el.value='';buildUFList();updateDDLabel('UF',sUF,[...new Set(UF.map(r=>r.uf))].sort());document.getElementById('clrUF').classList.remove('vis');}
+  else if(t==='tr'){sTr.clear();const el=document.getElementById('trSearch');if(el)el.value='';updateTrLabel();buildTrList();document.getElementById('clrTr').classList.remove('vis');}
+  mkTransp();refresh();updateClearBtn();
+}
+
+function hasFilters(){return sAnos.size||sMes.size||sUF.size||sTr.size;}
+
+function updateClearBtn(){
+  const btn=document.getElementById('btnClearAll');
+  if(!btn)return;
+  const active=hasFilters();
+  btn.style.opacity=active?'1':'0.4';
+  btn.style.pointerEvents=active?'auto':'none';
+  btn.textContent=active?`✕ Limpar tudo (${sAnos.size+sMes.size+sUF.size+sTr.size})`:'✕ Limpar tudo';
 }
 
 function clearAll(){
   sAnos.clear();sMes.clear();sUF.clear();sTr.clear();
-  ['anoSearch','mesSearch','ufSearch','trSearch'].forEach(id=>document.getElementById(id).value='');
+  ['anoSearch','mesSearch','ufSearch','trSearch'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
   buildSlicers();updateTrLabel();buildTrList();
-  refresh();mkTransp();
+  mkTransp();refresh();updateClearBtn();
 }
 
 /* ─── KPIs ─── */
@@ -719,86 +729,90 @@ function mkKPI(){
   else{b.textContent='✗ Crítico';b.className='badge bg-crit'}
 }
 
-/* ─── GAUGE — idêntico à referência ─── */
+/* ─── GAUGE ─── */
 function mkGauge(){
   const k=agg();
   const ot=Math.min(100,Math.max(0,k.ot));
   const meta=70;
   const svg=document.getElementById('gaugeSVG');
 
-  /* viewBox="0 0 260 150"
-     semicírculo centrado em cx=130, cy=128
-     raio externo=115, raio interno=70  → stroke=45 grosso igual à ref */
-  const cx=130, cy=128, r=95, stroke=38;
+  // Fórmula correta para semicírculo NO TOPO do SVG:
+  // x(pct) = cx - r * cos(pct * PI / 100)
+  // y(pct) = cy - r * sin(pct * PI / 100)
+  // pct=0  → (cx-r, cy)   esquerda, na base ✓
+  // pct=50 → (cx,   cy-r) topo ✓
+  // pct=100→ (cx+r, cy)   direita, na base ✓
+  // sweep-flag = 0 (anti-horário), large-arc = 1 somente se span > 50%
 
-  /* arco de pct1 a pct2 (0=esquerda, 100=direita, sentido anti-horário no topo) */
-  function arc(p1,p2,clr){
-    const a1=Math.PI-(p1/100)*Math.PI;
-    const a2=Math.PI-(p2/100)*Math.PI;
-    const x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1);
-    const x2=cx+r*Math.cos(a2), y2=cy+r*Math.sin(a2);
+  const cx=130, cy=137, r=108, sw=36;
+
+  const px = (pct,rad) => cx - rad * Math.cos(pct * Math.PI / 100);
+  const py = (pct,rad) => cy - rad * Math.sin(pct * Math.PI / 100);
+
+  function seg(p1, p2, color){
+    const x1=px(p1,r).toFixed(2), y1=py(p1,r).toFixed(2);
+    const x2=px(p2,r).toFixed(2), y2=py(p2,r).toFixed(2);
     const large=(p2-p1)>50?1:0;
-    return `<path d="M${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${large},0 ${x2.toFixed(2)},${y2.toFixed(2)}"
-      stroke="${clr}" stroke-width="${stroke}" fill="none" stroke-linecap="butt"/>`;
+    return `<path d="M${x1},${y1} A${r},${r} 0 ${large},1 ${x2},${y2}"
+      stroke="${color}" stroke-width="${sw}" fill="none" stroke-linecap="butt"/>`;
   }
 
-  /* ponteiro */
-  const ang=Math.PI-(ot/100)*Math.PI;
-  const nLen=r-4;
-  const nx=(cx+nLen*Math.cos(ang)).toFixed(2);
-  const ny=(cy+nLen*Math.sin(ang)).toFixed(2);
+  const gap=0.6;
 
-  /* label 70% — posição externa no arco */
-  const metaAng=Math.PI-(meta/100)*Math.PI;
-  const lblR=r+stroke/2+10;
-  const lx=(cx+lblR*Math.cos(metaAng)).toFixed(1);
-  const ly=(cy+lblR*Math.sin(metaAng)+3).toFixed(1);
+  // Ponteiro
+  const nx=px(ot, r-5).toFixed(2), ny=py(ot, r-5).toFixed(2);
 
-  /* label 0% e 100% */
-  const lx0=(cx-r-stroke/2-6).toFixed(1);
-  const lx100=(cx+r+stroke/2+6).toFixed(1);
+  // Label 70% fora do arco
+  const lx70=px(meta, r+sw/2+14).toFixed(1), ly70=(py(meta, r+sw/2+14)+4).toFixed(1);
 
-  const statusClr=ot>=meta?'#0F9E5E':ot>=40?'#D97706':'#DC2626';
+  // Divisor DESTAQUE na meta 70% — mais longo e branco espesso
+  const dxi=px(meta,r-sw/2-6).toFixed(1), dyi=py(meta,r-sw/2-6).toFixed(1);
+  const dxo=px(meta,r+sw/2+6).toFixed(1), dyo=py(meta,r+sw/2+6).toFixed(1);
+
+  // Divisores finos entre vermelho/âmbar (40%)
+  const d40xi=px(40,r-sw/2-1).toFixed(1), d40yi=py(40,r-sw/2-1).toFixed(1);
+  const d40xo=px(40,r+sw/2+1).toFixed(1), d40yo=py(40,r+sw/2+1).toFixed(1);
+
+  // Labels 0% e 100% fora das pontas
+  const lx0  =px(0,   r+sw/2+14).toFixed(1);
+  const ly0  =(py(0,   r+sw/2+14)+4).toFixed(1);
+  const lx100=px(100, r+sw/2+14).toFixed(1);
+  const ly100=(py(100, r+sw/2+14)+4).toFixed(1);
+
+  const statusClr=ot>=meta?'#10B981':ot>=40?'#F59E0B':'#EF4444';
   const statusTxt=ot>=meta?'Acima da meta':ot>=40?'Atraso Moderado':'Atraso Crítico';
+  const statusIcon=ot>=meta?'✓':ot>=40?'⚠':'✗';
 
   svg.innerHTML=`
-    ${arc(0,100,'#E5E7EB')}
-    ${arc(0,40,'#DC2626')}
-    ${arc(40.8,70,'#F59E0B')}
-    ${arc(70.8,100,'#0F9E5E')}
-    <!-- divisor meta -->
-    <line
-      x1="${(cx+(r-stroke/2-1)*Math.cos(metaAng)).toFixed(1)}"
-      y1="${(cy+(r-stroke/2-1)*Math.sin(metaAng)).toFixed(1)}"
-      x2="${(cx+(r+stroke/2+1)*Math.cos(metaAng)).toFixed(1)}"
-      y2="${(cy+(r+stroke/2+1)*Math.sin(metaAng)).toFixed(1)}"
-      stroke="white" stroke-width="3" stroke-linecap="butt"/>
+    ${seg(0,   100,        '#E5E7EB')}
+    ${seg(0,   40-gap,     '#EF4444')}
+    ${seg(40+gap, 70-gap,  '#F59E0B')}
+    ${seg(70+gap, 100,     '#10B981')}
+    <!-- divisor fino em 40% -->
+    <line x1="${d40xi}" y1="${d40yi}" x2="${d40xo}" y2="${d40yo}"
+      stroke="white" stroke-width="1.5" stroke-linecap="butt" opacity="0.8"/>
+    <!-- divisor DESTAQUE em 70% (meta) — mais longo e espesso -->
+    <line x1="${dxi}" y1="${dyi}" x2="${dxo}" y2="${dyo}"
+      stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="${px(meta,r-sw/2-5).toFixed(1)}" y1="${py(meta,r-sw/2-5).toFixed(1)}"
+          x2="${px(meta,r+sw/2+5).toFixed(1)}" y2="${py(meta,r+sw/2+5).toFixed(1)}"
+      stroke="rgba(255,255,255,0.35)" stroke-width="7" stroke-linecap="round"/>
     <!-- ponteiro -->
     <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}"
-      stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
-    <circle cx="${cx}" cy="${cy}" r="7" fill="#2D2D2D"/>
-    <circle cx="${cx}" cy="${cy}" r="3.5" fill="white"/>
-    <!-- 0% e 100% -->
-    <text x="${lx0}" y="${cy+8}" font-size="10" fill="#9AA0AD"
-      font-family="Inter,sans-serif" text-anchor="middle">0%</text>
-    <text x="${lx100}" y="${cy+8}" font-size="10" fill="#9AA0AD"
-      font-family="Inter,sans-serif" text-anchor="middle">100%</text>
-    <!-- 70% label externo -->
-    <text x="${lx}" y="${ly}" font-size="10" fill="#6B7280"
-      font-family="Inter,sans-serif" text-anchor="middle">70%</text>
-    <!-- valor central -->
-    <text x="${cx}" y="${cy-6}" font-size="10" text-anchor="middle"
-      fill="#9AA0AD" font-family="Inter,sans-serif">On-Time</text>
-    <text x="${cx}" y="${cy+12}" font-size="22" font-weight="700"
-      text-anchor="middle" fill="${statusClr}"
-      font-family="JetBrains Mono,monospace">${ot.toFixed(1)}%</text>
+      stroke="#111827" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="${cx}" cy="${cy}" r="8" fill="#111827"/>
+    <circle cx="${cx}" cy="${cy}" r="4" fill="white"/>
+    <text x="${lx0}"   y="${ly0}"   font-size="11" fill="#9CA3AF" font-family="Inter,sans-serif" text-anchor="middle">0%</text>
+    <text x="${lx100}" y="${ly100}" font-size="11" fill="#9CA3AF" font-family="Inter,sans-serif" text-anchor="middle">100%</text>
+    <text x="${lx70}"  y="${ly70}"  font-size="11" fill="#374151" font-weight="600" font-family="Inter,sans-serif" text-anchor="middle">70%</text>
+    <text x="${cx}" y="${cy-14}" font-size="10" fill="#9CA3AF" font-family="Inter,sans-serif" text-anchor="middle">On-Time</text>
+    <text x="${cx}" y="${cy+8}"  font-size="22" font-weight="700" fill="${statusClr}" font-family="JetBrains Mono,monospace" text-anchor="middle">${ot.toFixed(0)}%</text>
   `;
 
-  /* legenda com bolinha embaixo */
   const dot=document.getElementById('gaugeDot');
   const txt=document.getElementById('gaugeStatusTxt');
   if(dot){dot.style.background=statusClr;}
-  if(txt){txt.textContent=statusTxt;txt.style.color=statusClr;txt.style.fontWeight='600';}
+  if(txt){txt.textContent=`${statusIcon} ${statusTxt}`;txt.style.color=statusClr;txt.style.fontWeight='600';}
 
   const faltam=Math.max(0,meta-ot);
   document.getElementById('gaugeLabel').textContent=
@@ -886,17 +900,24 @@ function mkDelta(){
   cDeltaI.update('none');
 }
 
-/* ─── TRANSPORTADORAS — reativo ao slicer ─── */
+/* ─── TRANSPORTADORAS — totalmente reativo ─── */
 function mkTransp(){
-  const s=TRANSP.slice().sort((a,b)=>b.ot-a.ot);
-  const mx=Math.max(...s.map(r=>r.ot||0));
-  document.getElementById('tBt').innerHTML=s.map(r=>{
+  /* ordena por on-time desc; destaca selecionadas */
+  const sorted=TRANSP.slice().sort((a,b)=>b.ot-a.ot);
+  const mx=Math.max(...sorted.map(r=>r.ot||0));
+
+  /* opacidade: se há filtro ativo (sTr), esmaece as não selecionadas */
+  document.getElementById('tBt').innerHTML=sorted.map(r=>{
     const bw=mx>0?Math.round((r.ot||0)/mx*100):0;
     const fc=r.ot>=70?'#0F9E5E':r.ot>=40?'#D97706':'#DC2626';
-    const on=sTr.has(r.nome)?' on':'';
-    return `<div class="br${on}" onclick="togTr('${r.nome.replace(/'/g,"\\'")}',this)">
-      <div class="bh"><span class="bn">${r.nome}</span>
-      <div class="bs">${otP(r.ot)}<span>${r.nfs.toLocaleString('pt-BR')} NFs</span><span>${r.lr.toFixed(1)}d</span></div></div>
+    const isOn=sTr.has(r.nome);
+    const dimmed=sTr.size&&!isOn;
+    return `<div class="br${isOn?' on':''}" style="${dimmed?'opacity:.35;':''}transition:opacity .15s"
+      onclick="togTr('${r.nome.replace(/'/g,"\\'")}',this)">
+      <div class="bh">
+        <span class="bn">${r.nome}</span>
+        <div class="bs">${otP(r.ot)}<span>${r.nfs.toLocaleString('pt-BR')} NFs</span><span>${r.lr.toFixed(1)}d</span></div>
+      </div>
       <div class="btr"><div class="bf" style="width:${bw}%;background:${fc}"></div></div>
     </div>`;
   }).join('');
@@ -904,11 +925,10 @@ function mkTransp(){
 
 function togTr(n,el){
   sTr.has(n)?sTr.delete(n):sTr.add(n);
-  el.classList.toggle('on');
-  // sincroniza slicer lateral
   buildTrList();updateTrLabel();
   document.getElementById('clrTr').classList.toggle('vis',sTr.size>0);
-  refresh();
+  mkTransp();   /* rebuildpanel com opacidade */
+  refresh();    /* KPI + gauge + gráficos */
 }
 
 /* ─── TABELA UF ─── */
@@ -956,14 +976,15 @@ function mkUF(){
 function togUF(u,tr){
   sUF.has(u)?sUF.delete(u):sUF.add(u);
   tr.className=sUF.has(u)?'on':'';
-  buildSlicers();refresh();
+  buildSlicers();updateClearBtn();refresh();
 }
 
+/* ─── REFRESH GLOBAL ─── */
 function refresh(){mkKPI();mkGauge();mkMes();mkDelta();mkUF();}
 
 window.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('ftrTs').textContent='Atualizado: '+new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
-  buildSlicers();buildTrList();mkTransp();refresh();
+  buildSlicers();buildTrList();mkTransp();refresh();updateClearBtn();
 });
 </script>
 </body>
