@@ -46,9 +46,8 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:
 
 /* BARRA DE FILTROS HORIZONTAL */
 .filter-bar{flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border);
-  padding:5px 14px;display:flex;align-items:center;gap:10px;flex-wrap:nowrap;overflow-x:auto}
-.filter-bar::-webkit-scrollbar{height:3px}
-.filter-bar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+  padding:5px 14px;display:flex;align-items:center;gap:10px;flex-wrap:nowrap;overflow-x:auto;
+  position:relative;z-index:200;}
 .filter-sep{width:1px;height:22px;background:var(--border2);flex-shrink:0}
 .f-group{display:flex;align-items:center;gap:5px;flex-shrink:0}
 .f-lbl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
@@ -66,9 +65,9 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:
 .dd-lbl{flex:1;overflow:hidden;text-overflow:ellipsis}
 .dd-arr{font-size:8px;opacity:.45;transition:transform .15s;flex-shrink:0}
 .dd-trigger.open .dd-arr{transform:rotate(180deg)}
-.dd-panel{position:absolute;top:calc(100% + 4px);left:0;min-width:210px;
+.dd-panel{position:fixed;min-width:220px;
   background:var(--bg2);border:1px solid var(--border2);border-radius:6px;
-  box-shadow:0 6px 24px rgba(0,0,0,.14);z-index:999;display:none;flex-direction:column}
+  box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:9999;display:none;flex-direction:column}
 .dd-panel.open{display:flex}
 .dd-search{display:flex;align-items:center;gap:5px;border-bottom:1px solid var(--border);padding:6px 8px}
 .dd-search input{border:none;outline:none;font-size:11px;width:100%;font-family:'Inter',sans-serif;background:transparent;color:var(--text)}
@@ -189,7 +188,7 @@ tr.on td{background:var(--bdim)!important}
       <span class="f-lbl">Transportadora</span>
       <button class="f-clr" id="clrTr" onclick="clearGroup('tr')">✕</button>
       <div class="dd" id="ddTr">
-        <div class="dd-trigger" id="ddTrTrigger" onclick="ddToggle('Tr')"><span class="dd-lbl" id="ddTrLbl">Todas</span><span class="dd-arr">▼</span></div>
+        <div class="dd-trigger" id="ddTrTrigger" onclick="ddToggle('Tr',event)"><span class="dd-lbl" id="ddTrLbl">Todas</span><span class="dd-arr">▼</span></div>
         <div class="dd-panel" id="ddTrPanel">
           <div class="dd-search"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg><input id="srTr" placeholder="Pesquisar..." oninput="buildList('Tr')"></div>
           <div class="dd-actions"><button class="sp-btn" onclick="selAll('Tr')">Selecionar tudo</button><button class="sp-btn" onclick="clearGroup('tr')">Limpar</button></div>
@@ -204,7 +203,7 @@ tr.on td{background:var(--bdim)!important}
       <span class="f-lbl">Ano</span>
       <button class="f-clr" id="clrAno" onclick="clearGroup('ano')">✕</button>
       <div class="dd" id="ddAno">
-        <div class="dd-trigger" id="ddAnoTrigger" onclick="ddToggle('Ano')"><span class="dd-lbl" id="ddAnoLbl">Todos</span><span class="dd-arr">▼</span></div>
+        <div class="dd-trigger" id="ddAnoTrigger" onclick="ddToggle('Ano',event)"><span class="dd-lbl" id="ddAnoLbl">Todos</span><span class="dd-arr">▼</span></div>
         <div class="dd-panel" id="ddAnoPanel">
           <div class="dd-search"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg><input id="srAno" placeholder="Pesquisar..." oninput="buildList('Ano')"></div>
           <div class="dd-actions"><button class="sp-btn" onclick="selAll('Ano')">Selecionar tudo</button><button class="sp-btn" onclick="clearGroup('ano')">Limpar</button></div>
@@ -219,7 +218,7 @@ tr.on td{background:var(--bdim)!important}
       <span class="f-lbl">Mês</span>
       <button class="f-clr" id="clrMes" onclick="clearGroup('mes')">✕</button>
       <div class="dd" id="ddMes">
-        <div class="dd-trigger" id="ddMesTrigger" onclick="ddToggle('Mes')"><span class="dd-lbl" id="ddMesLbl">Todos</span><span class="dd-arr">▼</span></div>
+        <div class="dd-trigger" id="ddMesTrigger" onclick="ddToggle('Mes',event)"><span class="dd-lbl" id="ddMesLbl">Todos</span><span class="dd-arr">▼</span></div>
         <div class="dd-panel" id="ddMesPanel">
           <div class="dd-search"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg><input id="srMes" placeholder="Pesquisar..." oninput="buildList('Mes')"></div>
           <div class="dd-actions"><button class="sp-btn" onclick="selAll('Mes')">Selecionar tudo</button><button class="sp-btn" onclick="clearGroup('mes')">Limpar</button></div>
@@ -234,7 +233,7 @@ tr.on td{background:var(--bdim)!important}
       <span class="f-lbl">UF</span>
       <button class="f-clr" id="clrUF" onclick="clearGroup('uf')">✕</button>
       <div class="dd" id="ddUF">
-        <div class="dd-trigger" id="ddUFTrigger" onclick="ddToggle('UF')"><span class="dd-lbl" id="ddUFLbl">Todas</span><span class="dd-arr">▼</span></div>
+        <div class="dd-trigger" id="ddUFTrigger" onclick="ddToggle('UF',event)"><span class="dd-lbl" id="ddUFLbl">Todas</span><span class="dd-arr">▼</span></div>
         <div class="dd-panel" id="ddUFPanel">
           <div class="dd-search"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg><input id="srUF" placeholder="Pesquisar..." oninput="buildList('UF')"></div>
           <div class="dd-actions"><button class="sp-btn" onclick="selAll('UF')">Selecionar tudo</button><button class="sp-btn" onclick="clearGroup('uf')">Limpar</button></div>
@@ -322,15 +321,8 @@ tr.on td{background:var(--bdim)!important}
 </div>
 
 <script>
-/* ══════════════════════════════════════════════
-   DADOS BRUTOS
-   Cada NF tem: transportadora, ano, mês, UF, valor, on_time, lead_real, lead_prom
-   Como não temos granularidade de NF individual, geramos registros
-   AGREGADOS por (transportadora × mês) baseados nos totais conhecidos.
-══════════════════════════════════════════════ */
-
-/* Dados mensais totais */
-const RAW_M = [
+/* ══ DADOS ══ */
+const RAW_M=[
   {label:'jan/25',ano:2025,mes:'jan',nfs:705, val:9226, ot:43.1,lr:9.70,lp:7.68,np:260,at:431},
   {label:'fev/25',ano:2025,mes:'fev',nfs:790, val:13111,ot:40.3,lr:9.79,lp:7.13,np:285,at:488},
   {label:'mar/25',ano:2025,mes:'mar',nfs:1167,val:13143,ot:46.7,lr:10.10,lp:7.66,np:503,at:648},
@@ -349,9 +341,7 @@ const RAW_M = [
   {label:'abr/26',ano:2026,mes:'abr',nfs:798, val:12855,ot:37.7,lr:9.99, lp:6.22,np:292,at:444},
   {label:'mai/26',ano:2026,mes:'mai',nfs:569, val:7532, ot:55.0,lr:7.23, lp:7.14,np:70, at:120},
 ];
-
-/* Dados por transportadora (totais no período) */
-const RAW_T = [
+const RAW_T=[
   {nome:'ALIA TRANSPORTES',     nfs:7053,ot:41.0,lr:10.20,lp:7.39,np:2607,at:4259},
   {nome:'GRUPOPRIMA LOGISTICA', nfs:2822,ot:38.7,lr:10.51,lp:6.95,np:817, at:1663},
   {nome:'RODOMILLI',            nfs:1288,ot:55.8,lr:8.37, lp:7.06,np:684, at:583},
@@ -364,9 +354,7 @@ const RAW_T = [
   {nome:'RODOPRIMA',            nfs:216, ot:46.3,lr:9.49, lp:6.42,np:64,  at:148},
   {nome:'LOG-IN',               nfs:61,  ot:0.0, lr:26.73,lp:16.00,np:0,  at:61},
 ];
-
-/* Dados por UF */
-const RAW_UF = [
+const RAW_UF=[
   {uf:'SP',delta:3.8, nfs:4549,val:51.46,ot:31,np:1410,at:3139},
   {uf:'MG',delta:1.2, nfs:1040,val:35.07,ot:65,np:676, at:364},
   {uf:'RJ',delta:2.4, nfs:2408,val:35.30,ot:45,np:1084,at:1324},
@@ -394,193 +382,172 @@ const RAW_UF = [
   {uf:'MT',delta:14.0,nfs:2,   val:0.01, ot:0, np:0,   at:2},
 ];
 
-/*
-  MODELO DE CRUZAMENTO:
-  Cada registro FACT = {mes, ano, label, transportadora, nfs, val, ot, lr, lp, np, at}
-  gerado distribuindo proporcionalmente os totais mensais pelas transportadoras
-  (peso = participação da transportadora no total de NFs)
-*/
-const TOTAL_NFS = RAW_T.reduce((s,r)=>s+r.nfs,0);
-const FACTS = [];
+/* Modelo FACTS: (mês × transportadora) */
+const TOTAL_NFS=RAW_T.reduce((s,r)=>s+r.nfs,0);
+const FACTS=[];
 RAW_M.forEach(m=>{
   RAW_T.forEach(t=>{
-    const peso = t.nfs / TOTAL_NFS;
-    FACTS.push({
-      label: m.label,
-      ano:   m.ano,
-      mes:   m.mes,
-      tr:    t.nome,
-      nfs:   Math.round(m.nfs * peso),
-      val:   m.val * peso,
-      ot:    t.ot,          // on-time é característica da transportadora
-      lr:    t.lr,          // lead realizado da transportadora
-      lp:    t.lp,          // lead prometido da transportadora
-      np:    Math.round(m.np * peso),
-      at:    Math.round(m.at * peso),
-    });
+    const w=t.nfs/TOTAL_NFS;
+    FACTS.push({label:m.label,ano:m.ano,mes:m.mes,tr:t.nome,
+      nfs:Math.round(m.nfs*w), val:m.val*w,
+      ot:t.ot, lr:t.lr, lp:t.lp,
+      np:Math.round(m.np*w), at:Math.round(m.at*w)});
   });
 });
 
-/* Estado de filtros */
-let sAnos=new Set(), sMes=new Set(), sUF=new Set(), sTr=new Set();
+/* ══ ESTADO DOS FILTROS ══ */
+const sAnos=new Set(), sMes=new Set(), sUF=new Set(), sTr=new Set();
 let ufKey='val', ufDir=-1, mesMode='ot';
-let cMesI=null, cDeltaI=null;
+let cMesChart=null, cDeltaChart=null;
 
-/* ── FILTRO CENTRAL: retorna FACTS filtrados ── */
-function filtered(){
-  return FACTS.filter(f=>
-    (!sAnos.size || sAnos.has(f.ano)) &&
-    (!sMes.size  || sMes.has(f.mes)) &&
-    (!sTr.size   || sTr.has(f.tr))
-  );
-  /* UF não está em FACTS, UF é dimensão separada */
-}
+const MO=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 
-/* ── AGREGAÇÃO SOBRE OS FACTS FILTRADOS ── */
-function agg(){
-  const F = filtered();
-  if(!F.length) return {ot:0,lr:0,lp:0,nfs:0,val:0,np:0,at:0};
-  const totNfs = F.reduce((s,f)=>s+f.nfs,0);
-  const totVal = F.reduce((s,f)=>s+f.val,0);
-  const ot  = totNfs>0 ? F.reduce((s,f)=>s+f.ot*f.nfs,0)/totNfs : 0;
-  const lr  = totNfs>0 ? F.reduce((s,f)=>s+f.lr*f.nfs,0)/totNfs : 0;
-  const lp  = totNfs>0 ? F.reduce((s,f)=>s+f.lp*f.nfs,0)/totNfs : 0;
-  const np  = F.reduce((s,f)=>s+f.np,0);
-  const at  = F.reduce((s,f)=>s+f.at,0);
-  return {ot,lr,lp,nfs:totNfs,val:totVal/1000,np,at};
-}
-
-/* ── AGG POR MÊS (para gráficos de linha/barra) ── */
-function aggByMes(){
-  const F = filtered();
-  const map = new Map();
-  RAW_M.forEach(m=>map.set(m.label,{label:m.label,ano:m.ano,mes:m.mes,nfs:0,val:0,ot_sum:0,lr_sum:0,lp_sum:0,np:0,at:0}));
-  F.forEach(f=>{
-    const r=map.get(f.label);
-    if(!r)return;
-    r.nfs+=f.nfs; r.val+=f.val; r.ot_sum+=f.ot*f.nfs;
-    r.lr_sum+=f.lr*f.nfs; r.lp_sum+=f.lp*f.nfs; r.np+=f.np; r.at+=f.at;
-  });
-  return [...map.values()]
-    .filter(r=>(!sAnos.size||sAnos.has(r.ano))&&(!sMes.size||sMes.has(r.mes)))
-    .map(r=>({...r, ot:r.nfs>0?r.ot_sum/r.nfs:0, lr:r.nfs>0?r.lr_sum/r.nfs:0, lp:r.nfs>0?r.lp_sum/r.nfs:0}));
-}
-
-/* ── AGG POR TRANSPORTADORA ── */
-function aggByTr(){
-  const F = FACTS.filter(f=>
-    (!sAnos.size||sAnos.has(f.ano))&&(!sMes.size||sMes.has(f.mes))
-  );
-  const map = new Map();
-  RAW_T.forEach(t=>map.set(t.nome,{nome:t.nome,nfs:0,ot_sum:0,lr_sum:0,lp_sum:0,np:0,at:0}));
-  F.forEach(f=>{
-    const r=map.get(f.tr);
-    if(!r)return;
-    r.nfs+=f.nfs; r.ot_sum+=f.ot*f.nfs; r.lr_sum+=f.lr*f.nfs; r.lp_sum+=f.lp*f.nfs;
-    r.np+=f.np; r.at+=f.at;
-  });
-  return [...map.values()].map(r=>({...r,
-    ot:r.nfs>0?r.ot_sum/r.nfs:0,
-    lr:r.nfs>0?r.lr_sum/r.nfs:0,
-    lp:r.nfs>0?r.lp_sum/r.nfs:0,
-  })).sort((a,b)=>b.ot-a.ot);
-}
-
-/* helpers */
+/* ══ HELPERS ══ */
 function otC(v){return!v||isNaN(v)?'#9AA0AD':v>=70?'#0F9E5E':v>=40?'#D97706':'#DC2626'}
 function otP(v){
   if(v===null||v===undefined||isNaN(v))return '<span class="pill pn">—</span>';
   return `<span class="pill ${v>=70?'pg':v>=40?'pa':'pr'}">${v.toFixed(1)}%</span>`;
 }
 
-/* ══════ DROPDOWN ══════ */
-function ddToggle(key){
+/* ══ FILTRO CENTRAL ══ */
+function filteredFacts(){
+  return FACTS.filter(f=>
+    (!sAnos.size||sAnos.has(f.ano))&&
+    (!sMes.size ||sMes.has(f.mes))&&
+    (!sTr.size  ||sTr.has(f.tr))
+  );
+}
+
+/* ══ AGREGAÇÕES ══ */
+function agg(){
+  const F=filteredFacts();
+  if(!F.length)return{ot:0,lr:0,lp:0,nfs:0,val:0,np:0,at:0};
+  const tot=F.reduce((s,f)=>s+f.nfs,0);
+  return{
+    nfs:tot,
+    val:F.reduce((s,f)=>s+f.val,0)/1000,
+    ot: tot>0?F.reduce((s,f)=>s+f.ot*f.nfs,0)/tot:0,
+    lr: tot>0?F.reduce((s,f)=>s+f.lr*f.nfs,0)/tot:0,
+    lp: tot>0?F.reduce((s,f)=>s+f.lp*f.nfs,0)/tot:0,
+    np: F.reduce((s,f)=>s+f.np,0),
+    at: F.reduce((s,f)=>s+f.at,0),
+  };
+}
+
+function aggByMes(){
+  const F=filteredFacts();
+  const map=new Map();
+  RAW_M.forEach(m=>map.set(m.label,{label:m.label,ano:m.ano,mes:m.mes,nfs:0,val:0,os:0,ls:0,ps:0,np:0,at:0}));
+  F.forEach(f=>{
+    const r=map.get(f.label); if(!r)return;
+    r.nfs+=f.nfs; r.val+=f.val; r.os+=f.ot*f.nfs; r.ls+=f.lr*f.nfs; r.ps+=f.lp*f.nfs; r.np+=f.np; r.at+=f.at;
+  });
+  return [...map.values()]
+    .filter(r=>(!sAnos.size||sAnos.has(r.ano))&&(!sMes.size||sMes.has(r.mes)))
+    .map(r=>({...r,ot:r.nfs>0?r.os/r.nfs:0,lr:r.nfs>0?r.ls/r.nfs:0,lp:r.nfs>0?r.ps/r.nfs:0}));
+}
+
+function aggByTr(){
+  /* para o painel de transportadoras: filtra por ano+mes mas NÃO por tr (mostra todas) */
+  const F=FACTS.filter(f=>(!sAnos.size||sAnos.has(f.ano))&&(!sMes.size||sMes.has(f.mes)));
+  const map=new Map();
+  RAW_T.forEach(t=>map.set(t.nome,{nome:t.nome,nfs:0,os:0,ls:0,ps:0,np:0,at:0}));
+  F.forEach(f=>{
+    const r=map.get(f.tr); if(!r)return;
+    r.nfs+=f.nfs; r.os+=f.ot*f.nfs; r.ls+=f.lr*f.nfs; r.ps+=f.lp*f.nfs; r.np+=f.np; r.at+=f.at;
+  });
+  return [...map.values()]
+    .map(r=>({...r,ot:r.nfs>0?r.os/r.nfs:0,lr:r.nfs>0?r.ls/r.nfs:0,lp:r.nfs>0?r.ps/r.nfs:0}))
+    .sort((a,b)=>b.ot-a.ot);
+}
+
+/* ══ DROPDOWN ══ */
+function ddToggle(key,event){
+  if(event)event.stopPropagation();
   const panel=document.getElementById('dd'+key+'Panel');
   const trigger=document.getElementById('dd'+key+'Trigger');
-  const isOpen=panel.classList.contains('open');
-  document.querySelectorAll('.dd-panel.open').forEach(p=>p.classList.remove('open'));
-  document.querySelectorAll('.dd-trigger.open').forEach(t=>t.classList.remove('open'));
-  if(!isOpen){panel.classList.add('open');trigger.classList.add('open');}
+  const wasOpen=panel.classList.contains('open');
+  /* fecha todos */
+  document.querySelectorAll('.dd-panel').forEach(p=>p.classList.remove('open'));
+  document.querySelectorAll('.dd-trigger').forEach(t=>t.classList.remove('open'));
+  if(!wasOpen){
+    /* posiciona o painel fixed abaixo do trigger */
+    const rect=trigger.getBoundingClientRect();
+    panel.style.top=(rect.bottom+4)+'px';
+    panel.style.left=rect.left+'px';
+    /* garante que não sai da tela pela direita */
+    panel.classList.add('open');
+    const pw=panel.offsetWidth;
+    if(rect.left+pw>window.innerWidth-8){
+      panel.style.left=Math.max(8,window.innerWidth-pw-8)+'px';
+    }
+    trigger.classList.add('open');
+  }
 }
 document.addEventListener('click',e=>{
   if(!e.target.closest('.dd')){
-    document.querySelectorAll('.dd-panel.open').forEach(p=>p.classList.remove('open'));
-    document.querySelectorAll('.dd-trigger.open').forEach(t=>t.classList.remove('open'));
+    document.querySelectorAll('.dd-panel').forEach(p=>p.classList.remove('open'));
+    document.querySelectorAll('.dd-trigger').forEach(t=>t.classList.remove('open'));
   }
 });
-function ddLabel(key,sel,all){
+
+function ddLabel(key){
+  const SETS={Tr:sTr,Ano:sAnos,Mes:sMes,UF:sUF};
+  const ITEMS={Tr:RAW_T.map(r=>r.nome),Ano:[...new Set(RAW_M.map(r=>r.ano))],Mes:[...new Set(RAW_M.map(r=>r.mes))],UF:RAW_UF.map(r=>r.uf)};
+  const DEF={Tr:'Todas',Ano:'Todos',Mes:'Todos',UF:'Todas'};
+  const sel=SETS[key], items=ITEMS[key];
   const lbl=document.getElementById('dd'+key+'Lbl');
   const tr=document.getElementById('dd'+key+'Trigger');
-  if(!lbl||!tr)return;
-  const defaults={Tr:'Todas',Ano:'Todos',Mes:'Todos',UF:'Todas'};
-  if(!sel.size){lbl.textContent=defaults[key]||'Todos';tr.classList.remove('sel');}
-  else if(sel.size===all.length){lbl.textContent='Todos';tr.classList.add('sel');}
+  if(!lbl)return;
+  if(!sel.size){lbl.textContent=DEF[key];tr.classList.remove('sel');}
+  else if(sel.size===items.length){lbl.textContent='Todos';tr.classList.add('sel');}
   else if(sel.size===1){lbl.textContent=[...sel][0];tr.classList.add('sel');}
   else{lbl.textContent=`${sel.size} selecionados`;tr.classList.add('sel');}
+  document.getElementById({Tr:'clrTr',Ano:'clrAno',Mes:'clrMes',UF:'clrUF'}[key]).classList.toggle('vis',sel.size>0);
 }
 
 function mkItem(label,isOn,fn){
   const el=document.createElement('div');
   el.className='sl-item'+(isOn?' on':'');
   el.innerHTML=`<div class="sl-cb"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="sl-label">${label}</span>`;
-  el.addEventListener('click',fn);
+  el.addEventListener('click',e=>{e.stopPropagation();fn();});
   return el;
 }
 
-/* ── BUILD LISTS ── */
-const MO=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-
-function getSelSet(key){
-  if(key==='Tr') return sTr;
-  if(key==='Ano') return sAnos;
-  if(key==='Mes') return sMes;
-  if(key==='UF')  return sUF;
-}
-function getItems(key){
-  if(key==='Tr')  return RAW_T.map(r=>r.nome);
-  if(key==='Ano') return [...new Set(RAW_M.map(r=>r.ano))].sort().map(String);
-  if(key==='Mes') return [...new Set(RAW_M.map(r=>r.mes))].sort((a,b)=>MO.indexOf(a)-MO.indexOf(b));
-  if(key==='UF')  return RAW_UF.map(r=>r.uf).sort();
-}
-function getClrId(key){
-  return {Tr:'clrTr',Ano:'clrAno',Mes:'clrMes',UF:'clrUF'}[key];
-}
-
 function buildList(key){
+  const SETS={Tr:sTr,Ano:sAnos,Mes:sMes,UF:sUF};
+  const allItems={
+    Tr:RAW_T.map(r=>r.nome),
+    Ano:[...new Set(RAW_M.map(r=>r.ano))].sort().map(String),
+    Mes:[...new Set(RAW_M.map(r=>r.mes))].sort((a,b)=>MO.indexOf(a)-MO.indexOf(b)),
+    UF:RAW_UF.map(r=>r.uf).sort(),
+  };
+  const sel=SETS[key];
   const q=(document.getElementById('sr'+key).value||'').toLowerCase();
-  const items=getItems(key);
-  const sel=getSelSet(key);
-  const clrId=getClrId(key);
-  const shown=q?items.filter(i=>String(i).toLowerCase().includes(q)):items;
+  const items=allItems[key].filter(i=>!q||String(i).toLowerCase().includes(q));
   const list=document.getElementById('list'+key);
   list.innerHTML='';
-  shown.forEach(item=>{
-    const strItem=String(item);
-    const isOn=key==='Ano'?sAnos.has(Number(strItem)):sel.has(strItem);
-    list.appendChild(mkItem(strItem,isOn,()=>{
-      if(key==='Ano'){
-        const n=Number(strItem);
-        sAnos.has(n)?sAnos.delete(n):sAnos.add(n);
-      } else {
-        sel.has(strItem)?sel.delete(strItem):sel.add(strItem);
-      }
+  items.forEach(item=>{
+    const v=key==='Ano'?Number(item):item;
+    const isOn=sel.has(v);
+    list.appendChild(mkItem(String(item),isOn,()=>{
+      isOn?sel.delete(v):sel.add(v);
       buildList(key);
-      ddLabel(key, key==='Ano'?sAnos:sel, items);
-      document.getElementById(clrId).classList.toggle('vis',(key==='Ano'?sAnos:sel).size>0);
-      updateClearBtn();renderAll();
+      ddLabel(key);
+      updateClearBtn();
+      renderAll();
     }));
   });
 }
 
 function selAll(key){
-  const items=getItems(key);
-  const sel=getSelSet(key);
-  if(key==='Ano') items.forEach(i=>sAnos.add(Number(i)));
-  else items.forEach(i=>sel.add(i));
-  buildList(key);
-  ddLabel(key, key==='Ano'?sAnos:sel, items);
-  document.getElementById(getClrId(key)).classList.toggle('vis',(key==='Ano'?sAnos:sel).size>0);
-  updateClearBtn();renderAll();
+  const SETS={Tr:sTr,Ano:sAnos,Mes:sMes,UF:sUF};
+  const sel=SETS[key];
+  if(key==='Tr')RAW_T.forEach(r=>sel.add(r.nome));
+  else if(key==='Ano')RAW_M.forEach(r=>sel.add(r.ano));
+  else if(key==='Mes')RAW_M.forEach(r=>sel.add(r.mes));
+  else if(key==='UF')RAW_UF.forEach(r=>sel.add(r.uf));
+  buildList(key);ddLabel(key);updateClearBtn();renderAll();
 }
 
 function clearGroup(t){
@@ -588,56 +555,50 @@ function clearGroup(t){
   if(!map[t])return;
   const [key,sel]=map[t];
   sel.clear();
-  const srEl=document.getElementById('sr'+key);
-  if(srEl)srEl.value='';
-  buildList(key);
-  ddLabel(key, key==='Ano'?sAnos:sel, getItems(key));
-  document.getElementById(getClrId(key)).classList.remove('vis');
-  updateClearBtn();renderAll();
+  const sr=document.getElementById('sr'+key);if(sr)sr.value='';
+  buildList(key);ddLabel(key);updateClearBtn();renderAll();
 }
 
 function clearAll(){
   sAnos.clear();sMes.clear();sUF.clear();sTr.clear();
   ['Tr','Ano','Mes','UF'].forEach(key=>{
-    const srEl=document.getElementById('sr'+key);
-    if(srEl)srEl.value='';
-    buildList(key);
-    ddLabel(key, key==='Ano'?sAnos:getSelSet(key), getItems(key));
-    document.getElementById(getClrId(key)).classList.remove('vis');
+    const sr=document.getElementById('sr'+key);if(sr)sr.value='';
+    buildList(key);ddLabel(key);
   });
   updateClearBtn();renderAll();
 }
 
 function updateClearBtn(){
-  const total=sAnos.size+sMes.size+sUF.size+sTr.size;
+  const n=sAnos.size+sMes.size+sUF.size+sTr.size;
   const btn=document.getElementById('btnClrHdr');
-  btn.classList.toggle('active',total>0);
-  btn.textContent=total>0?`✕ Limpar tudo (${total})`:'✕ Limpar tudo';
+  if(!btn)return;
+  btn.classList.toggle('active',n>0);
+  btn.textContent=n>0?`✕ Limpar tudo (${n})`:'✕ Limpar tudo';
 }
 
-/* ══════ KPIs ══════ */
+/* ══ KPIs ══ */
 function mkKPI(){
   const k=agg();
-  const ot=k.ot,lr=k.lr,lp=k.lp,delta=(lr-lp);
-  const oc=ot>=70?'g':ot>=40?'a':'r';
-  const kc=ot>=70?'kg':ot>=40?'ka':'kr';
+  const delta=k.lr-k.lp;
+  const oc=k.ot>=70?'g':k.ot>=40?'a':'r';
+  const kc=k.ot>=70?'kg':k.ot>=40?'ka':'kr';
   const dc=delta>2?'r':delta>0?'a':'g';
   const dkc=delta>2?'kr':delta>0?'ka':'kg';
   const tot=k.np+k.at;
   document.getElementById('kgrid').innerHTML=`
-    <div class="kpi ${kc}"><div class="kl">On-Time % (R$)</div><div class="kv ${oc}">${ot.toFixed(1)}%</div><div class="ks">meta 70% · ${ot>=70?'✓ atingida':'✗ abaixo'}</div></div>
+    <div class="kpi ${kc}"><div class="kl">On-Time % (R$)</div><div class="kv ${oc}">${k.ot.toFixed(1)}%</div><div class="ks">meta 70% · ${k.ot>=70?'✓ atingida':'✗ abaixo'}</div></div>
     <div class="kpi kb"><div class="kl">Total NFs</div><div class="kv b">${k.nfs.toLocaleString('pt-BR')}</div><div class="ks">R$ ${k.val.toFixed(1)}M</div></div>
     <div class="kpi kg"><div class="kl">No prazo</div><div class="kv g">${k.np.toLocaleString('pt-BR')}</div><div class="ks">${tot>0?Math.round(k.np/tot*100):0}% do entregue</div></div>
     <div class="kpi kr"><div class="kl">Atrasadas</div><div class="kv r">${k.at.toLocaleString('pt-BR')}</div><div class="ks">${tot>0?Math.round(k.at/tot*100):0}% do entregue</div></div>
-    <div class="kpi ka"><div class="kl">Lead realizado</div><div class="kv">${lr.toFixed(1)}d</div><div class="ks">prometido: ${lp.toFixed(1)}d</div></div>
+    <div class="kpi ka"><div class="kl">Lead realizado</div><div class="kv">${k.lr.toFixed(1)}d</div><div class="ks">prometido: ${k.lp.toFixed(1)}d</div></div>
     <div class="kpi ${dkc}"><div class="kl">Delta lead</div><div class="kv ${dc}">${delta>=0?'+':''}${delta.toFixed(1)}d</div><div class="ks">real − prometido</div></div>`;
   const b=document.getElementById('hBadge');
-  if(ot>=70){b.textContent='✓ Meta atingida';b.className='badge bg-ok';}
-  else if(ot>=40){b.textContent='⚠ Atenção';b.className='badge bg-warn';}
+  if(k.ot>=70){b.textContent='✓ Meta atingida';b.className='badge bg-ok';}
+  else if(k.ot>=40){b.textContent='⚠ Atenção';b.className='badge bg-warn';}
   else{b.textContent='✗ Crítico';b.className='badge bg-crit';}
 }
 
-/* ══════ GAUGE ══════ */
+/* ══ GAUGE ══ */
 function mkGauge(){
   const k=agg();
   const ot=Math.min(100,Math.max(0,k.ot));
@@ -647,9 +608,7 @@ function mkGauge(){
   const px=(p,rd)=>cx-rd*Math.cos(p*Math.PI/100);
   const py=(p,rd)=>cy-rd*Math.sin(p*Math.PI/100);
   function seg(p1,p2,clr){
-    const x1=px(p1,r).toFixed(2),y1=py(p1,r).toFixed(2);
-    const x2=px(p2,r).toFixed(2),y2=py(p2,r).toFixed(2);
-    return `<path d="M${x1},${y1} A${r},${r} 0 ${(p2-p1)>50?1:0},1 ${x2},${y2}" stroke="${clr}" stroke-width="${sw}" fill="none" stroke-linecap="butt"/>`;
+    return `<path d="M${px(p1,r).toFixed(2)},${py(p1,r).toFixed(2)} A${r},${r} 0 ${(p2-p1)>50?1:0},1 ${px(p2,r).toFixed(2)},${py(p2,r).toFixed(2)}" stroke="${clr}" stroke-width="${sw}" fill="none" stroke-linecap="butt"/>`;
   }
   const gap=0.6;
   const nx=px(ot,r-5).toFixed(2),ny=py(ot,r-5).toFixed(2);
@@ -663,16 +622,12 @@ function mkGauge(){
   const sc=ot>=meta?'#10B981':ot>=40?'#F59E0B':'#EF4444';
   const st=ot>=meta?'Acima da meta':ot>=40?'Atraso Moderado':'Atraso Crítico';
   svg.innerHTML=`
-    ${seg(0,100,'#E5E7EB')}
-    ${seg(0,40-gap,'#EF4444')}
-    ${seg(40+gap,70-gap,'#F59E0B')}
-    ${seg(70+gap,100,'#10B981')}
-    <line x1="${d40xi}" y1="${d40yi}" x2="${d40xo}" y2="${d40yo}" stroke="white" stroke-width="1.5" stroke-linecap="butt" opacity="0.8"/>
-    <line x1="${px(meta,r-sw/2-5).toFixed(1)}" y1="${py(meta,r-sw/2-5).toFixed(1)}" x2="${px(meta,r+sw/2+5).toFixed(1)}" y2="${py(meta,r+sw/2+5).toFixed(1)}" stroke="rgba(255,255,255,0.35)" stroke-width="7" stroke-linecap="round"/>
+    ${seg(0,100,'#E5E7EB')}${seg(0,40-gap,'#EF4444')}${seg(40+gap,70-gap,'#F59E0B')}${seg(70+gap,100,'#10B981')}
+    <line x1="${d40xi}" y1="${d40yi}" x2="${d40xo}" y2="${d40yo}" stroke="white" stroke-width="1.5" opacity="0.8"/>
+    <line x1="${px(meta,r-sw/2-5).toFixed(1)}" y1="${py(meta,r-sw/2-5).toFixed(1)}" x2="${px(meta,r+sw/2+5).toFixed(1)}" y2="${py(meta,r+sw/2+5).toFixed(1)}" stroke="rgba(255,255,255,0.3)" stroke-width="7" stroke-linecap="round"/>
     <line x1="${dxi}" y1="${dyi}" x2="${dxo}" y2="${dyo}" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
     <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="#111827" stroke-width="2.5" stroke-linecap="round"/>
-    <circle cx="${cx}" cy="${cy}" r="8" fill="#111827"/>
-    <circle cx="${cx}" cy="${cy}" r="4" fill="white"/>
+    <circle cx="${cx}" cy="${cy}" r="8" fill="#111827"/><circle cx="${cx}" cy="${cy}" r="4" fill="white"/>
     <text x="${lx0}" y="${ly0}" font-size="11" fill="#9CA3AF" font-family="Inter,sans-serif" text-anchor="middle">0%</text>
     <text x="${lx100}" y="${ly100}" font-size="11" fill="#9CA3AF" font-family="Inter,sans-serif" text-anchor="middle">100%</text>
     <text x="${lx70}" y="${ly70}" font-size="11" fill="#374151" font-weight="600" font-family="Inter,sans-serif" text-anchor="middle">70%</text>
@@ -686,36 +641,49 @@ function mkGauge(){
   document.getElementById('gaugeLabel').textContent=ot>=meta?`+${(ot-meta).toFixed(1)}% acima da meta`:`Faltam ${faltam.toFixed(1)}% para meta de ${meta}%`;
 }
 
-/* ══════ GRÁFICO MENSAL ══════ */
+/* ══ GRÁFICO MENSAL ══ */
 function mkMes(){
   const d=aggByMes();
   const lb=d.map(r=>r.label);
-  const clickFn=(_,els)=>{
+  const clickMes=(_,els)=>{
     if(!els.length)return;
     const mes=d[els[0].index].mes;
     sMes.has(mes)?sMes.delete(mes):sMes.add(mes);
-    buildList('Mes');
-    ddLabel('Mes',sMes,RAW_M.map(r=>r.mes));
-    document.getElementById('clrMes').classList.toggle('vis',sMes.size>0);
-    updateClearBtn();renderAll();
+    buildList('Mes');ddLabel('Mes');updateClearBtn();renderAll();
   };
-  if(cMesI){cMesI.destroy();cMesI=null;}
+  /* atualiza chart existente se possível, evitando destroy/recreate */
+  if(cMesChart){
+    if(mesMode==='ot'){
+      const vals=d.map(r=>r.ot);
+      cMesChart.data.labels=lb;
+      cMesChart.data.datasets[0].data=vals;
+      cMesChart.data.datasets[0].pointBackgroundColor=vals.map(v=>otC(v));
+      cMesChart.data.datasets[0].pointBorderColor=vals.map(v=>otC(v));
+      if(cMesChart.data.datasets[1])cMesChart.data.datasets[1].data=d.map(()=>70);
+    }else{
+      cMesChart.data.labels=lb;
+      cMesChart.data.datasets[0].data=d.map(r=>r.lr);
+      if(cMesChart.data.datasets[1])cMesChart.data.datasets[1].data=d.map(r=>r.lp);
+    }
+    cMesChart.update('none');
+    return;
+  }
   const ctx=document.getElementById('cMesC').getContext('2d');
   if(mesMode==='ot'){
     const vals=d.map(r=>r.ot);
-    cMesI=new Chart(ctx,{type:'line',data:{labels:lb,datasets:[
+    cMesChart=new Chart(ctx,{type:'line',data:{labels:lb,datasets:[
       {label:'On-Time %',data:vals,borderColor:'#1D6EE8',backgroundColor:'rgba(29,110,232,0.06)',borderWidth:2,pointRadius:4,fill:true,tension:0.3,pointBackgroundColor:vals.map(v=>otC(v)),pointBorderColor:vals.map(v=>otC(v)),pointBorderWidth:2,pointHoverRadius:6},
       {label:'Meta 70%',data:d.map(()=>70),borderColor:'rgba(217,119,6,0.5)',borderWidth:1.5,borderDash:[6,3],pointRadius:0,fill:false}
-    ]},options:{responsive:true,maintainAspectRatio:false,onClick:clickFn,animation:false,
+    ]},options:{responsive:true,maintainAspectRatio:false,onClick:clickMes,animation:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toFixed(1)}%`}}},
       scales:{x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},y:{min:0,max:100,ticks:{color:'#9AA0AD',font:{size:9},callback:v=>v+'%'},grid:{color:'rgba(0,0,0,.04)'}}}}});
   }else{
-    cMesI=new Chart(ctx,{type:'line',data:{labels:lb,datasets:[
+    cMesChart=new Chart(ctx,{type:'line',data:{labels:lb,datasets:[
       {label:'Realizado',data:d.map(r=>r.lr),borderColor:'#DC2626',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.3,pointHoverRadius:5},
       {label:'Prometido',data:d.map(r=>r.lp),borderColor:'#0F9E5E',backgroundColor:'transparent',borderWidth:1.5,borderDash:[5,3],pointRadius:0,tension:0.3}
-    ]},options:{responsive:true,maintainAspectRatio:false,onClick:clickFn,animation:false,
+    ]},options:{responsive:true,maintainAspectRatio:false,onClick:clickMes,animation:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toFixed(1)}d`}}},
-      scales:{x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},y:{ticks:{color:'#9AA0AD',font:{size:9},callback:v=>v+'d'},grid:{color:'rgba(0,0,0,.04)'}}}}}); 
+      scales:{x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},y:{ticks:{color:'#9AA0AD',font:{size:9},callback:v=>v+'d'},grid:{color:'rgba(0,0,0,.04)'}}}}});
   }
 }
 
@@ -723,33 +691,37 @@ function setMode(m,btn){
   mesMode=m;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   btn.classList.add('on');
+  if(cMesChart){cMesChart.destroy();cMesChart=null;}
   mkMes();
 }
 
-/* ══════ DELTA ══════ */
+/* ══ DELTA ══ */
 function mkDelta(){
   const d=aggByMes();
   const deltas=d.map(r=>parseFloat((r.lr-r.lp).toFixed(2)));
   const bgC=deltas.map(v=>v>2?'rgba(220,38,38,.7)':v>0?'rgba(217,119,6,.7)':'rgba(15,158,94,.7)');
-  const hvC=deltas.map(v=>v>2?'#DC2626':v>0?'#D97706':'#0F9E5E');
-  const clickFn=(_,els)=>{
+  const clickDelta=(_,els)=>{
     if(!els.length)return;
     const mes=d[els[0].index].mes;
     sMes.has(mes)?sMes.delete(mes):sMes.add(mes);
-    buildList('Mes');
-    ddLabel('Mes',sMes,RAW_M.map(r=>r.mes));
-    document.getElementById('clrMes').classList.toggle('vis',sMes.size>0);
-    updateClearBtn();renderAll();
+    buildList('Mes');ddLabel('Mes');updateClearBtn();renderAll();
   };
-  if(cDeltaI){cDeltaI.destroy();cDeltaI=null;}
+  if(cDeltaChart){
+    cDeltaChart.data.labels=d.map(r=>r.label);
+    cDeltaChart.data.datasets[0].data=deltas;
+    cDeltaChart.data.datasets[0].backgroundColor=bgC;
+    cDeltaChart.data.datasets[0].hoverBackgroundColor=deltas.map(v=>v>2?'#DC2626':v>0?'#D97706':'#0F9E5E');
+    cDeltaChart.update('none');
+    return;
+  }
   const ctx=document.getElementById('cDeltaC').getContext('2d');
-  cDeltaI=new Chart(ctx,{type:'bar',data:{labels:d.map(r=>r.label),datasets:[{label:'Delta',data:deltas,borderRadius:4,backgroundColor:bgC,hoverBackgroundColor:hvC}]},
-    options:{responsive:true,maintainAspectRatio:false,onClick:clickFn,animation:false,
+  cDeltaChart=new Chart(ctx,{type:'bar',data:{labels:d.map(r=>r.label),datasets:[{label:'Delta',data:deltas,borderRadius:4,backgroundColor:bgC,hoverBackgroundColor:deltas.map(v=>v>2?'#DC2626':v>0?'#D97706':'#0F9E5E')}]},
+    options:{responsive:true,maintainAspectRatio:false,onClick:clickDelta,animation:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` Delta: ${c.raw>=0?'+':''}${c.raw}d`}}},
-      scales:{x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},y:{ticks:{color:'#9AA0AD',font:{size:9},callback:v=>(v>=0?'+':'')+v+'d'},grid:{color:'rgba(0,0,0,.04)'}}}}}); 
+      scales:{x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},y:{ticks:{color:'#9AA0AD',font:{size:9},callback:v=>(v>=0?'+':'')+v+'d'},grid:{color:'rgba(0,0,0,.04)'}}}}});
 }
 
-/* ══════ TRANSPORTADORAS ══════ */
+/* ══ TRANSPORTADORAS ══ */
 function mkTransp(){
   const byTr=aggByTr();
   const mx=Math.max(...byTr.map(r=>r.ot||0));
@@ -757,8 +729,8 @@ function mkTransp(){
     const bw=mx>0?Math.round((r.ot||0)/mx*100):0;
     const fc=r.ot>=70?'#0F9E5E':r.ot>=40?'#D97706':'#DC2626';
     const isOn=sTr.has(r.nome);
-    const dimmed=sTr.size&&!isOn;
-    return `<div class="br${isOn?' on':''}" style="${dimmed?'opacity:.3;':''}" onclick="togTr('${r.nome.replace(/'/g,"\\'")}')">
+    const dim=sTr.size&&!isOn?'opacity:.3;':'';
+    return `<div class="br${isOn?' on':''}" style="${dim}" onclick="togTr('${r.nome.replace(/'/g,"\\'")}')" >
       <div class="bh"><span class="bn">${r.nome}</span>
       <div class="bs">${otP(r.ot)}<span>${r.nfs.toLocaleString('pt-BR')} NFs</span><span>${r.lr.toFixed(1)}d</span></div></div>
       <div class="btr"><div class="bf" style="width:${bw}%;background:${fc}"></div></div>
@@ -768,13 +740,10 @@ function mkTransp(){
 
 function togTr(n){
   sTr.has(n)?sTr.delete(n):sTr.add(n);
-  buildList('Tr');
-  ddLabel('Tr',sTr,RAW_T.map(r=>r.nome));
-  document.getElementById('clrTr').classList.toggle('vis',sTr.size>0);
-  updateClearBtn();renderAll();
+  buildList('Tr');ddLabel('Tr');updateClearBtn();renderAll();
 }
 
-/* ══════ TABELA UF ══════ */
+/* ══ TABELA UF ══ */
 function sortUF(k){ufKey===k?ufDir*=-1:(ufKey=k,ufDir=-1);mkUF();}
 
 function mkUF(){
@@ -812,23 +781,15 @@ function mkUF(){
 function togUF(u,tr){
   sUF.has(u)?sUF.delete(u):sUF.add(u);
   tr.className=sUF.has(u)?'on':'';
-  buildList('UF');
-  ddLabel('UF',sUF,RAW_UF.map(r=>r.uf));
-  document.getElementById('clrUF').classList.toggle('vis',sUF.size>0);
-  updateClearBtn();renderAll();
+  buildList('UF');ddLabel('UF');updateClearBtn();renderAll();
 }
 
-/* ══════ RENDER CENTRAL ══════ */
-function renderAll(){
-  mkKPI();mkGauge();mkMes();mkDelta();mkTransp();mkUF();
-}
+/* ══ RENDER CENTRAL ══ */
+function renderAll(){mkKPI();mkGauge();mkMes();mkDelta();mkTransp();mkUF();}
 
 window.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('ftrTs').textContent='Atualizado: '+new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
-  ['Tr','Ano','Mes','UF'].forEach(key=>{
-    buildList(key);
-    ddLabel(key, key==='Ano'?sAnos:getSelSet(key), getItems(key));
-  });
+  ['Tr','Ano','Mes','UF'].forEach(key=>{buildList(key);ddLabel(key);});
   updateClearBtn();renderAll();
 });
 </script>
