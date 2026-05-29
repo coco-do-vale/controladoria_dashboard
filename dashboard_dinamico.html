@@ -511,11 +511,14 @@ document.addEventListener('click',e=>{
 function ddLabel(key,sel,all){
   const lbl=document.getElementById('dd'+key+'Lbl');
   const tr=document.getElementById('dd'+key+'Trigger');
-  if(!sel.size){lbl.textContent='Selecionar...';tr.classList.remove('sel');}
+  if(!lbl||!tr)return;
+  const defaults={Tr:'Todas',Ano:'Todos',Mes:'Todos',UF:'Todas'};
+  if(!sel.size){lbl.textContent=defaults[key]||'Todos';tr.classList.remove('sel');}
   else if(sel.size===all.length){lbl.textContent='Todos';tr.classList.add('sel');}
   else if(sel.size===1){lbl.textContent=[...sel][0];tr.classList.add('sel');}
   else{lbl.textContent=`${sel.size} selecionados`;tr.classList.add('sel');}
 }
+
 function mkItem(label,isOn,fn){
   const el=document.createElement('div');
   el.className='sl-item'+(isOn?' on':'');
@@ -527,21 +530,40 @@ function mkItem(label,isOn,fn){
 /* ── BUILD LISTS ── */
 const MO=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 
+function getSelSet(key){
+  if(key==='Tr') return sTr;
+  if(key==='Ano') return sAnos;
+  if(key==='Mes') return sMes;
+  if(key==='UF')  return sUF;
+}
+function getItems(key){
+  if(key==='Tr')  return RAW_T.map(r=>r.nome);
+  if(key==='Ano') return [...new Set(RAW_M.map(r=>r.ano))].sort().map(String);
+  if(key==='Mes') return [...new Set(RAW_M.map(r=>r.mes))].sort((a,b)=>MO.indexOf(a)-MO.indexOf(b));
+  if(key==='UF')  return RAW_UF.map(r=>r.uf).sort();
+}
+function getClrId(key){
+  return {Tr:'clrTr',Ano:'clrAno',Mes:'clrMes',UF:'clrUF'}[key];
+}
+
 function buildList(key){
   const q=(document.getElementById('sr'+key).value||'').toLowerCase();
-  let items=[], sel, clrId;
-  if(key==='Tr'){items=RAW_T.map(r=>r.nome);sel=sTr;clrId='clrTr';}
-  else if(key==='Ano'){items=[...new Set(RAW_M.map(r=>r.ano))].sort().map(String);sel=new Set([...sAnos].map(String));clrId='clrAno';}
-  else if(key==='Mes'){items=[...new Set(RAW_M.map(r=>r.mes))].sort((a,b)=>MO.indexOf(a)-MO.indexOf(b));sel=sMes;clrId='clrMes';}
-  else if(key==='UF'){items=RAW_UF.map(r=>r.uf).sort();sel=sUF;clrId='clrUF';}
-  const filtered=q?items.filter(i=>i.toLowerCase().includes(q)):items;
+  const items=getItems(key);
+  const sel=getSelSet(key);
+  const clrId=getClrId(key);
+  const shown=q?items.filter(i=>String(i).toLowerCase().includes(q)):items;
   const list=document.getElementById('list'+key);
   list.innerHTML='';
-  filtered.forEach(item=>{
-    const isOn=key==='Ano'?sAnos.has(Number(item)):sel.has(item);
-    list.appendChild(mkItem(item,isOn,()=>{
-      if(key==='Ano'){sAnos.has(Number(item))?sAnos.delete(Number(item)):sAnos.add(Number(item));}
-      else{sel.has(item)?sel.delete(item):sel.add(item);}
+  shown.forEach(item=>{
+    const strItem=String(item);
+    const isOn=key==='Ano'?sAnos.has(Number(strItem)):sel.has(strItem);
+    list.appendChild(mkItem(strItem,isOn,()=>{
+      if(key==='Ano'){
+        const n=Number(strItem);
+        sAnos.has(n)?sAnos.delete(n):sAnos.add(n);
+      } else {
+        sel.has(strItem)?sel.delete(strItem):sel.add(strItem);
+      }
       buildList(key);
       ddLabel(key, key==='Ano'?sAnos:sel, items);
       document.getElementById(clrId).classList.toggle('vis',(key==='Ano'?sAnos:sel).size>0);
@@ -551,35 +573,38 @@ function buildList(key){
 }
 
 function selAll(key){
-  if(key==='Tr'){RAW_T.forEach(r=>sTr.add(r.nome));}
-  else if(key==='Ano'){RAW_M.forEach(r=>sAnos.add(r.ano));}
-  else if(key==='Mes'){RAW_M.forEach(r=>sMes.add(r.mes));}
-  else if(key==='UF'){RAW_UF.forEach(r=>sUF.add(r.uf));}
+  const items=getItems(key);
+  const sel=getSelSet(key);
+  if(key==='Ano') items.forEach(i=>sAnos.add(Number(i)));
+  else items.forEach(i=>sel.add(i));
   buildList(key);
-  const items=key==='Tr'?RAW_T.map(r=>r.nome):key==='Ano'?[...new Set(RAW_M.map(r=>r.ano))].sort().map(String):key==='Mes'?[...new Set(RAW_M.map(r=>r.mes))]:RAW_UF.map(r=>r.uf);
-  const sel=key==='Tr'?sTr:key==='Ano'?sAnos:key==='Mes'?sMes:sUF;
-  ddLabel(key,sel,items);
-  document.getElementById('clr'+key==='Tr'?'Tr':key).classList.toggle('vis',sel.size>0);
+  ddLabel(key, key==='Ano'?sAnos:sel, items);
+  document.getElementById(getClrId(key)).classList.toggle('vis',(key==='Ano'?sAnos:sel).size>0);
   updateClearBtn();renderAll();
 }
 
 function clearGroup(t){
-  if(t==='tr'){sTr.clear();document.getElementById('srTr').value='';buildList('Tr');ddLabel('Tr',sTr,RAW_T.map(r=>r.nome));document.getElementById('clrTr').classList.remove('vis');}
-  else if(t==='ano'){sAnos.clear();document.getElementById('srAno').value='';buildList('Ano');ddLabel('Ano',sAnos,[...new Set(RAW_M.map(r=>r.ano))].map(String));document.getElementById('clrAno').classList.remove('vis');}
-  else if(t==='mes'){sMes.clear();document.getElementById('srMes').value='';buildList('Mes');ddLabel('Mes',sMes,RAW_M.map(r=>r.mes));document.getElementById('clrMes').classList.remove('vis');}
-  else if(t==='uf'){sUF.clear();document.getElementById('srUF').value='';buildList('UF');ddLabel('UF',sUF,RAW_UF.map(r=>r.uf));document.getElementById('clrUF').classList.remove('vis');}
+  const map={tr:['Tr',sTr],ano:['Ano',sAnos],mes:['Mes',sMes],uf:['UF',sUF]};
+  if(!map[t])return;
+  const [key,sel]=map[t];
+  sel.clear();
+  const srEl=document.getElementById('sr'+key);
+  if(srEl)srEl.value='';
+  buildList(key);
+  ddLabel(key, key==='Ano'?sAnos:sel, getItems(key));
+  document.getElementById(getClrId(key)).classList.remove('vis');
   updateClearBtn();renderAll();
 }
 
 function clearAll(){
   sAnos.clear();sMes.clear();sUF.clear();sTr.clear();
-  ['srTr','srAno','srMes','srUF'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
-  buildList('Tr');buildList('Ano');buildList('Mes');buildList('UF');
-  ddLabel('Tr',sTr,RAW_T.map(r=>r.nome));
-  ddLabel('Ano',sAnos,[...new Set(RAW_M.map(r=>r.ano))].map(String));
-  ddLabel('Mes',sMes,RAW_M.map(r=>r.mes));
-  ddLabel('UF',sUF,RAW_UF.map(r=>r.uf));
-  ['clrTr','clrAno','clrMes','clrUF'].forEach(id=>document.getElementById(id).classList.remove('vis'));
+  ['Tr','Ano','Mes','UF'].forEach(key=>{
+    const srEl=document.getElementById('sr'+key);
+    if(srEl)srEl.value='';
+    buildList(key);
+    ddLabel(key, key==='Ano'?sAnos:getSelSet(key), getItems(key));
+    document.getElementById(getClrId(key)).classList.remove('vis');
+  });
   updateClearBtn();renderAll();
 }
 
@@ -800,11 +825,10 @@ function renderAll(){
 
 window.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('ftrTs').textContent='Atualizado: '+new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
-  buildList('Tr');buildList('Ano');buildList('Mes');buildList('UF');
-  ddLabel('Tr',sTr,RAW_T.map(r=>r.nome));
-  ddLabel('Ano',sAnos,[...new Set(RAW_M.map(r=>r.ano))].map(String));
-  ddLabel('Mes',sMes,RAW_M.map(r=>r.mes));
-  ddLabel('UF',sUF,RAW_UF.map(r=>r.uf));
+  ['Tr','Ano','Mes','UF'].forEach(key=>{
+    buildList(key);
+    ddLabel(key, key==='Ano'?sAnos:getSelSet(key), getItems(key));
+  });
   updateClearBtn();renderAll();
 });
 </script>
