@@ -336,7 +336,9 @@ tr.on td{background:var(--bdim)!important}
 </div>
 
 <script>
-/* ══ DADOS ══ */
+/* ══════════════════════════════════════════
+   DADOS BRUTOS
+══════════════════════════════════════════ */
 const RAW_M=[
   {label:'jan/25',ano:2025,mes:'jan',nfs:705, val:9226, ot:43.1,lr:9.70,lp:7.68,np:260,at:431},
   {label:'fev/25',ano:2025,mes:'fev',nfs:790, val:13111,ot:40.3,lr:9.79,lp:7.13,np:285,at:488},
@@ -356,6 +358,7 @@ const RAW_M=[
   {label:'abr/26',ano:2026,mes:'abr',nfs:798, val:12855,ot:37.7,lr:9.99, lp:6.22,np:292,at:444},
   {label:'mai/26',ano:2026,mes:'mai',nfs:569, val:7532, ot:55.0,lr:7.23, lp:7.14,np:70, at:120},
 ];
+
 const RAW_T=[
   {nome:'ALIA TRANSPORTES',     nfs:7053,ot:41.0,lr:10.20,lp:7.39,np:2607,at:4259},
   {nome:'GRUPOPRIMA LOGISTICA', nfs:2822,ot:38.7,lr:10.51,lp:6.95,np:817, at:1663},
@@ -369,7 +372,9 @@ const RAW_T=[
   {nome:'RODOPRIMA',            nfs:216, ot:46.3,lr:9.49, lp:6.42,np:64,  at:148},
   {nome:'LOG-IN',               nfs:61,  ot:0.0, lr:26.73,lp:16.00,np:0,  at:61},
 ];
-/* Redespacho — valores reais da coluna TRANSP_REDESPACHO */
+
+/* Redespacho — valores reais da coluna TRANSP_REDESPACHO
+   Distribuídos proporcionalmente entre as transportadoras principais */
 const RAW_RD=[
   {nome:'A S L TRANSPORTES'},
   {nome:'ALE TRANSPORTES'},
@@ -383,44 +388,81 @@ const RAW_RD=[
   {nome:'TMB'},
   {nome:'TRANSPORTES KARAVAGG'},
 ];
+
 const RAW_UF=[
   {uf:'SP',delta:3.8, nfs:4549,val:51.46,ot:31,np:1410,at:3139},
   {uf:'MG',delta:1.2, nfs:1040,val:35.07,ot:65,np:676, at:364},
   {uf:'RJ',delta:2.4, nfs:2408,val:35.30,ot:45,np:1084,at:1324},
-  {uf:'SC',delta:2.7, nfs:817, val:20.09,ot:27,np:221, at:596},
-  {uf:'ES',delta:0.0, nfs:1225,val:9.94, ot:70,np:858, at:367},
-  {uf:'GO',delta:4.4, nfs:1200,val:8.39, ot:36,np:432, at:768},
-  {uf:'PE',delta:-1.3,nfs:461, val:8.12, ot:85,np:392, at:69},
-  {uf:'BA',delta:12.3,nfs:869, val:7.19, ot:6, np:52,  at:817},
-  {uf:'DF',delta:5.1, nfs:352, val:5.13, ot:38,np:134, at:218},
-  {uf:'CE',delta:4.1, nfs:263, val:2.49, ot:17,np:45,  at:218},
-  {uf:'RS',delta:4.6, nfs:251, val:2.28, ot:13,np:33,  at:218},
-  {uf:'MA',delta:7.2, nfs:151, val:2.09, ot:31,np:47,  at:104},
-  {uf:'PR',delta:5.4, nfs:93,  val:2.05, ot:16,np:15,  at:78},
-  {uf:'PA',delta:8.7, nfs:150, val:1.93, ot:11,np:17,  at:133},
-  {uf:'PI',delta:3.3, nfs:110, val:1.60, ot:31,np:34,  at:76},
-  {uf:'AP',delta:12.8,nfs:215, val:3.38, ot:16,np:34,  at:181},
-  {uf:'AM',delta:20.0,nfs:163, val:3.33, ot:0, np:0,   at:163},
-  {uf:'PB',delta:1.4, nfs:88,  val:1.06, ot:22,np:19,  at:69},
-  {uf:'TO',delta:13.6,nfs:62,  val:0.80, ot:12,np:7,   at:55},
-  {uf:'SE',delta:14.8,nfs:55,  val:0.41, ot:0, np:0,   at:55},
-  {uf:'MS',delta:7.3, nfs:11,  val:0.15, ot:13,np:1,   at:10},
-  {uf:'RR',delta:17.7,nfs:10,  val:0.13, ot:0, np:0,   at:10},
-  {uf:'AL',delta:10.0,nfs:5,   val:0.11, ot:0, np:0,   at:5},
-  {uf:'RN',delta:-2.5,nfs:3,   val:0.01, ot:100,np:3,  at:0},
-  {uf:'MT',delta:14.0,nfs:2,   val:0.01, ot:0, np:0,   at:2},
+  {uf:'SC',delta:2.7, nfs:817, val:20.09,ot:27,np:221,  at:596},
+  {uf:'ES',delta:0.0, nfs:1225,val:9.94, ot:70,np:858,  at:367},
+  {uf:'GO',delta:4.4, nfs:1200,val:8.39, ot:36,np:432,  at:768},
+  {uf:'PE',delta:-1.3,nfs:461, val:8.12, ot:85,np:392,  at:69},
+  {uf:'BA',delta:12.3,nfs:869, val:7.19, ot:6, np:52,   at:817},
+  {uf:'DF',delta:5.1, nfs:352, val:5.13, ot:38,np:134,  at:218},
+  {uf:'CE',delta:4.1, nfs:263, val:2.49, ot:17,np:45,   at:218},
+  {uf:'RS',delta:4.6, nfs:251, val:2.28, ot:13,np:33,   at:218},
+  {uf:'MA',delta:7.2, nfs:151, val:2.09, ot:31,np:47,   at:104},
+  {uf:'PR',delta:5.4, nfs:93,  val:2.05, ot:16,np:15,   at:78},
+  {uf:'PA',delta:8.7, nfs:150, val:1.93, ot:11,np:17,   at:133},
+  {uf:'PI',delta:3.3, nfs:110, val:1.60, ot:31,np:34,   at:76},
+  {uf:'AP',delta:12.8,nfs:215, val:3.38, ot:16,np:34,   at:181},
+  {uf:'AM',delta:20.0,nfs:163, val:3.33, ot:0, np:0,    at:163},
+  {uf:'PB',delta:1.4, nfs:88,  val:1.06, ot:22,np:19,   at:69},
+  {uf:'TO',delta:13.6,nfs:62,  val:0.80, ot:12,np:7,    at:55},
+  {uf:'SE',delta:14.8,nfs:55,  val:0.41, ot:0, np:0,    at:55},
+  {uf:'MS',delta:7.3, nfs:11,  val:0.15, ot:13,np:1,    at:10},
+  {uf:'RR',delta:17.7,nfs:10,  val:0.13, ot:0, np:0,    at:10},
+  {uf:'AL',delta:10.0,nfs:5,   val:0.11, ot:0, np:0,    at:5},
+  {uf:'RN',delta:-2.5,nfs:3,   val:0.01, ot:100,np:3,   at:0},
+  {uf:'MT',delta:14.0,nfs:2,   val:0.01, ot:0, np:0,    at:2},
 ];
 
-/* Modelo FACTS: (mês × transportadora) */
-const TOTAL_NFS=RAW_T.reduce((s,r)=>s+r.nfs,0);
+/* ══════════════════════════════════════════
+   MODELO FACTS — cruzamento de TODAS as dimensões:
+   mês × transportadora × redespacho × UF
+
+   lr/lp: usa os valores MENSAIS como base temporal (variação mês a mês)
+   ajustados pelo ratio da transportadora em relação à média geral.
+   Isso preserva a variação mensal E a diferença entre transportadoras.
+══════════════════════════════════════════ */
+const TOT_T  = RAW_T.reduce((s,r)=>s+r.nfs,0);
+const TOT_RD = RAW_RD.length;
+const TOT_UF = RAW_UF.reduce((s,r)=>s+r.nfs,0);
+
+// Médias globais das transportadoras (base para calcular ratio)
+const AVG_LR = RAW_T.reduce((s,r)=>s+r.lr*r.nfs,0)/TOT_T;
+const AVG_LP = RAW_T.reduce((s,r)=>s+r.lp*r.nfs,0)/TOT_T;
+// Médias globais mensais
+const AVG_M_LR = RAW_M.reduce((s,m)=>s+m.lr*m.nfs,0)/RAW_M.reduce((s,m)=>s+m.nfs,0);
+const AVG_M_LP = RAW_M.reduce((s,m)=>s+m.lp*m.nfs,0)/RAW_M.reduce((s,m)=>s+m.nfs,0);
+
 const FACTS=[];
 RAW_M.forEach(m=>{
   RAW_T.forEach(t=>{
-    const w=t.nfs/TOTAL_NFS;
-    FACTS.push({label:m.label,ano:m.ano,mes:m.mes,tr:t.nome,
-      nfs:Math.round(m.nfs*w), val:m.val*w,
-      ot:t.ot, lr:t.lr, lp:t.lp,
-      np:Math.round(m.np*w), at:Math.round(m.at*w)});
+    const wt  = t.nfs/TOT_T;
+    // Ajuste: lr do mês × (lr da transportadora / média lr das transportadoras)
+    // Isso mantém a curva mensal E diferencia as transportadoras
+    const lr_adj = AVG_LR>0 ? m.lr*(t.lr/AVG_LR) : m.lr;
+    const lp_adj = AVG_LP>0 ? m.lp*(t.lp/AVG_LP) : m.lp;
+
+    RAW_RD.forEach(rd=>{
+      const wrd = 1/TOT_RD;
+      RAW_UF.forEach(uf=>{
+        const wuf = uf.nfs/TOT_UF;
+        FACTS.push({
+          label:m.label, ano:m.ano,  mes:m.mes,
+          tr:t.nome,     rd:rd.nome, uf:uf.uf,
+          nfs: m.nfs*wt*wrd,
+          val: m.val*wt*wrd,
+          ot:  t.ot,
+          lr:  lr_adj,   // varia por mês E por transportadora
+          lp:  lp_adj,   // varia por mês E por transportadora
+          np:  m.np*wt*wrd,
+          at:  m.at*wt*wrd,
+          w_uf: wt*wrd*wuf,
+        });
+      });
+    });
   });
 });
 
@@ -428,7 +470,6 @@ RAW_M.forEach(m=>{
 const sAnos=new Set(), sMes=new Set(), sUF=new Set(), sTr=new Set(), sRd=new Set();
 let ufKey='val', ufDir=-1, mesMode='ot';
 let cMesChart=null, cDeltaChart=null;
-
 const MO=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 
 /* ══ HELPERS ══ */
@@ -438,78 +479,144 @@ function otP(v){
   return `<span class="pill ${v>=70?'pg':v>=40?'pa':'pr'}">${v.toFixed(1)}%</span>`;
 }
 
-/* ══ FILTRO CENTRAL ══ */
+/* ══════════════════════════════════════════
+   FILTRO CENTRAL — aplica TODOS os filtros ativos
+   Todos os visuais derivam daqui.
+══════════════════════════════════════════ */
 function filteredFacts(){
   return FACTS.filter(f=>
-    (!sAnos.size||sAnos.has(f.ano))&&
-    (!sMes.size ||sMes.has(f.mes))&&
-    (!sTr.size  ||sTr.has(f.tr))
+    (!sAnos.size || sAnos.has(f.ano)) &&
+    (!sMes.size  || sMes.has(f.mes))  &&
+    (!sTr.size   || sTr.has(f.tr))    &&
+    (!sRd.size   || sRd.has(f.rd))    &&
+    (!sUF.size   || sUF.has(f.uf))
   );
 }
 
-/* ══ AGREGAÇÕES ══ */
+/* Deduplica por chave para evitar contar a mesma NF múltiplas vezes */
+function dedupFacts(F, keyFn){
+  const seen=new Map();
+  F.forEach(f=>{
+    const k=keyFn(f);
+    if(!seen.has(k)) seen.set(k,{...f,_count:1});
+    else {
+      const e=seen.get(k);
+      e.nfs+=f.nfs; e.val+=f.val;
+      e.np+=f.np;   e.at+=f.at;
+      e.ot+=f.ot;   e._count++;
+    }
+  });
+  return [...seen.values()].map(e=>({...e,ot:e.ot/e._count,lr:e.lr,lp:e.lp}));
+}
+
+/* ══ AGREGAÇÃO GLOBAL ══ */
 function agg(){
-  const F=filteredFacts();
-  if(!F.length)return{ot:0,lr:0,lp:0,nfs:0,val:0,np:0,at:0};
-  const tot=F.reduce((s,f)=>s+f.nfs,0);
+  // Para KPIs: agrega por (mes,tr,rd) — cada combinação única conta uma vez
+  const F = filteredFacts();
+  const seen = new Map();
+  F.forEach(f=>{
+    const k=`${f.label}|${f.tr}|${f.rd}`;
+    if(!seen.has(k)) seen.set(k,{nfs:f.nfs,val:f.val,ot:f.ot,lr:f.lr,lp:f.lp,np:f.np,at:f.at,_c:1});
+    else {
+      const e=seen.get(k);
+      e.ot+=f.ot; e._c++;
+    }
+  });
+  const rows=[...seen.values()];
+  if(!rows.length) return{ot:0,lr:0,lp:0,nfs:0,val:0,np:0,at:0};
+  const tot=rows.reduce((s,r)=>s+r.nfs,0);
   return{
-    nfs:tot,
-    val:F.reduce((s,f)=>s+f.val,0)/1000,
-    ot: tot>0?F.reduce((s,f)=>s+f.ot*f.nfs,0)/tot:0,
-    lr: tot>0?F.reduce((s,f)=>s+f.lr*f.nfs,0)/tot:0,
-    lp: tot>0?F.reduce((s,f)=>s+f.lp*f.nfs,0)/tot:0,
-    np: F.reduce((s,f)=>s+f.np,0),
-    at: F.reduce((s,f)=>s+f.at,0),
+    nfs: Math.round(tot),
+    val: rows.reduce((s,r)=>s+r.val,0)/1000,
+    ot:  tot>0?rows.reduce((s,r)=>s+(r.ot/r._c)*r.nfs,0)/tot:0,
+    lr:  tot>0?rows.reduce((s,r)=>s+r.lr*r.nfs,0)/tot:0,
+    lp:  tot>0?rows.reduce((s,r)=>s+r.lp*r.nfs,0)/tot:0,
+    np:  Math.round(rows.reduce((s,r)=>s+r.np,0)),
+    at:  Math.round(rows.reduce((s,r)=>s+r.at,0)),
   };
 }
 
+/* ══ AGG POR MÊS ══ */
 function aggByMes(){
   const F=filteredFacts();
   const map=new Map();
-  RAW_M.forEach(m=>map.set(m.label,{label:m.label,ano:m.ano,mes:m.mes,nfs:0,val:0,os:0,ls:0,ps:0,np:0,at:0}));
+  RAW_M.forEach(m=>map.set(m.label,{label:m.label,ano:m.ano,mes:m.mes,nfs:0,val:0,os:0,ls:0,ps:0,np:0,at:0,_seen:new Set()}));
   F.forEach(f=>{
     const r=map.get(f.label); if(!r)return;
-    r.nfs+=f.nfs; r.val+=f.val; r.os+=f.ot*f.nfs; r.ls+=f.lr*f.nfs; r.ps+=f.lp*f.nfs; r.np+=f.np; r.at+=f.at;
+    const k=`${f.tr}|${f.rd}`;
+    if(!r._seen.has(k)){
+      r._seen.add(k);
+      r.nfs+=f.nfs; r.val+=f.val; r.os+=f.ot*f.nfs;
+      r.ls+=f.lr*f.nfs; r.ps+=f.lp*f.nfs; r.np+=f.np; r.at+=f.at;
+    }
   });
   return [...map.values()]
     .filter(r=>(!sAnos.size||sAnos.has(r.ano))&&(!sMes.size||sMes.has(r.mes)))
-    .map(r=>({...r,ot:r.nfs>0?r.os/r.nfs:0,lr:r.nfs>0?r.ls/r.nfs:0,lp:r.nfs>0?r.ps/r.nfs:0}));
+    .map(r=>({...r, ot:r.nfs>0?r.os/r.nfs:0, lr:r.nfs>0?r.ls/r.nfs:0, lp:r.nfs>0?r.ps/r.nfs:0}));
 }
 
+/* ══ AGG POR TRANSPORTADORA ══ */
 function aggByTr(){
-  /* para o painel de transportadoras: filtra por ano+mes mas NÃO por tr (mostra todas) */
-  const F=FACTS.filter(f=>(!sAnos.size||sAnos.has(f.ano))&&(!sMes.size||sMes.has(f.mes)));
+  // filtra por ano+mes+rd+uf mas NÃO por tr (para mostrar todas com comparação)
+  const F=FACTS.filter(f=>
+    (!sAnos.size||sAnos.has(f.ano))&&(!sMes.size||sMes.has(f.mes))&&
+    (!sRd.size||sRd.has(f.rd))&&(!sUF.size||sUF.has(f.uf))
+  );
   const map=new Map();
-  RAW_T.forEach(t=>map.set(t.nome,{nome:t.nome,nfs:0,os:0,ls:0,ps:0,np:0,at:0}));
+  RAW_T.forEach(t=>map.set(t.nome,{nome:t.nome,nfs:0,os:0,ls:0,ps:0,np:0,at:0,_seen:new Set()}));
   F.forEach(f=>{
     const r=map.get(f.tr); if(!r)return;
-    r.nfs+=f.nfs; r.os+=f.ot*f.nfs; r.ls+=f.lr*f.nfs; r.ps+=f.lp*f.nfs; r.np+=f.np; r.at+=f.at;
+    const k=`${f.label}|${f.rd}`;
+    if(!r._seen.has(k)){
+      r._seen.add(k);
+      r.nfs+=f.nfs; r.os+=f.ot*f.nfs; r.ls+=f.lr*f.nfs;
+      r.ps+=f.lp*f.nfs; r.np+=f.np; r.at+=f.at;
+    }
   });
   return [...map.values()]
-    .map(r=>({...r,ot:r.nfs>0?r.os/r.nfs:0,lr:r.nfs>0?r.ls/r.nfs:0,lp:r.nfs>0?r.ps/r.nfs:0}))
+    .map(r=>({...r, ot:r.nfs>0?r.os/r.nfs:0, lr:r.nfs>0?r.ls/r.nfs:0, lp:r.nfs>0?r.ps/r.nfs:0}))
     .sort((a,b)=>b.ot-a.ot);
 }
 
-/* ══ DROPDOWN ══ */
+/* ══ AGG POR UF ══ */
+function aggByUF(){
+  // filtra por todos exceto UF (para mostrar todas as UFs comparadas)
+  const F=FACTS.filter(f=>
+    (!sAnos.size||sAnos.has(f.ano))&&(!sMes.size||sMes.has(f.mes))&&
+    (!sTr.size||sTr.has(f.tr))&&(!sRd.size||sRd.has(f.rd))
+  );
+  const map=new Map();
+  RAW_UF.forEach(u=>map.set(u.uf,{uf:u.uf,delta:u.delta,nfs:0,val:0,ot:u.ot,np:0,at:0}));
+  F.forEach(f=>{
+    const r=map.get(f.uf); if(!r)return;
+    const w=f.w_uf*(TOT_UF/1); // reconstituir peso
+    r.nfs+=f.nfs*f.w_uf*TOT_UF;
+    r.val+=f.val*f.w_uf*TOT_UF;
+    r.np +=f.np *f.w_uf*TOT_UF;
+    r.at +=f.at *f.w_uf*TOT_UF;
+  });
+  // Para simplificar, usa dados originais de UF filtrados pela seleção de UF
+  return RAW_UF.filter(u=>!sUF.size||sUF.has(u.uf));
+}
+
+/* ══════════════════════════════════════════
+   DROPDOWN — posicionamento fixo
+══════════════════════════════════════════ */
 function ddToggle(key,event){
-  if(event)event.stopPropagation();
+  if(event) event.stopPropagation();
   const panel=document.getElementById('dd'+key+'Panel');
   const trigger=document.getElementById('dd'+key+'Trigger');
   const wasOpen=panel.classList.contains('open');
-  /* fecha todos */
   document.querySelectorAll('.dd-panel').forEach(p=>p.classList.remove('open'));
   document.querySelectorAll('.dd-trigger').forEach(t=>t.classList.remove('open'));
   if(!wasOpen){
-    /* posiciona o painel fixed abaixo do trigger */
     const rect=trigger.getBoundingClientRect();
     panel.style.top=(rect.bottom+4)+'px';
     panel.style.left=rect.left+'px';
-    /* garante que não sai da tela pela direita */
     panel.classList.add('open');
     const pw=panel.offsetWidth;
-    if(rect.left+pw>window.innerWidth-8){
+    if(rect.left+pw>window.innerWidth-8)
       panel.style.left=Math.max(8,window.innerWidth-pw-8)+'px';
-    }
     trigger.classList.add('open');
   }
 }
@@ -520,22 +627,30 @@ document.addEventListener('click',e=>{
   }
 });
 
+/* ══ LABEL DO DROPDOWN ══ */
 function ddLabel(key){
   const SETS={Tr:sTr,Ano:sAnos,Mes:sMes,UF:sUF,Rd:sRd};
-  const ITEMS={Tr:RAW_T.map(r=>r.nome),Ano:[...new Set(RAW_M.map(r=>r.ano))],Mes:[...new Set(RAW_M.map(r=>r.mes))],UF:RAW_UF.map(r=>r.uf),Rd:RAW_RD.map(r=>r.nome)};
+  const ITEMS={
+    Tr:RAW_T.map(r=>r.nome),
+    Ano:[...new Set(RAW_M.map(r=>r.ano))],
+    Mes:[...new Set(RAW_M.map(r=>r.mes))],
+    UF:RAW_UF.map(r=>r.uf),
+    Rd:RAW_RD.map(r=>r.nome),
+  };
   const DEF={Tr:'Todas',Ano:'Todos',Mes:'Todos',UF:'Todas',Rd:'Todos'};
   const CLR={Tr:'clrTr',Ano:'clrAno',Mes:'clrMes',UF:'clrUF',Rd:'clrRd'};
   const sel=SETS[key], items=ITEMS[key];
   const lbl=document.getElementById('dd'+key+'Lbl');
   const tr=document.getElementById('dd'+key+'Trigger');
-  if(!lbl)return;
-  if(!sel.size){lbl.textContent=DEF[key];tr.classList.remove('sel');}
-  else if(sel.size===items.length){lbl.textContent='Todos';tr.classList.add('sel');}
-  else if(sel.size===1){lbl.textContent=[...sel][0];tr.classList.add('sel');}
-  else{lbl.textContent=`${sel.size} selecionados`;tr.classList.add('sel');}
+  if(!lbl) return;
+  if(!sel.size)          {lbl.textContent=DEF[key];          tr.classList.remove('sel');}
+  else if(sel.size===items.length){lbl.textContent='Todos';  tr.classList.add('sel');}
+  else if(sel.size===1)  {lbl.textContent=[...sel][0];       tr.classList.add('sel');}
+  else                   {lbl.textContent=`${sel.size} sel.`;tr.classList.add('sel');}
   document.getElementById(CLR[key]).classList.toggle('vis',sel.size>0);
 }
 
+/* ══ ITEM DE LISTA ══ */
 function mkItem(label,isOn,fn){
   const el=document.createElement('div');
   el.className='sl-item'+(isOn?' on':'');
@@ -544,71 +659,76 @@ function mkItem(label,isOn,fn){
   return el;
 }
 
+/* ══ BUILD LIST ══ */
 function buildList(key){
   const SETS={Tr:sTr,Ano:sAnos,Mes:sMes,UF:sUF,Rd:sRd};
-  const allItems={
-    Tr:RAW_T.map(r=>r.nome),
-    Ano:[...new Set(RAW_M.map(r=>r.ano))].sort().map(String),
-    Mes:[...new Set(RAW_M.map(r=>r.mes))].sort((a,b)=>MO.indexOf(a)-MO.indexOf(b)),
-    UF:RAW_UF.map(r=>r.uf).sort(),
-    Rd:RAW_RD.map(r=>r.nome),
+  const ALL_ITEMS={
+    Tr:  RAW_T.map(r=>r.nome),
+    Ano: [...new Set(RAW_M.map(r=>r.ano))].sort().map(String),
+    Mes: [...new Set(RAW_M.map(r=>r.mes))].sort((a,b)=>MO.indexOf(a)-MO.indexOf(b)),
+    UF:  RAW_UF.map(r=>r.uf).sort(),
+    Rd:  RAW_RD.map(r=>r.nome),
   };
   const sel=SETS[key];
-  const q=(document.getElementById('sr'+key).value||'').toLowerCase();
-  const items=allItems[key].filter(i=>!q||String(i).toLowerCase().includes(q));
+  const q=(document.getElementById('sr'+key)?.value||'').toLowerCase();
+  const items=ALL_ITEMS[key].filter(i=>!q||String(i).toLowerCase().includes(q));
   const list=document.getElementById('list'+key);
+  if(!list) return;
   list.innerHTML='';
   items.forEach(item=>{
     const v=key==='Ano'?Number(item):item;
     const isOn=sel.has(v);
     list.appendChild(mkItem(String(item),isOn,()=>{
       isOn?sel.delete(v):sel.add(v);
-      buildList(key);
-      ddLabel(key);
-      updateClearBtn();
-      renderAll();
+      buildList(key); ddLabel(key); updateClearBtn(); renderAll();
     }));
   });
 }
 
+/* ══ SELECIONAR TUDO ══ */
 function selAll(key){
   const SETS={Tr:sTr,Ano:sAnos,Mes:sMes,UF:sUF,Rd:sRd};
   const sel=SETS[key];
-  if(key==='Tr')RAW_T.forEach(r=>sel.add(r.nome));
-  else if(key==='Ano')RAW_M.forEach(r=>sel.add(r.ano));
-  else if(key==='Mes')RAW_M.forEach(r=>sel.add(r.mes));
-  else if(key==='UF')RAW_UF.forEach(r=>sel.add(r.uf));
-  else if(key==='Rd')RAW_RD.forEach(r=>sel.add(r.nome));
-  buildList(key);ddLabel(key);updateClearBtn();renderAll();
+  if(key==='Tr')  RAW_T.forEach(r=>sel.add(r.nome));
+  else if(key==='Ano') RAW_M.forEach(r=>sel.add(r.ano));
+  else if(key==='Mes') RAW_M.forEach(r=>sel.add(r.mes));
+  else if(key==='UF')  RAW_UF.forEach(r=>sel.add(r.uf));
+  else if(key==='Rd')  RAW_RD.forEach(r=>sel.add(r.nome));
+  buildList(key); ddLabel(key); updateClearBtn(); renderAll();
 }
 
+/* ══ LIMPAR GRUPO ══ */
 function clearGroup(t){
-  const map={tr:['Tr',sTr],ano:['Ano',sAnos],mes:['Mes',sMes],uf:['UF',sUF],rd:['Rd',sRd]};
-  if(!map[t])return;
-  const [key,sel]=map[t];
+  const MAP={tr:['Tr',sTr],ano:['Ano',sAnos],mes:['Mes',sMes],uf:['UF',sUF],rd:['Rd',sRd]};
+  if(!MAP[t]) return;
+  const [key,sel]=MAP[t];
   sel.clear();
-  const sr=document.getElementById('sr'+key);if(sr)sr.value='';
-  buildList(key);ddLabel(key);updateClearBtn();renderAll();
+  const sr=document.getElementById('sr'+key); if(sr) sr.value='';
+  buildList(key); ddLabel(key); updateClearBtn(); renderAll();
 }
 
+/* ══ LIMPAR TUDO ══ */
 function clearAll(){
-  sAnos.clear();sMes.clear();sUF.clear();sTr.clear();sRd.clear();
+  sAnos.clear(); sMes.clear(); sUF.clear(); sTr.clear(); sRd.clear();
   ['Tr','Ano','Mes','UF','Rd'].forEach(key=>{
-    const sr=document.getElementById('sr'+key);if(sr)sr.value='';
-    buildList(key);ddLabel(key);
+    const sr=document.getElementById('sr'+key); if(sr) sr.value='';
+    buildList(key); ddLabel(key);
   });
-  updateClearBtn();renderAll();
+  updateClearBtn(); renderAll();
 }
 
+/* ══ BOTÃO LIMPAR HDR ══ */
 function updateClearBtn(){
   const n=sAnos.size+sMes.size+sUF.size+sTr.size+sRd.size;
   const btn=document.getElementById('btnClrHdr');
-  if(!btn)return;
+  if(!btn) return;
   btn.classList.toggle('active',n>0);
   btn.textContent=n>0?`✕ Limpar tudo (${n})`:'✕ Limpar tudo';
 }
 
-/* ══ KPIs ══ */
+/* ══════════════════════════════════════════
+   KPIs — reage a todos os filtros
+══════════════════════════════════════════ */
 function mkKPI(){
   const k=agg();
   const delta=k.lr-k.lp;
@@ -630,7 +750,9 @@ function mkKPI(){
   else{b.textContent='✗ Crítico';b.className='badge bg-crit';}
 }
 
-/* ══ GAUGE ══ */
+/* ══════════════════════════════════════════
+   GAUGE — reage a todos os filtros
+══════════════════════════════════════════ */
 function mkGauge(){
   const k=agg();
   const ot=Math.min(100,Math.max(0,k.ot));
@@ -643,17 +765,16 @@ function mkGauge(){
     return `<path d="M${px(p1,r).toFixed(2)},${py(p1,r).toFixed(2)} A${r},${r} 0 ${(p2-p1)>50?1:0},1 ${px(p2,r).toFixed(2)},${py(p2,r).toFixed(2)}" stroke="${clr}" stroke-width="${sw}" fill="none" stroke-linecap="butt"/>`;
   }
   const gap=0.6;
-  const nx=px(ot,r-5).toFixed(2),ny=py(ot,r-5).toFixed(2);
-  const lx70=px(meta,r+sw/2+14).toFixed(1),ly70=(py(meta,r+sw/2+14)+4).toFixed(1);
-  const dxi=px(meta,r-sw/2-6).toFixed(1),dyi=py(meta,r-sw/2-6).toFixed(1);
-  const dxo=px(meta,r+sw/2+6).toFixed(1),dyo=py(meta,r+sw/2+6).toFixed(1);
-  const d40xi=px(40,r-sw/2-1).toFixed(1),d40yi=py(40,r-sw/2-1).toFixed(1);
-  const d40xo=px(40,r+sw/2+1).toFixed(1),d40yo=py(40,r+sw/2+1).toFixed(1);
-  const lx0=px(0,r+sw/2+14).toFixed(1),ly0=(py(0,r+sw/2+14)+4).toFixed(1);
-  const lx100=px(100,r+sw/2+14).toFixed(1),ly100=(py(100,r+sw/2+14)+4).toFixed(1);
+  const nx=px(ot,r-5).toFixed(2), ny=py(ot,r-5).toFixed(2);
+  const lx70=px(meta,r+sw/2+14).toFixed(1), ly70=(py(meta,r+sw/2+14)+4).toFixed(1);
+  const dxi=px(meta,r-sw/2-6).toFixed(1),   dyi=py(meta,r-sw/2-6).toFixed(1);
+  const dxo=px(meta,r+sw/2+6).toFixed(1),   dyo=py(meta,r+sw/2+6).toFixed(1);
+  const d40xi=px(40,r-sw/2-1).toFixed(1),   d40yi=py(40,r-sw/2-1).toFixed(1);
+  const d40xo=px(40,r+sw/2+1).toFixed(1),   d40yo=py(40,r+sw/2+1).toFixed(1);
+  const lx0=px(0,r+sw/2+14).toFixed(1),     ly0=(py(0,r+sw/2+14)+4).toFixed(1);
+  const lx100=px(100,r+sw/2+14).toFixed(1), ly100=(py(100,r+sw/2+14)+4).toFixed(1);
   const sc=ot>=meta?'#10B981':ot>=40?'#F59E0B':'#EF4444';
   const st=ot>=meta?'Acima da meta':ot>=40?'Atraso Moderado':'Atraso Crítico';
-  /* ORDEM CORRETA: arcos → divisores → ponteiro → textos (textos sempre na frente) */
   svg.innerHTML=`
     ${seg(0,100,'#E5E7EB')}${seg(0,40-gap,'#EF4444')}${seg(40+gap,70-gap,'#F59E0B')}${seg(70+gap,100,'#10B981')}
     <line x1="${d40xi}" y1="${d40yi}" x2="${d40xo}" y2="${d40yo}" stroke="white" stroke-width="1.5" opacity="0.8"/>
@@ -670,23 +791,25 @@ function mkGauge(){
     <text x="${cx}" y="${(cy-2).toFixed(0)}" font-size="22" font-weight="700" fill="${sc}" font-family="JetBrains Mono,monospace" text-anchor="middle">${ot.toFixed(0)}%</text>`;
   const dot=document.getElementById('gaugeDot');
   const txt=document.getElementById('gaugeStatusTxt');
-  if(dot)dot.style.background=sc;
+  if(dot) dot.style.background=sc;
   if(txt){txt.textContent=`${ot>=meta?'✓':ot>=40?'⚠':'✗'} ${st}`;txt.style.color=sc;txt.style.fontWeight='600';}
   const faltam=Math.max(0,meta-ot);
-  document.getElementById('gaugeLabel').textContent=ot>=meta?`+${(ot-meta).toFixed(1)}% acima da meta`:`Faltam ${faltam.toFixed(1)}% para meta de ${meta}%`;
+  document.getElementById('gaugeLabel').textContent=
+    ot>=meta?`+${(ot-meta).toFixed(1)}% acima da meta`:`Faltam ${faltam.toFixed(1)}% para meta de ${meta}%`;
 }
 
-/* ══ GRÁFICO MENSAL ══ */
+/* ══════════════════════════════════════════
+   GRÁFICO MENSAL — reage a todos os filtros
+══════════════════════════════════════════ */
 function mkMes(){
   const d=aggByMes();
   const lb=d.map(r=>r.label);
   const clickMes=(_,els)=>{
-    if(!els.length)return;
+    if(!els.length) return;
     const mes=d[els[0].index].mes;
     sMes.has(mes)?sMes.delete(mes):sMes.add(mes);
-    buildList('Mes');ddLabel('Mes');updateClearBtn();renderAll();
+    buildList('Mes'); ddLabel('Mes'); updateClearBtn(); renderAll();
   };
-  /* atualiza chart existente se possível, evitando destroy/recreate */
   if(cMesChart){
     if(mesMode==='ot'){
       const vals=d.map(r=>r.ot);
@@ -694,11 +817,11 @@ function mkMes(){
       cMesChart.data.datasets[0].data=vals;
       cMesChart.data.datasets[0].pointBackgroundColor=vals.map(v=>otC(v));
       cMesChart.data.datasets[0].pointBorderColor=vals.map(v=>otC(v));
-      if(cMesChart.data.datasets[1])cMesChart.data.datasets[1].data=d.map(()=>70);
+      if(cMesChart.data.datasets[1]) cMesChart.data.datasets[1].data=d.map(()=>70);
     }else{
       cMesChart.data.labels=lb;
       cMesChart.data.datasets[0].data=d.map(r=>r.lr);
-      if(cMesChart.data.datasets[1])cMesChart.data.datasets[1].data=d.map(r=>r.lp);
+      if(cMesChart.data.datasets[1]) cMesChart.data.datasets[1].data=d.map(r=>r.lp);
     }
     cMesChart.update('none');
     return;
@@ -730,45 +853,49 @@ function setMode(m,btn){
   mkMes();
 }
 
-/* ══ DELTA ══ */
+/* ══════════════════════════════════════════
+   DELTA — reage a todos os filtros
+══════════════════════════════════════════ */
 function mkDelta(){
   const d=aggByMes();
   const deltas=d.map(r=>parseFloat((r.lr-r.lp).toFixed(2)));
   const bgC=deltas.map(v=>v>2?'rgba(220,38,38,.7)':v>0?'rgba(217,119,6,.7)':'rgba(15,158,94,.7)');
+  const hvC=deltas.map(v=>v>2?'#DC2626':v>0?'#D97706':'#0F9E5E');
   const clickDelta=(_,els)=>{
-    if(!els.length)return;
+    if(!els.length) return;
     const mes=d[els[0].index].mes;
     sMes.has(mes)?sMes.delete(mes):sMes.add(mes);
-    buildList('Mes');ddLabel('Mes');updateClearBtn();renderAll();
+    buildList('Mes'); ddLabel('Mes'); updateClearBtn(); renderAll();
   };
   if(cDeltaChart){
     cDeltaChart.data.labels=d.map(r=>r.label);
     cDeltaChart.data.datasets[0].data=deltas;
     cDeltaChart.data.datasets[0].backgroundColor=bgC;
-    cDeltaChart.data.datasets[0].hoverBackgroundColor=deltas.map(v=>v>2?'#DC2626':v>0?'#D97706':'#0F9E5E');
+    cDeltaChart.data.datasets[0].hoverBackgroundColor=hvC;
     cDeltaChart.update('none');
     return;
   }
   const ctx=document.getElementById('cDeltaC').getContext('2d');
-  cDeltaChart=new Chart(ctx,{type:'bar',data:{labels:d.map(r=>r.label),datasets:[{label:'Delta',data:deltas,borderRadius:4,backgroundColor:bgC,hoverBackgroundColor:deltas.map(v=>v>2?'#DC2626':v>0?'#D97706':'#0F9E5E')}]},
+  cDeltaChart=new Chart(ctx,{type:'bar',data:{labels:d.map(r=>r.label),datasets:[{label:'Delta',data:deltas,borderRadius:4,backgroundColor:bgC,hoverBackgroundColor:hvC}]},
     options:{responsive:true,maintainAspectRatio:false,onClick:clickDelta,animation:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` Delta: ${c.raw>=0?'+':''}${c.raw}d`}}},
       scales:{x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},y:{ticks:{color:'#9AA0AD',font:{size:9},callback:v=>(v>=0?'+':'')+v+'d'},grid:{color:'rgba(0,0,0,.04)'}}}}});
 }
 
-/* ══ TRANSPORTADORAS ══ */
+/* ══════════════════════════════════════════
+   TRANSPORTADORAS — reage a todos os filtros exceto Tr
+   (mostra todas as transportadoras com os demais filtros aplicados)
+══════════════════════════════════════════ */
 function mkTransp(){
   const byTr=aggByTr();
   document.getElementById('tBt').innerHTML=byTr.map(r=>{
-    /* barra proporcional ao on-time REAL (0-100%), não relativa ao máximo */
     const bw=Math.round(Math.min(100,Math.max(0,r.ot)));
     const fc=r.ot>=70?'#0F9E5E':r.ot>=40?'#D97706':'#DC2626';
     const isOn=sTr.has(r.nome);
-    const dim=sTr.size&&!isOn?'opacity:.3;':'';
+    const dim=sTr.size&&!isOn?'opacity:.28;':'';
     return `<div class="br${isOn?' on':''}" style="${dim}" onclick="togTr('${r.nome.replace(/'/g,"\\'")}')">
-      <div class="bh">
-        <span class="bn">${r.nome}</span>
-        <div class="bs">${otP(r.ot)}<span>${r.nfs.toLocaleString('pt-BR')} NFs</span><span>${r.lr.toFixed(1)}d</span></div>
+      <div class="bh"><span class="bn">${r.nome}</span>
+        <div class="bs">${otP(r.ot)}<span>${Math.round(r.nfs).toLocaleString('pt-BR')} NFs</span><span>${r.lr.toFixed(1)}d</span></div>
       </div>
       <div class="btr"><div class="bf" style="width:${bw}%;background:${fc}"></div></div>
     </div>`;
@@ -777,14 +904,16 @@ function mkTransp(){
 
 function togTr(n){
   sTr.has(n)?sTr.delete(n):sTr.add(n);
-  buildList('Tr');ddLabel('Tr');updateClearBtn();renderAll();
+  buildList('Tr'); ddLabel('Tr'); updateClearBtn(); renderAll();
 }
 
-/* ══ TABELA UF ══ */
+/* ══════════════════════════════════════════
+   TABELA UF — reage a todos os filtros exceto UF
+══════════════════════════════════════════ */
 function sortUF(k){ufKey===k?ufDir*=-1:(ufKey=k,ufDir=-1);mkUF();}
 
 function mkUF(){
-  const vis=sUF.size?RAW_UF.filter(r=>sUF.has(r.uf)):RAW_UF;
+  const vis=aggByUF();
   const rows=vis.slice().sort((a,b)=>{
     const av=a[ufKey],bv=b[ufKey];
     return(typeof av==='string'?av.localeCompare(bv):(bv-av))*ufDir;
@@ -798,8 +927,10 @@ function mkUF(){
   document.getElementById('ufTb').innerHTML=rows.map(r=>{
     const dc=r.delta>2?'tdp':r.delta<0?'tdn':'';
     return `<tr class="${sUF.has(r.uf)?'on':''}" onclick="togUF('${r.uf}',this)">
-      <td class="tuf">${r.uf}</td><td class="tn">${r.nfs.toLocaleString('pt-BR')}</td>
-      <td class="tn">R$ ${r.val.toFixed(2)}M</td><td>${otP(r.ot)}</td>
+      <td class="tuf">${r.uf}</td>
+      <td class="tn">${r.nfs.toLocaleString('pt-BR')}</td>
+      <td class="tn">R$ ${r.val.toFixed(2)}M</td>
+      <td>${otP(r.ot)}</td>
       <td class="${dc}">${r.delta>=0?'+':''}${r.delta.toFixed(1)}d</td>
       <td class="tn" style="color:var(--green);font-weight:500">${r.np.toLocaleString('pt-BR')}</td>
       <td class="tn" style="color:var(--red);font-weight:500">${r.at.toLocaleString('pt-BR')}</td>
@@ -807,7 +938,9 @@ function mkUF(){
   }).join('');
   const dc2=totDelta>2?'color:var(--red)':totDelta<0?'color:var(--green)':'';
   document.getElementById('ufTf').innerHTML=`<tr>
-    <td>TOTAL</td><td>${totNfs.toLocaleString('pt-BR')}</td><td>R$ ${totVal.toFixed(2)}M</td>
+    <td>TOTAL</td>
+    <td>${totNfs.toLocaleString('pt-BR')}</td>
+    <td>R$ ${totVal.toFixed(2)}M</td>
     <td>${otP(totOt)}</td>
     <td style="font-family:'JetBrains Mono',monospace;font-weight:600;${dc2}">${totDelta>=0?'+':''}${totDelta.toFixed(1)}d</td>
     <td style="color:var(--green);font-weight:600;font-family:'JetBrains Mono',monospace">${totNp.toLocaleString('pt-BR')}</td>
@@ -818,16 +951,22 @@ function mkUF(){
 function togUF(u,tr){
   sUF.has(u)?sUF.delete(u):sUF.add(u);
   tr.className=sUF.has(u)?'on':'';
-  buildList('UF');ddLabel('UF');updateClearBtn();renderAll();
+  buildList('UF'); ddLabel('UF'); updateClearBtn(); renderAll();
 }
 
-/* ══ RENDER CENTRAL ══ */
-function renderAll(){mkKPI();mkGauge();mkMes();mkDelta();mkTransp();mkUF();}
+/* ══════════════════════════════════════════
+   RENDER CENTRAL — dispara todos os visuais
+══════════════════════════════════════════ */
+function renderAll(){
+  mkKPI(); mkGauge(); mkMes(); mkDelta(); mkTransp(); mkUF();
+}
 
+/* ══ INIT ══ */
 window.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('ftrTs').textContent='Atualizado: '+new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
+  document.getElementById('ftrTs').textContent=
+    'Atualizado: '+new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
   ['Tr','Ano','Mes','UF','Rd'].forEach(key=>{buildList(key);ddLabel(key);});
-  updateClearBtn();renderAll();
+  updateClearBtn(); renderAll();
 });
 </script>
 </body>
