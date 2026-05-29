@@ -16,7 +16,7 @@
   --red:#DC2626;--rdim:#FEF0F0;
   --blue:#1D6EE8;--bdim:#EEF4FD;
   --pbi-blue:#0078D4;--pbi-sel:#DEECF9;--pbi-hover:#F0F6FC;
-  --hh:48px;--sw:190px;
+  --hh:48px;--sw:200px;
   --sh:0 1px 3px rgba(0,0,0,.07);
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -40,111 +40,102 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:
 /* LAYOUT */
 .layout{position:fixed;top:var(--hh);left:0;right:0;bottom:0;display:flex}
 
-/* ═══ SIDEBAR estilo Power BI ═══ */
+/* ═══ SIDEBAR ═══ */
 .sidebar{
   width:var(--sw);flex-shrink:0;
   background:var(--bg2);border-right:1px solid var(--border2);
   display:flex;flex-direction:column;overflow:hidden;
 }
 
-/* painel de segmentação — imita o visual do Power BI */
-.slicer{
-  display:flex;flex-direction:column;
-  border-bottom:1px solid var(--border);
-  flex-shrink:0;
-}
+.slicer{display:flex;flex-direction:column;border-bottom:1px solid var(--border);flex-shrink:0;}
 .slicer-head{
-  padding:7px 10px 5px;
-  display:flex;align-items:center;justify-content:space-between;
-  background:var(--bg2);
-  cursor:default;
-  user-select:none;
+  padding:7px 10px 5px;display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg2);cursor:default;user-select:none;
 }
-.slicer-title{
-  font-size:11px;font-weight:600;color:var(--text);
-}
-.slicer-clr{
-  font-size:10px;color:var(--text3);cursor:pointer;
-  background:none;border:none;font-family:'Inter',sans-serif;
-  padding:1px 4px;border-radius:3px;
-  display:none;
-}
+.slicer-title{font-size:11px;font-weight:600;color:var(--text);}
+.slicer-clr{font-size:10px;color:var(--text3);cursor:pointer;background:none;border:none;
+  font-family:'Inter',sans-serif;padding:1px 4px;border-radius:3px;display:none;}
 .slicer-clr.vis{display:block}
 .slicer-clr:hover{color:var(--red)}
 
-/* search box estilo PBI */
 .slicer-search{
-  margin:0 8px 5px;
-  display:flex;align-items:center;gap:5px;
-  border:1px solid var(--border2);border-radius:3px;
-  padding:3px 6px;background:var(--bg2);
+  margin:0 8px 5px;display:flex;align-items:center;gap:5px;
+  border:1px solid var(--border2);border-radius:3px;padding:3px 6px;background:var(--bg2);
 }
-.slicer-search input{
-  border:none;outline:none;font-size:11px;font-family:'Inter',sans-serif;
-  background:transparent;color:var(--text);width:100%;
-}
+.slicer-search input{border:none;outline:none;font-size:11px;font-family:'Inter',sans-serif;
+  background:transparent;color:var(--text);width:100%;}
 .slicer-search input::placeholder{color:var(--text3)}
 .slicer-search svg{flex-shrink:0;opacity:.4}
 
-/* lista de itens */
-.slicer-list{
-  overflow-y:auto;max-height:140px;
+/* Dropdown slicer estilo Power BI */
+.slicer-dropdown{position:relative;margin:0 8px 6px;}
+.slicer-trigger{
+  display:flex;align-items:center;justify-content:space-between;
+  border:1px solid var(--border2);border-radius:3px;padding:5px 8px;
+  background:var(--bg2);cursor:pointer;font-size:11px;color:var(--text2);
+  user-select:none;gap:4px;
 }
-.slicer-list.tall{max-height:220px}
-.slicer-list::-webkit-scrollbar{width:4px}
-.slicer-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.slicer-trigger:hover{background:var(--pbi-hover)}
+.slicer-trigger.has-sel{color:var(--text);font-weight:500;border-color:var(--pbi-blue);}
+.slicer-trigger-label{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.slicer-trigger-arrow{font-size:8px;flex-shrink:0;transition:transform .15s}
+.slicer-trigger.open .slicer-trigger-arrow{transform:rotate(180deg)}
+.slicer-panel{
+  position:absolute;top:calc(100% + 3px);left:0;right:0;
+  background:var(--bg2);border:1px solid var(--border2);border-radius:4px;
+  box-shadow:0 4px 12px rgba(0,0,0,.12);z-index:200;
+  display:none;flex-direction:column;
+}
+.slicer-panel.open{display:flex}
+.slicer-panel-search{
+  display:flex;align-items:center;gap:5px;
+  border-bottom:1px solid var(--border);padding:5px 8px;
+}
+.slicer-panel-search input{border:none;outline:none;font-size:11px;width:100%;
+  font-family:'Inter',sans-serif;background:transparent;color:var(--text)}
+.slicer-panel-search input::placeholder{color:var(--text3)}
+.slicer-panel-actions{display:flex;gap:4px;padding:4px 6px;border-bottom:1px solid var(--border)}
+.sp-btn{font-size:10px;color:var(--text3);background:none;border:1px solid var(--border2);
+  border-radius:3px;padding:2px 6px;cursor:pointer;font-family:'Inter',sans-serif;}
+.sp-btn:hover{background:var(--bg3);color:var(--text)}
+.slicer-panel-list{max-height:160px;overflow-y:auto;}
+.slicer-panel-list::-webkit-scrollbar{width:4px}
+.slicer-panel-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
 .sl-item{
-  display:flex;align-items:center;gap:7px;
-  padding:4px 10px;cursor:pointer;
-  font-size:11px;color:var(--text);
-  border-left:2px solid transparent;
+  display:flex;align-items:center;gap:7px;padding:4px 8px;cursor:pointer;
+  font-size:11px;color:var(--text);border-left:2px solid transparent;
   transition:background .08s;
 }
 .sl-item:hover{background:var(--pbi-hover)}
 .sl-item.on{background:var(--pbi-sel);border-left-color:var(--pbi-blue)}
-
-/* checkbox estilo PBI */
-.sl-cb{
-  width:13px;height:13px;border:1px solid #8A8886;border-radius:2px;
-  flex-shrink:0;display:flex;align-items:center;justify-content:center;
-  background:#fff;
-}
+.sl-cb{width:13px;height:13px;border:1px solid #8A8886;border-radius:2px;
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#fff;}
 .sl-item.on .sl-cb{background:var(--pbi-blue);border-color:var(--pbi-blue)}
 .sl-cb svg{display:none}
 .sl-item.on .sl-cb svg{display:block}
-.sl-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sl-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
 
-/* botão limpar geral */
-.sb-foot{
-  padding:8px 10px;border-top:1px solid var(--border);flex-shrink:0;
-  background:var(--bg2);
-}
-.btn-clr-all{
-  width:100%;padding:5px;font-size:11px;font-family:'Inter',sans-serif;
+/* listas normais (ano/mes/uf) */
+.slicer-list{overflow-y:auto;max-height:130px;}
+.slicer-list::-webkit-scrollbar{width:4px}
+.slicer-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.sb-foot{padding:8px 10px;border-top:1px solid var(--border);flex-shrink:0;background:var(--bg2);}
+.btn-clr-all{width:100%;padding:5px;font-size:11px;font-family:'Inter',sans-serif;
   background:none;border:1px solid var(--border2);border-radius:3px;
-  color:var(--text2);cursor:pointer;transition:all .1s;
-}
+  color:var(--text2);cursor:pointer;transition:all .1s;}
 .btn-clr-all:hover{background:var(--rdim);color:var(--red);border-color:rgba(220,38,38,.3)}
 
-/* MAIN SCROLL */
-.main-wrap{
-  flex:1;overflow-y:auto;overflow-x:hidden;
-  display:flex;flex-direction:column;min-height:0;background:var(--bg);
-}
-.main-wrap::-webkit-scrollbar{width:5px}
-.main-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px}
-.main{padding:12px 14px;display:flex;flex-direction:column;gap:10px;flex:1}
+/* ═══ MAIN ═══ */
+.main-wrap{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;background:var(--bg);}
 
-/* FOOTER */
-.ftr{
-  flex-shrink:0;padding:7px 14px;border-top:1px solid var(--border);
-  background:var(--bg2);display:flex;justify-content:space-between;align-items:center;
+/* KPIs FIXOS — não scrollam */
+.kpi-fixed{
+  flex-shrink:0;padding:10px 14px 0;
+  display:grid;grid-template-columns:repeat(6,1fr);gap:8px;
+  background:var(--bg);
 }
-.ftr span{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace}
-
-/* KPIs */
-.kgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .kpi{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;box-shadow:var(--sh);position:relative;overflow:hidden}
 .kpi::after{content:'';position:absolute;top:0;left:0;width:3px;bottom:0;border-radius:10px 0 0 10px}
 .kg::after{background:var(--green)}.ka::after{background:var(--amber)}
@@ -153,6 +144,12 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:
 .kv{font-size:18px;font-weight:600;font-family:'JetBrains Mono',monospace;line-height:1}
 .kv.g{color:var(--green)}.kv.a{color:var(--amber)}.kv.r{color:var(--red)}.kv.b{color:var(--blue)}
 .ks{font-size:9px;color:var(--text3);margin-top:3px}
+
+/* área scrollável */
+.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;min-height:0;}
+.scroll-area::-webkit-scrollbar{width:5px}
+.scroll-area::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px}
+.main{padding:10px 14px;display:flex;flex-direction:column;gap:10px;}
 
 /* SECTIONS */
 .sec{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--sh)}
@@ -167,9 +164,11 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:
 .tab{padding:3px 8px;border-radius:4px;font-size:10px;font-weight:500;cursor:pointer;color:var(--text2);border:none;background:transparent;font-family:'Inter',sans-serif;transition:all .12s}
 .tab.on{background:var(--bg2);color:var(--text);box-shadow:var(--sh)}
 
-/* BAR TABLE */
-.bt{display:flex;flex-direction:column;gap:6px}
-.br{display:flex;flex-direction:column;gap:3px;cursor:pointer;padding:4px 6px;border-radius:6px;border:1px solid transparent;transition:all .12s}
+/* BAR TABLE — transportadoras */
+.bt{display:flex;flex-direction:column;gap:5px;max-height:330px;overflow-y:auto;}
+.bt::-webkit-scrollbar{width:4px}
+.bt::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.br{display:flex;flex-direction:column;gap:3px;cursor:pointer;padding:5px 6px;border-radius:6px;border:1px solid transparent;transition:all .12s}
 .br:hover{background:var(--bg3)}
 .br.on{background:var(--bdim);border-color:rgba(29,110,232,.2)}
 .bh{display:flex;justify-content:space-between;align-items:center;gap:6px}
@@ -183,33 +182,58 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:
 .pr{background:var(--rdim);color:var(--red);border-color:rgba(220,38,38,.2)}
 .pn{background:var(--bg3);color:var(--text3)}
 
-/* TABLE */
-.tw{overflow-x:auto}
+/* TABLE UF — wrapper com scroll + tfoot fixo */
+.uf-outer{
+  display:flex;flex-direction:column;
+  max-height:280px;overflow:hidden;
+  position:relative;
+}
+.uf-scroll{overflow-y:auto;overflow-x:auto;flex:1;min-height:0;}
+.uf-scroll::-webkit-scrollbar{width:4px;height:4px}
+.uf-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px}
+
 table{width:100%;border-collapse:collapse;font-size:11px}
-th{padding:6px 10px;text-align:left;font-size:9px;font-weight:600;color:var(--text3);
+thead th{padding:6px 10px;text-align:left;font-size:9px;font-weight:600;color:var(--text3);
   text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);
-  white-space:nowrap;background:var(--bg3);cursor:pointer;user-select:none;position:sticky;top:0;z-index:1}
-th:hover{background:var(--bg4)}
+  white-space:nowrap;background:var(--bg3);cursor:pointer;user-select:none;
+  position:sticky;top:0;z-index:2}
+thead th:hover{background:var(--bg4)}
 td{padding:5px 10px;border-bottom:1px solid var(--border);color:var(--text2)}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(--bg3);cursor:pointer}
 tr.on td{background:var(--bdim)!important}
-tfoot td{padding:6px 10px;font-size:10px;font-weight:600;background:var(--bg3);
-  border-top:1px solid var(--border2);position:sticky;bottom:0;z-index:1;color:var(--text)}
+
+/* tfoot FIXO — fica fora do scroll */
+.uf-foot-wrap{flex-shrink:0;border-top:2px solid var(--border2);background:var(--bg3);}
+.uf-foot-wrap table{font-size:11px}
+.uf-foot-wrap td{padding:6px 10px;font-size:10px;font-weight:600;color:var(--text);
+  border-bottom:none;white-space:nowrap;}
+
 .tuf{color:var(--text);font-weight:600;font-family:'JetBrains Mono',monospace;font-size:12px}
 .tn{font-family:'JetBrains Mono',monospace;color:var(--text)}
 .tdp{color:var(--red);font-family:'JetBrains Mono',monospace;font-weight:500}
 .tdn{color:var(--green);font-family:'JetBrains Mono',monospace;font-weight:500}
-.uf-wrap{max-height:280px;overflow-y:auto}
-.uf-wrap::-webkit-scrollbar{width:4px;height:4px}
-.uf-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px}
 
-/* GAUGE */
-.gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:6px 0 4px}
-.gauge-svg{width:100%;max-width:220px}
+/* GAUGE corrigido */
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:4px 0 2px}
+.gauge-svg{width:100%;max-width:200px}
 .gauge-info{font-size:10px;color:var(--text3);margin-top:2px;text-align:center}
 
 .ch{position:relative;width:100%}
+
+/* FOOTER */
+.ftr{flex-shrink:0;padding:6px 14px;border-top:1px solid var(--border);
+  background:var(--bg2);display:flex;justify-content:space-between;align-items:center;}
+.ftr span{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+
+/* Cols fixas UF para alinhamento tfoot */
+.col-uf{width:50px}
+.col-nfs{width:80px}
+.col-val{width:100px}
+.col-ot{width:90px}
+.col-delta{width:80px}
+.col-np{width:80px}
+.col-at{width:80px}
 </style>
 </head>
 <body>
@@ -228,11 +252,38 @@ tfoot td{padding:6px 10px;font-size:10px;font-weight:600;background:var(--bg3);
 
 <div class="layout">
 
-  <!-- ═══ SIDEBAR — segmentação estilo Power BI ═══ -->
+  <!-- ═══ SIDEBAR ═══ -->
   <div class="sidebar">
 
+    <!-- Slicer: Transportadora (dropdown) -->
+    <div class="slicer" style="flex-shrink:0">
+      <div class="slicer-head">
+        <span class="slicer-title">Transportadora</span>
+        <button class="slicer-clr" id="clrTr" onclick="clearGroup('tr')">✕ Limpar</button>
+      </div>
+      <div style="padding:0 8px 6px">
+        <div class="slicer-dropdown" id="ddTr">
+          <div class="slicer-trigger" id="ddTrTrigger" onclick="toggleDropdown('ddTr')">
+            <span class="slicer-trigger-label" id="ddTrLabel">Selecionar...</span>
+            <span class="slicer-trigger-arrow">▼</span>
+          </div>
+          <div class="slicer-panel" id="ddTrPanel">
+            <div class="slicer-panel-search">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <input type="text" id="trSearch" placeholder="Pesquisar..." oninput="buildTrList()">
+            </div>
+            <div class="slicer-panel-actions">
+              <button class="sp-btn" onclick="selectAllTr()">Selecionar tudo</button>
+              <button class="sp-btn" onclick="clearGroup('tr')">Limpar</button>
+            </div>
+            <div class="slicer-panel-list" id="listTr"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Slicer: Ano -->
-    <div class="slicer" id="slicerAno">
+    <div class="slicer">
       <div class="slicer-head">
         <span class="slicer-title">Ano</span>
         <button class="slicer-clr" id="clrAno" onclick="clearGroup('ano')">✕ Limpar</button>
@@ -241,7 +292,7 @@ tfoot td{padding:6px 10px;font-size:10px;font-weight:600;background:var(--bg3);
     </div>
 
     <!-- Slicer: Mês -->
-    <div class="slicer" id="slicerMes">
+    <div class="slicer">
       <div class="slicer-head">
         <span class="slicer-title">Mês</span>
         <button class="slicer-clr" id="clrMes" onclick="clearGroup('mes')">✕ Limpar</button>
@@ -249,8 +300,8 @@ tfoot td{padding:6px 10px;font-size:10px;font-weight:600;background:var(--bg3);
       <div class="slicer-list" id="listMes"></div>
     </div>
 
-    <!-- Slicer: UF (com busca, lista maior) -->
-    <div class="slicer" id="slicerUF" style="flex:1;min-height:0;display:flex;flex-direction:column">
+    <!-- Slicer: UF (com busca, flex-grow) -->
+    <div class="slicer" style="flex:1;min-height:0;display:flex;flex-direction:column">
       <div class="slicer-head">
         <span class="slicer-title">UF</span>
         <button class="slicer-clr" id="clrUF" onclick="clearGroup('uf')">✕ Limpar</button>
@@ -259,7 +310,7 @@ tfoot td{padding:6px 10px;font-size:10px;font-weight:600;background:var(--bg3);
         <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg>
         <input type="text" id="ufSearch" placeholder="Pesquisar..." oninput="filterUFList()">
       </div>
-      <div class="slicer-list tall" style="flex:1;max-height:none" id="listUF"></div>
+      <div class="slicer-list" style="flex:1;max-height:none" id="listUF"></div>
     </div>
 
     <div class="sb-foot">
@@ -269,70 +320,95 @@ tfoot td{padding:6px 10px;font-size:10px;font-weight:600;background:var(--bg3);
 
   <!-- MAIN -->
   <div class="main-wrap">
-    <div class="main">
 
-      <div class="kgrid" id="kgrid"></div>
+    <!-- KPIs FIXOS -->
+    <div class="kpi-fixed" id="kgrid"></div>
 
-      <div class="two">
-        <!-- coluna esquerda: evolução + gauge -->
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div class="sec">
-            <div class="sh">
-              <span class="st">Evolução mensal</span>
-              <div class="tabs">
-                <button class="tab on" onclick="setMode('ot',this)">On-Time %</button>
-                <button class="tab" onclick="setMode('lead',this)">Lead time</button>
+    <!-- Área scrollável -->
+    <div class="scroll-area">
+      <div class="main">
+
+        <div class="two">
+          <!-- coluna esquerda: evolução + gauge -->
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div class="sec">
+              <div class="sh">
+                <span class="st">Evolução mensal</span>
+                <div class="tabs">
+                  <button class="tab on" onclick="setMode('ot',this)">On-Time %</button>
+                  <button class="tab" onclick="setMode('lead',this)">Lead time</button>
+                </div>
+              </div>
+              <div class="sb">
+                <div class="ch" style="height:155px"><canvas id="cMesC"></canvas></div>
+                <div style="font-size:10px;color:var(--text3);margin-top:4px;text-align:center">clique em um mês para filtrar</div>
               </div>
             </div>
-            <div class="sb">
-              <div class="ch" style="height:155px"><canvas id="cMesC"></canvas></div>
-              <div style="font-size:10px;color:var(--text3);margin-top:4px;text-align:center">clique em um mês para filtrar</div>
+
+            <!-- GAUGE corrigido -->
+            <div class="sec">
+              <div class="sh"><span class="st">Status Lead Time</span><span class="si" id="gaugeLabel">—</span></div>
+              <div class="sb" style="padding:8px 12px">
+                <div class="gauge-wrap">
+                  <svg class="gauge-svg" viewBox="0 0 220 120" id="gaugeSVG"></svg>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- GAUGE -->
+          <!-- coluna direita: transportadoras -->
           <div class="sec">
-            <div class="sh"><span class="st">Status Lead Time</span><span class="si" id="gaugeLabel">—</span></div>
-            <div class="sb">
-              <div class="gauge-wrap">
-                <svg class="gauge-svg" viewBox="0 0 220 130" id="gaugeSVG"></svg>
-              </div>
-            </div>
+            <div class="sh"><span class="st">Transportadoras</span><span class="si">clique para filtrar</span></div>
+            <div class="sb"><div class="bt" id="tBt"></div></div>
           </div>
         </div>
 
-        <!-- coluna direita: transportadoras -->
         <div class="sec">
-          <div class="sh"><span class="st">Transportadoras</span><span class="si">clique para filtrar</span></div>
-          <div class="sb"><div class="bt" id="tBt"></div></div>
+          <div class="sh"><span class="st">Delta lead por mês</span><span class="si">realizado − prometido</span></div>
+          <div class="sb"><div class="ch" style="height:110px"><canvas id="cDeltaC"></canvas></div></div>
         </div>
-      </div>
 
-      <div class="sec">
-        <div class="sh"><span class="st">Delta lead por mês</span><span class="si">realizado − prometido</span></div>
-        <div class="sb"><div class="ch" style="height:110px"><canvas id="cDeltaC"></canvas></div></div>
-      </div>
-
-      <div class="sec">
-        <div class="sh"><span class="st">Desempenho por UF</span><span class="si">cabeçalho para ordenar · clique para filtrar</span></div>
-        <div class="uf-wrap">
-          <table id="ufTbl">
-            <thead><tr>
-              <th onclick="sortUF('uf')">UF</th>
-              <th onclick="sortUF('nfs')">NFs</th>
-              <th onclick="sortUF('val')">Valor NF</th>
-              <th onclick="sortUF('ot')">On-Time %</th>
-              <th onclick="sortUF('delta')">Delta</th>
-              <th onclick="sortUF('np')">No prazo</th>
-              <th onclick="sortUF('at')">Atrasadas</th>
-            </tr></thead>
-            <tbody id="ufTb"></tbody>
-            <tfoot id="ufTf"></tfoot>
-          </table>
+        <div class="sec">
+          <div class="sh">
+            <span class="st">Desempenho por UF</span>
+            <span class="si">cabeçalho para ordenar · clique para filtrar</span>
+          </div>
+          <!-- wrapper externo com scroll + tfoot fixo -->
+          <div class="uf-outer">
+            <div class="uf-scroll" id="ufScroll">
+              <table id="ufTbl">
+                <colgroup>
+                  <col class="col-uf"><col class="col-nfs"><col class="col-val">
+                  <col class="col-ot"><col class="col-delta"><col class="col-np"><col class="col-at">
+                </colgroup>
+                <thead><tr>
+                  <th onclick="sortUF('uf')">UF</th>
+                  <th onclick="sortUF('nfs')">NFs</th>
+                  <th onclick="sortUF('val')">Valor NF</th>
+                  <th onclick="sortUF('ot')">On-Time %</th>
+                  <th onclick="sortUF('delta')">Delta</th>
+                  <th onclick="sortUF('np')">No prazo</th>
+                  <th onclick="sortUF('at')">Atrasadas</th>
+                </tr></thead>
+                <tbody id="ufTb"></tbody>
+              </table>
+            </div>
+            <!-- tfoot FIXO fora do scroll -->
+            <div class="uf-foot-wrap" id="ufFoot">
+              <table>
+                <colgroup>
+                  <col class="col-uf"><col class="col-nfs"><col class="col-val">
+                  <col class="col-ot"><col class="col-delta"><col class="col-np"><col class="col-at">
+                </colgroup>
+                <tbody id="ufTf"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
-      </div>
 
+      </div>
     </div>
+
     <div class="ftr">
       <span>coco-do-vale · Controladoria Lead Time</span>
       <span id="ftrTs"></span>
@@ -349,7 +425,7 @@ function getParam(n){try{return new URL(location.href).searchParams.get(n)||''}c
 
 const _m=(getParam('m')||'').replace(/~/g,';')||'jan/25|705|9226|43,1|9,70|7,68|260|431;fev/25|790|13111|40,3|9,79|7,13|285|488;mar/25|1167|13143|46,7|10,10|7,66|503|648;abr/25|945|12176|40,9|10,82|6,58|320|612;mai/25|1383|13927|48,3|10,60|7,67|575|794;jun/25|1278|13127|50,8|9,45|7,60|498|742;jul/25|1001|14323|54,2|8,67|7,40|489|499;ago/25|1116|12769|40,5|10,41|7,30|409|667;set/25|701|12089|42,9|10,46|6,63|267|412;out/25|748|12297|34,0|12,10|6,95|207|519;nov/25|650|12455|32,3|11,84|6,87|148|479;dez/25|521|9018|27,7|13,06|7,24|89|363;jan/26|730|11686|41,7|10,75|6,80|208|507;fev/26|640|10002|27,5|10,32|6,21|146|482;mar/26|811|12775|35,6|11,86|5,86|238|550;abr/26|798|12855|37,7|9,99|6,22|292|444;mai/26|569|7532|55,0|7,23|7,14|70|120';
 const _t=(getParam('t')||'').replace(/~/g,';')||'ALIA TRANSPORTES|7053|41,0|10,20|7,39|2607|4259;GRUPOPRIMA LOGISTICA|2822|38,7|10,51|6,95|817|1663;RODOMILLI|1288|55,8|8,37|7,06|684|583;SHELBY TRANSPORTES|1121|38,3|8,41|4,99|255|797;RACA|445|29,7|18,13|13,72|106|286;SERVIMAR TRANSPORTES|428|87,6|2,33|3,91|336|83;BOMFIM|384|13,7|12,94|6,12|76|279;TECMAR|293|11,4|20,41|5,18|38|254;CDJ EXPRESS E LOGIST|264|0,0|30,13|9,35|0|251;RODOPRIMA|216|46,3|9,49|6,42|64|148;LOG-IN|61|0,0|26,73|16,00|0|61';
-const _u=(getParam('u')||'').replace(/~/g,';')||'SP|3,8|4549|51,46|31;MG|1,2|1040|35,07|65;RJ|2,4|2408|35,30|45;SC|2,7|817|20,09|27;ES|0,0|1225|9,94|70;GO|4,4|1200|8,39|36;PE|-1,3|461|8,12|85;BA|12,3|869|7,19|6;DF|5,1|352|5,13|38;CE|4,1|263|2,49|17;RS|4,6|251|2,28|13;MA|7,2|151|2,09|31;PR|5,4|93|2,05|16;PA|8,7|150|1,93|11;PI|3,3|110|1,60|31;AP|12,8|215|3,38|16;AM|20,0|163|3,33|;PB|1,4|88|1,06|22;TO|13,6|62|0,80|12;SE|14,8|55|0,41|;MS|7,3|11|0,15|13;RR|17,7|10|0,13|;AL|10,0|5|0,11|;RN|-2,5|3|0,01|100;MT|14,0|2|0,01|';
+const _u=(getParam('u')||'').replace(/~/g,';')||'SP|3,8|4549|51,46|31|1410|3139;MG|1,2|1040|35,07|65|676|364;RJ|2,4|2408|35,30|45|1084|1324;SC|2,7|817|20,09|27|221|596;ES|0,0|1225|9,94|70|858|367;GO|4,4|1200|8,39|36|432|768;PE|-1,3|461|8,12|85|392|69;BA|12,3|869|7,19|6|52|817;DF|5,1|352|5,13|38|134|218;CE|4,1|263|2,49|17|45|218;RS|4,6|251|2,28|13|33|218;MA|7,2|151|2,09|31|47|104;PR|5,4|93|2,05|16|15|78;PA|8,7|150|1,93|11|17|133;PI|3,3|110|1,60|31|34|76;AP|12,8|215|3,38|16|34|181;AM|20,0|163|3,33|0|0|163;PB|1,4|88|1,06|22|19|69;TO|13,6|62|0,80|12|7|55;SE|14,8|55|0,41|0|0|55;MS|7,3|11|0,15|13|1|10;RR|17,7|10|0,13|0|0|10;AL|10,0|5|0,11|0|0|5;RN|-2,5|3|0,01|100|3|0;MT|14,0|2|0,01|0|0|2';
 
 const MESES=pRows(_m).map(r=>({label:r[0],ano:parseInt('20'+(r[0].split('/')[1]||'25')),mes:r[0].split('/')[0],nfs:pI(r[1]),val:pN(r[2]),ot:pN(r[3]),lr:pN(r[4]),lp:pN(r[5]),np:pI(r[6]),at:pI(r[7])}));
 const TRANSP=pRows(_t).map(r=>({nome:r[0],nfs:pI(r[1]),ot:pN(r[2]),lr:pN(r[3]),lp:pN(r[4]),np:pI(r[5]),at:pI(r[6])}));
@@ -361,27 +437,106 @@ let cMesI=null,cDeltaI=null;
 
 function otC(v){return!v||isNaN(v)?'#9AA0AD':v>=70?'#0F9E5E':v>=40?'#D97706':'#DC2626'}
 function otP(v){
-  if(!v||isNaN(v))return '<span class="pill pn">—</span>';
+  if(v===null||v===undefined||isNaN(v))return '<span class="pill pn">—</span>';
   return `<span class="pill ${v>=70?'pg':v>=40?'pa':'pr'}">${v.toFixed(1)}%</span>`;
 }
 
-function fMeses(){return MESES.filter(r=>(!sAnos.size||sAnos.has(r.ano))&&(!sMes.size||sMes.has(r.mes)))}
+/* ─── FILTROS ─── */
+function fMeses(){
+  return MESES.filter(r=>(!sAnos.size||sAnos.has(r.ano))&&(!sMes.size||sMes.has(r.mes)));
+}
 function fUF(){return UF.filter(r=>!sUF.size||sUF.has(r.uf))}
 
+/* filtra TRANSP por slicer de transportadora (sTr) */
+function fTransp(){return TRANSP.filter(r=>!sTr.size||sTr.has(r.nome))}
+
 function agg(){
+  /* meses filtrados por ano+mes */
   const m=fMeses().length?fMeses():MESES;
-  const nfs=m.reduce((s,r)=>s+r.nfs,0);
-  const np=m.reduce((s,r)=>s+r.np,0);
-  const at=m.reduce((s,r)=>s+r.at,0);
+  /* se há filtro de transportadora, ajusta os números proporcionalmente */
+  const trRatio=sTr.size?fTransp().reduce((s,r)=>s+r.nfs,0)/TRANSP.reduce((s,r)=>s+r.nfs,0):1;
+  const nfs=Math.round(m.reduce((s,r)=>s+r.nfs,0)*trRatio);
+  const np=Math.round(m.reduce((s,r)=>s+r.np,0)*trRatio);
+  const at=Math.round(m.reduce((s,r)=>s+r.at,0)*trRatio);
   const lrW=m.reduce((s,r)=>s+r.lr*r.nfs,0);
   const lpW=m.reduce((s,r)=>s+r.lp*r.nfs,0);
+  const totNfs=m.reduce((s,r)=>s+r.nfs,0);
   const valW=m.reduce((s,r)=>s+(r.val||0),0);
+  /* on-time: média ponderada das transportadoras selecionadas */
+  let ot;
+  if(sTr.size){
+    const trSel=fTransp();
+    const totTrNfs=trSel.reduce((s,r)=>s+r.nfs,0);
+    ot=totTrNfs>0?trSel.reduce((s,r)=>s+r.ot*r.nfs,0)/totTrNfs:0;
+  }else{
+    ot=valW>0?m.filter(r=>r.ot>0).reduce((s,r)=>s+r.ot*(r.val||0),0)/valW:0;
+  }
+  /* lead: ponderado pelas transportadoras selecionadas */
+  let lr,lp;
+  if(sTr.size){
+    const trSel=fTransp();
+    const totTrNfs=trSel.reduce((s,r)=>s+r.nfs,0);
+    lr=totTrNfs>0?trSel.reduce((s,r)=>s+r.lr*r.nfs,0)/totTrNfs:0;
+    lp=totTrNfs>0?trSel.reduce((s,r)=>s+r.lp*r.nfs,0)/totTrNfs:0;
+  }else{
+    lr=totNfs>0?lrW/totNfs:0;
+    lp=totNfs>0?lpW/totNfs:0;
+  }
   const val=valW/1000;
-  const ot=valW>0?m.filter(r=>r.ot>0).reduce((s,r)=>s+r.ot*(r.val||0),0)/valW:0;
-  return{ot,lr:nfs>0?lrW/nfs:0,lp:nfs>0?lpW/nfs:0,nfs,val,np,at};
+  return{ot,lr,lp,nfs,val,np,at};
 }
 
-/* ═══ SLICERS estilo Power BI ═══ */
+/* ─── DROPDOWN de transportadoras ─── */
+function toggleDropdown(id){
+  const panel=document.getElementById(id+'Panel');
+  const trigger=document.getElementById(id+'Trigger');
+  const isOpen=panel.classList.contains('open');
+  // fecha todos
+  document.querySelectorAll('.slicer-panel.open').forEach(p=>p.classList.remove('open'));
+  document.querySelectorAll('.slicer-trigger.open').forEach(t=>t.classList.remove('open'));
+  if(!isOpen){panel.classList.add('open');trigger.classList.add('open');}
+}
+
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.slicer-dropdown')){
+    document.querySelectorAll('.slicer-panel.open').forEach(p=>p.classList.remove('open'));
+    document.querySelectorAll('.slicer-trigger.open').forEach(t=>t.classList.remove('open'));
+  }
+});
+
+function updateTrLabel(){
+  const lbl=document.getElementById('ddTrLabel');
+  const trigger=document.getElementById('ddTrTrigger');
+  if(!sTr.size){lbl.textContent='Selecionar...';trigger.classList.remove('has-sel');}
+  else if(sTr.size===1){lbl.textContent=[...sTr][0].split(' ')[0]+'...';trigger.classList.add('has-sel');}
+  else{lbl.textContent=`${sTr.size} selecionadas`;trigger.classList.add('has-sel');}
+}
+
+function buildTrList(){
+  const q=(document.getElementById('trSearch').value||'').toLowerCase();
+  const names=TRANSP.map(r=>r.nome);
+  const filtered=q?names.filter(n=>n.toLowerCase().includes(q)):names;
+  const list=document.getElementById('listTr');
+  list.innerHTML='';
+  filtered.forEach(n=>{
+    const el=mkSlicerItem(n,sTr.has(n),()=>{
+      sTr.has(n)?sTr.delete(n):sTr.add(n);
+      buildTrList();updateTrLabel();
+      document.getElementById('clrTr').classList.toggle('vis',sTr.size>0);
+      refresh();mkTransp();
+    });
+    list.appendChild(el);
+  });
+}
+
+function selectAllTr(){
+  TRANSP.forEach(r=>sTr.add(r.nome));
+  buildTrList();updateTrLabel();
+  document.getElementById('clrTr').classList.toggle('vis',sTr.size>0);
+  refresh();mkTransp();
+}
+
+/* ─── SLICERS ─── */
 function mkSlicerItem(label,isOn,onClickFn){
   const el=document.createElement('div');
   el.className='sl-item'+(isOn?' on':'');
@@ -394,14 +549,12 @@ function buildSlicers(){
   const anos=[...new Set(MESES.map(r=>r.ano))].sort();
   const mo=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
   const meses=[...new Set(MESES.map(r=>r.mes))].sort((a,b)=>mo.indexOf(a)-mo.indexOf(b));
-  const ufs=[...new Set(UF.map(r=>r.uf))].sort();
 
   const listAno=document.getElementById('listAno');
   listAno.innerHTML='';
   anos.forEach(a=>{
     listAno.appendChild(mkSlicerItem(String(a),sAnos.has(a),()=>{
-      sAnos.has(a)?sAnos.delete(a):sAnos.add(a);
-      buildSlicers();refresh();
+      sAnos.has(a)?sAnos.delete(a):sAnos.add(a);buildSlicers();refresh();
     }));
   });
 
@@ -409,8 +562,7 @@ function buildSlicers(){
   listMes.innerHTML='';
   meses.forEach(m=>{
     listMes.appendChild(mkSlicerItem(m,sMes.has(m),()=>{
-      sMes.has(m)?sMes.delete(m):sMes.add(m);
-      buildSlicers();refresh();
+      sMes.has(m)?sMes.delete(m):sMes.add(m);buildSlicers();refresh();
     }));
   });
 
@@ -428,8 +580,7 @@ function buildUFList(q=''){
   listUF.innerHTML='';
   filtered.forEach(u=>{
     listUF.appendChild(mkSlicerItem(u,sUF.has(u),()=>{
-      sUF.has(u)?sUF.delete(u):sUF.add(u);
-      buildSlicers();refresh();
+      sUF.has(u)?sUF.delete(u):sUF.add(u);buildSlicers();refresh();
     }));
   });
 }
@@ -440,17 +591,22 @@ function clearGroup(t){
   if(t==='ano')sAnos.clear();
   else if(t==='mes')sMes.clear();
   else if(t==='uf'){sUF.clear();document.getElementById('ufSearch').value='';}
-  buildSlicers();refresh();
+  else if(t==='tr'){
+    sTr.clear();document.getElementById('trSearch').value='';
+    updateTrLabel();buildTrList();
+  }
+  buildSlicers();refresh();mkTransp();
 }
 
 function clearAll(){
   sAnos.clear();sMes.clear();sUF.clear();sTr.clear();
   document.getElementById('ufSearch').value='';
-  document.querySelectorAll('.br').forEach(r=>r.classList.remove('on'));
-  buildSlicers();refresh();
+  document.getElementById('trSearch').value='';
+  updateTrLabel();buildTrList();
+  buildSlicers();refresh();mkTransp();
 }
 
-/* ═══ KPIs ═══ */
+/* ─── KPIs ─── */
 function mkKPI(){
   const k=agg();
   const ot=k.ot,lr=k.lr,lp=k.lp,delta=(lr-lp).toFixed(1);
@@ -472,47 +628,53 @@ function mkKPI(){
   else{b.textContent='✗ Crítico';b.className='badge bg-crit'}
 }
 
-/* ═══ GAUGE SVG ═══ */
+/* ─── GAUGE corrigido ─── */
 function mkGauge(){
   const k=agg();
   const ot=Math.min(100,Math.max(0,k.ot));
   const meta=70;
   const svg=document.getElementById('gaugeSVG');
-  const cx=110,cy=112,r=88,stroke=22;
-  /* arco: 180° = de π até 0 (semicírculo superior) */
-  function arc(pct,clr,full){
-    const start=Math.PI;
-    const end=Math.PI-(full||pct/100)*Math.PI;
-    const x1=cx+r*Math.cos(start),y1=cy+r*Math.sin(start);
-    const x2=cx+r*Math.cos(end),  y2=cy+r*Math.sin(end);
-    const lg=full>0.5||pct/100>0.5?1:0;
-    return `<path d="M${x1},${y1} A${r},${r} 0 ${lg},0 ${x2},${y2}" stroke="${clr}" stroke-width="${stroke}" fill="none" stroke-linecap="butt"/>`;
+  const cx=110,cy=105,r=80,stroke=18;
+
+  function arcPath(fromPct,toPct){
+    const startAng=Math.PI-(fromPct/100)*Math.PI;
+    const endAng=Math.PI-(toPct/100)*Math.PI;
+    const x1=cx+r*Math.cos(startAng),y1=cy+r*Math.sin(startAng);
+    const x2=cx+r*Math.cos(endAng),  y2=cy+r*Math.sin(endAng);
+    const lg=(toPct-fromPct)>50?1:0;
+    return `M${x1},${y1} A${r},${r} 0 ${lg},0 ${x2},${y2}`;
   }
-  /* ponteiro */
+
   const ang=Math.PI-(ot/100)*Math.PI;
-  const needleLen=r-4;
+  const needleLen=r-6;
   const nx=cx+needleLen*Math.cos(ang);
   const ny=cy+needleLen*Math.sin(ang);
 
-  const status=ot>=meta?'✓ Meta atingida':ot>=40?'⚠ Atenção':'✗ Crítico';
   const statusClr=ot>=meta?'#0F9E5E':ot>=40?'#D97706':'#DC2626';
-  const gap=1.2; /* gap em graus convertido */
-  const gapFrac=gap/180;
+  const status=ot>=meta?'✓ Meta atingida':ot>=40?'⚠ Atenção':'✗ Crítico';
 
   svg.innerHTML=`
-    ${arc(0,'#E5E7EB',1)}
-    ${arc(0,'#DC2626', 40/100-gapFrac)}
-    ${arc(0,'#D97706', (meta-40)/100-gapFrac).replace('M','M').replace(/A\d+/,'A'+r)}
-    <path d="M${cx+r*Math.cos(Math.PI-(40/100)*Math.PI+0.013)},${cy+r*Math.sin(Math.PI-(40/100)*Math.PI+0.013)} A${r},${r} 0 0,0 ${cx+r*Math.cos(Math.PI-(meta/100)*Math.PI-0.013)},${cy+r*Math.sin(Math.PI-(meta/100)*Math.PI-0.013)}" stroke="#D97706" stroke-width="${stroke}" fill="none"/>
-    <path d="M${cx+r*Math.cos(Math.PI-(meta/100)*Math.PI+0.013)},${cy+r*Math.sin(Math.PI-(meta/100)*Math.PI+0.013)} A${r},${r} 0 1,0 ${cx+r*Math.cos(0)},${cy+r*Math.sin(0)}" stroke="#0F9E5E" stroke-width="${stroke}" fill="none"/>
+    <!-- fundo cinza -->
+    <path d="${arcPath(0,100)}" stroke="#E5E7EB" stroke-width="${stroke}" fill="none" stroke-linecap="butt"/>
+    <!-- zona vermelha 0-40 -->
+    <path d="${arcPath(0,39.5)}" stroke="#DC2626" stroke-width="${stroke}" fill="none" stroke-linecap="butt"/>
+    <!-- zona amber 40-70 -->
+    <path d="${arcPath(40.5,69.5)}" stroke="#D97706" stroke-width="${stroke}" fill="none" stroke-linecap="butt"/>
+    <!-- zona verde 70-100 -->
+    <path d="${arcPath(70.5,100)}" stroke="#0F9E5E" stroke-width="${stroke}" fill="none" stroke-linecap="butt"/>
+    <!-- ponteiro -->
     <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="#1A1D23" stroke-width="2.5" stroke-linecap="round"/>
     <circle cx="${cx}" cy="${cy}" r="6" fill="#1A1D23"/>
     <circle cx="${cx}" cy="${cy}" r="3" fill="white"/>
-    <text x="${cx-r-2}" y="${cy+16}" font-size="9" fill="#9AA0AD" font-family="Inter,sans-serif">0%</text>
-    <text x="${cx+r-10}" y="${cy+16}" font-size="9" fill="#9AA0AD" font-family="Inter,sans-serif">100%</text>
-    <text x="${cx}" y="${cy+2}" font-size="16" font-weight="600" text-anchor="middle" fill="${statusClr}" font-family="JetBrains Mono,monospace">${ot.toFixed(1)}%</text>
-    <text x="${cx}" y="${cy-18}" font-size="9" text-anchor="middle" fill="#9AA0AD" font-family="Inter,sans-serif">On-Time</text>
-    <text x="${cx}" y="${cy+14}" font-size="9" text-anchor="middle" fill="${statusClr}" font-family="Inter,sans-serif" font-weight="500">${status}</text>
+    <!-- labels -->
+    <text x="${cx-r-4}" y="${cy+14}" font-size="9" fill="#9AA0AD" font-family="Inter,sans-serif" text-anchor="middle">0%</text>
+    <text x="${cx+r+4}" y="${cy+14}" font-size="9" fill="#9AA0AD" font-family="Inter,sans-serif" text-anchor="middle">100%</text>
+    <text x="${cx}" y="${cy-10}" font-size="9" text-anchor="middle" fill="#9AA0AD" font-family="Inter,sans-serif">On-Time</text>
+    <text x="${cx}" y="${cy+4}" font-size="17" font-weight="600" text-anchor="middle" fill="${statusClr}" font-family="JetBrains Mono,monospace">${ot.toFixed(1)}%</text>
+    <text x="${cx}" y="${cy+17}" font-size="9" text-anchor="middle" fill="${statusClr}" font-family="Inter,sans-serif" font-weight="500">${status}</text>
+    <!-- marcador meta -->
+    <line x1="${cx+(r-stroke/2-2)*Math.cos(Math.PI-(meta/100)*Math.PI)}" y1="${cy+(r-stroke/2-2)*Math.sin(Math.PI-(meta/100)*Math.PI)}" x2="${cx+(r+stroke/2+2)*Math.cos(Math.PI-(meta/100)*Math.PI)}" y2="${cy+(r+stroke/2+2)*Math.sin(Math.PI-(meta/100)*Math.PI)}" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <text x="${cx+(r+stroke/2+6)*Math.cos(Math.PI-(meta/100)*Math.PI)}" y="${cy+(r+stroke/2+6)*Math.sin(Math.PI-(meta/100)*Math.PI)+3}" font-size="8" fill="#D97706" font-family="Inter,sans-serif" text-anchor="middle">70%</text>
   `;
 
   const faltam=Math.max(0,meta-ot);
@@ -520,7 +682,7 @@ function mkGauge(){
     ot>=meta?`+${(ot-meta).toFixed(1)}% acima da meta`:`Faltam ${faltam.toFixed(1)}% para meta de ${meta}%`;
 }
 
-/* ═══ GRÁFICO MÊS ═══ */
+/* ─── GRÁFICO MÊS ─── */
 function mkMes(){
   const d=fMeses().length?fMeses():MESES;
   const lb=d.map(r=>r.label);
@@ -574,7 +736,7 @@ function setMode(m,btn){
   mkMes();
 }
 
-/* ═══ DELTA ═══ */
+/* ─── DELTA ─── */
 function mkDelta(){
   const d=fMeses().length?fMeses():MESES;
   const deltas=d.map(r=>parseFloat((r.lr-r.lp).toFixed(2)));
@@ -601,7 +763,7 @@ function mkDelta(){
   cDeltaI.update('none');
 }
 
-/* ═══ TRANSPORTADORAS ═══ */
+/* ─── TRANSPORTADORAS — reativo ao slicer ─── */
 function mkTransp(){
   const s=TRANSP.slice().sort((a,b)=>b.ot-a.ot);
   const mx=Math.max(...s.map(r=>r.ot||0));
@@ -616,9 +778,17 @@ function mkTransp(){
     </div>`;
   }).join('');
 }
-function togTr(n,el){sTr.has(n)?sTr.delete(n):sTr.add(n);el.classList.toggle('on');}
 
-/* ═══ TABELA UF ═══ */
+function togTr(n,el){
+  sTr.has(n)?sTr.delete(n):sTr.add(n);
+  el.classList.toggle('on');
+  // sincroniza slicer lateral
+  buildTrList();updateTrLabel();
+  document.getElementById('clrTr').classList.toggle('vis',sTr.size>0);
+  refresh();
+}
+
+/* ─── TABELA UF ─── */
 function sortUF(k){ufKey===k?ufDir*=-1:(ufKey=k,ufDir=-1);mkUF();}
 
 function mkUF(){
@@ -643,20 +813,20 @@ function mkUF(){
       <td class="tn">R$ ${r.val.toFixed(2)}M</td>
       <td>${otP(r.ot)}</td>
       <td class="${dc}">${r.delta>=0?'+':''}${r.delta.toFixed(1)}d</td>
-      <td class="tn" style="color:var(--green)">${r.np||'—'}</td>
-      <td class="tn" style="color:var(--red)">${r.at||'—'}</td>
+      <td class="tn" style="color:var(--green);font-weight:500">${r.np>0?r.np.toLocaleString('pt-BR'):'0'}</td>
+      <td class="tn" style="color:var(--red);font-weight:500">${r.at>0?r.at.toLocaleString('pt-BR'):'0'}</td>
     </tr>`;
   }).join('');
 
   const dc2=totDelta>2?'color:var(--red)':totDelta<0?'color:var(--green)':'';
   document.getElementById('ufTf').innerHTML=`<tr>
     <td>TOTAL</td>
-    <td class="tn">${totNfs.toLocaleString('pt-BR')}</td>
-    <td class="tn">R$ ${totVal.toFixed(2)}M</td>
+    <td>${totNfs.toLocaleString('pt-BR')}</td>
+    <td>R$ ${totVal.toFixed(2)}M</td>
     <td>${otP(totOt)}</td>
     <td style="font-family:'JetBrains Mono',monospace;font-weight:600;${dc2}">${totDelta>=0?'+':''}${totDelta.toFixed(1)}d</td>
-    <td class="tn" style="color:var(--green);font-weight:600">${totNp.toLocaleString('pt-BR')}</td>
-    <td class="tn" style="color:var(--red);font-weight:600">${totAt.toLocaleString('pt-BR')}</td>
+    <td style="color:var(--green);font-weight:600;font-family:'JetBrains Mono',monospace">${totNp.toLocaleString('pt-BR')}</td>
+    <td style="color:var(--red);font-weight:600;font-family:'JetBrains Mono',monospace">${totAt.toLocaleString('pt-BR')}</td>
   </tr>`;
 }
 
@@ -670,7 +840,7 @@ function refresh(){mkKPI();mkGauge();mkMes();mkDelta();mkUF();}
 
 window.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('ftrTs').textContent='Atualizado: '+new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
-  buildSlicers();mkTransp();refresh();
+  buildSlicers();buildTrList();mkTransp();refresh();
 });
 </script>
 </body>
