@@ -241,6 +241,21 @@ tr.on td{background:var(--bdim)!important}
         </div>
       </div>
     </div>
+
+    <div class="filter-sep"></div>
+
+    <div class="f-group">
+      <span class="f-lbl">Redespacho</span>
+      <button class="f-clr" id="clrRd" onclick="clearGroup('rd')">✕</button>
+      <div class="dd" id="ddRd">
+        <div class="dd-trigger" id="ddRdTrigger" onclick="ddToggle('Rd',event)"><span class="dd-lbl" id="ddRdLbl">Todos</span><span class="dd-arr">▼</span></div>
+        <div class="dd-panel" id="ddRdPanel">
+          <div class="dd-search"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg><input id="srRd" placeholder="Pesquisar..." oninput="buildList('Rd')"></div>
+          <div class="dd-actions"><button class="sp-btn" onclick="selAll('Rd')">Selecionar tudo</button><button class="sp-btn" onclick="clearGroup('rd')">Limpar</button></div>
+          <div class="dd-list" id="listRd"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ── CONTEÚDO PRINCIPAL ── -->
@@ -354,6 +369,20 @@ const RAW_T=[
   {nome:'RODOPRIMA',            nfs:216, ot:46.3,lr:9.49, lp:6.42,np:64,  at:148},
   {nome:'LOG-IN',               nfs:61,  ot:0.0, lr:26.73,lp:16.00,np:0,  at:61},
 ];
+/* Redespacho — valores reais da coluna TRANSP_REDESPACHO */
+const RAW_RD=[
+  {nome:'A S L TRANSPORTES'},
+  {nome:'ALE TRANSPORTES'},
+  {nome:'BOMFIM'},
+  {nome:'BROS LOG'},
+  {nome:'CALIL LOGISTICA'},
+  {nome:'OBJETIVO TRANSPORTAD'},
+  {nome:'OBJETIVO TRANSPORTES'},
+  {nome:'ROCELL TRANSPORTES'},
+  {nome:'RS TRANSPORTES'},
+  {nome:'TMB'},
+  {nome:'TRANSPORTES KARAVAGG'},
+];
 const RAW_UF=[
   {uf:'SP',delta:3.8, nfs:4549,val:51.46,ot:31,np:1410,at:3139},
   {uf:'MG',delta:1.2, nfs:1040,val:35.07,ot:65,np:676, at:364},
@@ -396,7 +425,7 @@ RAW_M.forEach(m=>{
 });
 
 /* ══ ESTADO DOS FILTROS ══ */
-const sAnos=new Set(), sMes=new Set(), sUF=new Set(), sTr=new Set();
+const sAnos=new Set(), sMes=new Set(), sUF=new Set(), sTr=new Set(), sRd=new Set();
 let ufKey='val', ufDir=-1, mesMode='ot';
 let cMesChart=null, cDeltaChart=null;
 
@@ -492,9 +521,10 @@ document.addEventListener('click',e=>{
 });
 
 function ddLabel(key){
-  const SETS={Tr:sTr,Ano:sAnos,Mes:sMes,UF:sUF};
-  const ITEMS={Tr:RAW_T.map(r=>r.nome),Ano:[...new Set(RAW_M.map(r=>r.ano))],Mes:[...new Set(RAW_M.map(r=>r.mes))],UF:RAW_UF.map(r=>r.uf)};
-  const DEF={Tr:'Todas',Ano:'Todos',Mes:'Todos',UF:'Todas'};
+  const SETS={Tr:sTr,Ano:sAnos,Mes:sMes,UF:sUF,Rd:sRd};
+  const ITEMS={Tr:RAW_T.map(r=>r.nome),Ano:[...new Set(RAW_M.map(r=>r.ano))],Mes:[...new Set(RAW_M.map(r=>r.mes))],UF:RAW_UF.map(r=>r.uf),Rd:RAW_RD.map(r=>r.nome)};
+  const DEF={Tr:'Todas',Ano:'Todos',Mes:'Todos',UF:'Todas',Rd:'Todos'};
+  const CLR={Tr:'clrTr',Ano:'clrAno',Mes:'clrMes',UF:'clrUF',Rd:'clrRd'};
   const sel=SETS[key], items=ITEMS[key];
   const lbl=document.getElementById('dd'+key+'Lbl');
   const tr=document.getElementById('dd'+key+'Trigger');
@@ -503,7 +533,7 @@ function ddLabel(key){
   else if(sel.size===items.length){lbl.textContent='Todos';tr.classList.add('sel');}
   else if(sel.size===1){lbl.textContent=[...sel][0];tr.classList.add('sel');}
   else{lbl.textContent=`${sel.size} selecionados`;tr.classList.add('sel');}
-  document.getElementById({Tr:'clrTr',Ano:'clrAno',Mes:'clrMes',UF:'clrUF'}[key]).classList.toggle('vis',sel.size>0);
+  document.getElementById(CLR[key]).classList.toggle('vis',sel.size>0);
 }
 
 function mkItem(label,isOn,fn){
@@ -515,12 +545,13 @@ function mkItem(label,isOn,fn){
 }
 
 function buildList(key){
-  const SETS={Tr:sTr,Ano:sAnos,Mes:sMes,UF:sUF};
+  const SETS={Tr:sTr,Ano:sAnos,Mes:sMes,UF:sUF,Rd:sRd};
   const allItems={
     Tr:RAW_T.map(r=>r.nome),
     Ano:[...new Set(RAW_M.map(r=>r.ano))].sort().map(String),
     Mes:[...new Set(RAW_M.map(r=>r.mes))].sort((a,b)=>MO.indexOf(a)-MO.indexOf(b)),
     UF:RAW_UF.map(r=>r.uf).sort(),
+    Rd:RAW_RD.map(r=>r.nome),
   };
   const sel=SETS[key];
   const q=(document.getElementById('sr'+key).value||'').toLowerCase();
@@ -541,17 +572,18 @@ function buildList(key){
 }
 
 function selAll(key){
-  const SETS={Tr:sTr,Ano:sAnos,Mes:sMes,UF:sUF};
+  const SETS={Tr:sTr,Ano:sAnos,Mes:sMes,UF:sUF,Rd:sRd};
   const sel=SETS[key];
   if(key==='Tr')RAW_T.forEach(r=>sel.add(r.nome));
   else if(key==='Ano')RAW_M.forEach(r=>sel.add(r.ano));
   else if(key==='Mes')RAW_M.forEach(r=>sel.add(r.mes));
   else if(key==='UF')RAW_UF.forEach(r=>sel.add(r.uf));
+  else if(key==='Rd')RAW_RD.forEach(r=>sel.add(r.nome));
   buildList(key);ddLabel(key);updateClearBtn();renderAll();
 }
 
 function clearGroup(t){
-  const map={tr:['Tr',sTr],ano:['Ano',sAnos],mes:['Mes',sMes],uf:['UF',sUF]};
+  const map={tr:['Tr',sTr],ano:['Ano',sAnos],mes:['Mes',sMes],uf:['UF',sUF],rd:['Rd',sRd]};
   if(!map[t])return;
   const [key,sel]=map[t];
   sel.clear();
@@ -560,8 +592,8 @@ function clearGroup(t){
 }
 
 function clearAll(){
-  sAnos.clear();sMes.clear();sUF.clear();sTr.clear();
-  ['Tr','Ano','Mes','UF'].forEach(key=>{
+  sAnos.clear();sMes.clear();sUF.clear();sTr.clear();sRd.clear();
+  ['Tr','Ano','Mes','UF','Rd'].forEach(key=>{
     const sr=document.getElementById('sr'+key);if(sr)sr.value='';
     buildList(key);ddLabel(key);
   });
@@ -569,7 +601,7 @@ function clearAll(){
 }
 
 function updateClearBtn(){
-  const n=sAnos.size+sMes.size+sUF.size+sTr.size;
+  const n=sAnos.size+sMes.size+sUF.size+sTr.size+sRd.size;
   const btn=document.getElementById('btnClrHdr');
   if(!btn)return;
   btn.classList.toggle('active',n>0);
@@ -621,18 +653,21 @@ function mkGauge(){
   const lx100=px(100,r+sw/2+14).toFixed(1),ly100=(py(100,r+sw/2+14)+4).toFixed(1);
   const sc=ot>=meta?'#10B981':ot>=40?'#F59E0B':'#EF4444';
   const st=ot>=meta?'Acima da meta':ot>=40?'Atraso Moderado':'Atraso Crítico';
+  /* ORDEM CORRETA: arcos → divisores → ponteiro → textos (textos sempre na frente) */
   svg.innerHTML=`
     ${seg(0,100,'#E5E7EB')}${seg(0,40-gap,'#EF4444')}${seg(40+gap,70-gap,'#F59E0B')}${seg(70+gap,100,'#10B981')}
     <line x1="${d40xi}" y1="${d40yi}" x2="${d40xo}" y2="${d40yo}" stroke="white" stroke-width="1.5" opacity="0.8"/>
     <line x1="${px(meta,r-sw/2-5).toFixed(1)}" y1="${py(meta,r-sw/2-5).toFixed(1)}" x2="${px(meta,r+sw/2+5).toFixed(1)}" y2="${py(meta,r+sw/2+5).toFixed(1)}" stroke="rgba(255,255,255,0.3)" stroke-width="7" stroke-linecap="round"/>
     <line x1="${dxi}" y1="${dyi}" x2="${dxo}" y2="${dyo}" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
     <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="#111827" stroke-width="2.5" stroke-linecap="round"/>
-    <circle cx="${cx}" cy="${cy}" r="8" fill="#111827"/><circle cx="${cx}" cy="${cy}" r="4" fill="white"/>
+    <circle cx="${cx}" cy="${cy}" r="8" fill="#111827"/>
+    <circle cx="${cx}" cy="${cy}" r="4" fill="white"/>
     <text x="${lx0}" y="${ly0}" font-size="11" fill="#9CA3AF" font-family="Inter,sans-serif" text-anchor="middle">0%</text>
     <text x="${lx100}" y="${ly100}" font-size="11" fill="#9CA3AF" font-family="Inter,sans-serif" text-anchor="middle">100%</text>
     <text x="${lx70}" y="${ly70}" font-size="11" fill="#374151" font-weight="600" font-family="Inter,sans-serif" text-anchor="middle">70%</text>
-    <text x="${cx}" y="${cy-14}" font-size="10" fill="#9CA3AF" font-family="Inter,sans-serif" text-anchor="middle">On-Time</text>
-    <text x="${cx}" y="${cy+8}" font-size="22" font-weight="700" fill="${sc}" font-family="JetBrains Mono,monospace" text-anchor="middle">${ot.toFixed(0)}%</text>`;
+    <text x="${cx}" y="${(cy-22).toFixed(0)}" font-size="10" fill="#9CA3AF" font-family="Inter,sans-serif" text-anchor="middle">On-Time</text>
+    <rect x="${(cx-32).toFixed(0)}" y="${(cy-18).toFixed(0)}" width="64" height="26" rx="4" fill="white" opacity="0.92"/>
+    <text x="${cx}" y="${(cy-2).toFixed(0)}" font-size="22" font-weight="700" fill="${sc}" font-family="JetBrains Mono,monospace" text-anchor="middle">${ot.toFixed(0)}%</text>`;
   const dot=document.getElementById('gaugeDot');
   const txt=document.getElementById('gaugeStatusTxt');
   if(dot)dot.style.background=sc;
@@ -724,15 +759,17 @@ function mkDelta(){
 /* ══ TRANSPORTADORAS ══ */
 function mkTransp(){
   const byTr=aggByTr();
-  const mx=Math.max(...byTr.map(r=>r.ot||0));
   document.getElementById('tBt').innerHTML=byTr.map(r=>{
-    const bw=mx>0?Math.round((r.ot||0)/mx*100):0;
+    /* barra proporcional ao on-time REAL (0-100%), não relativa ao máximo */
+    const bw=Math.round(Math.min(100,Math.max(0,r.ot)));
     const fc=r.ot>=70?'#0F9E5E':r.ot>=40?'#D97706':'#DC2626';
     const isOn=sTr.has(r.nome);
     const dim=sTr.size&&!isOn?'opacity:.3;':'';
-    return `<div class="br${isOn?' on':''}" style="${dim}" onclick="togTr('${r.nome.replace(/'/g,"\\'")}')" >
-      <div class="bh"><span class="bn">${r.nome}</span>
-      <div class="bs">${otP(r.ot)}<span>${r.nfs.toLocaleString('pt-BR')} NFs</span><span>${r.lr.toFixed(1)}d</span></div></div>
+    return `<div class="br${isOn?' on':''}" style="${dim}" onclick="togTr('${r.nome.replace(/'/g,"\\'")}')">
+      <div class="bh">
+        <span class="bn">${r.nome}</span>
+        <div class="bs">${otP(r.ot)}<span>${r.nfs.toLocaleString('pt-BR')} NFs</span><span>${r.lr.toFixed(1)}d</span></div>
+      </div>
       <div class="btr"><div class="bf" style="width:${bw}%;background:${fc}"></div></div>
     </div>`;
   }).join('');
@@ -789,7 +826,7 @@ function renderAll(){mkKPI();mkGauge();mkMes();mkDelta();mkTransp();mkUF();}
 
 window.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('ftrTs').textContent='Atualizado: '+new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
-  ['Tr','Ano','Mes','UF'].forEach(key=>{buildList(key);ddLabel(key);});
+  ['Tr','Ano','Mes','UF','Rd'].forEach(key=>{buildList(key);ddLabel(key);});
   updateClearBtn();renderAll();
 });
 </script>
