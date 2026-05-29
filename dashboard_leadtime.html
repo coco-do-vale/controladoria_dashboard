@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controladoria — Lead Time & On-Time</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg2: #161b26;
+    --bg3: #1e2535;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #f0f2f7;
+    --text2: #8b92a5;
+    --text3: #545c6e;
+    --green: #22d07a;
+    --green-dim: rgba(34,208,122,0.12);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.12);
+    --red: #f04f59;
+    --red-dim: rgba(240,79,89,0.12);
+    --blue: #4f8ef7;
+    --blue-dim: rgba(79,142,247,0.12);
+    --purple: #9b72f7;
+    --accent: #4f8ef7;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .header-left { display: flex; align-items: center; gap: 10px; }
+  .logo-dot {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--blue); display: flex; align-items: center;
+    justify-content: center; font-size: 16px;
+  }
+  .header h1 { font-size: 16px; font-weight: 600; color: var(--text); }
+  .header-sub { font-size: 12px; color: var(--text2); margin-top: 1px; font-family: 'DM Mono', monospace; }
+  .header-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .header-controls select {
+    background: var(--bg3); border: 1px solid var(--border2);
+    color: var(--text); border-radius: var(--radius-sm);
+    padding: 6px 10px; font-size: 12px; font-family: 'DM Sans', sans-serif;
+    cursor: pointer; outline: none;
+  }
+  .badge-meta {
+    background: var(--amber-dim); color: var(--amber);
+    border: 1px solid rgba(245,166,35,0.25);
+    padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 500;
+  }
+
+  /* ── LAYOUT ── */
+  .main { padding: 20px 24px; display: flex; flex-direction: column; gap: 20px; }
+
+  /* ── KPI CARDS ── */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 12px; }
+  .kpi-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 6px;
+    transition: border-color .2s;
+    position: relative; overflow: hidden;
+  }
+  .kpi-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .kpi-card.green::before { background: var(--green); }
+  .kpi-card.amber::before { background: var(--amber); }
+  .kpi-card.red::before   { background: var(--red); }
+  .kpi-card.blue::before  { background: var(--blue); }
+  .kpi-card.purple::before{ background: var(--purple); }
+  .kpi-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; font-weight: 500; }
+  .kpi-value { font-size: 26px; font-weight: 600; color: var(--text); font-family: 'DM Mono', monospace; }
+  .kpi-value.green { color: var(--green); }
+  .kpi-value.amber { color: var(--amber); }
+  .kpi-value.red   { color: var(--red); }
+  .kpi-sub { font-size: 11px; color: var(--text3); }
+
+  /* ── SECTION ── */
+  .section { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .section-head {
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .section-title { font-size: 13px; font-weight: 600; color: var(--text); }
+  .section-hint  { font-size: 11px; color: var(--text3); }
+  .section-body  { padding: 18px; }
+
+  /* ── TWO COL ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 680px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* ── CHART WRAPPER ── */
+  .chart-wrap { position: relative; width: 100%; }
+
+  /* ── BAR TABLE (transportadoras/UF) ── */
+  .bar-table { display: flex; flex-direction: column; gap: 10px; }
+  .bt-row { display: flex; flex-direction: column; gap: 4px; }
+  .bt-header { display: flex; justify-content: space-between; align-items: center; }
+  .bt-name { font-size: 12px; color: var(--text); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+  .bt-stats { display: flex; gap: 10px; font-size: 11px; color: var(--text2); font-family: 'DM Mono', monospace; }
+  .bt-track { height: 6px; background: var(--bg3); border-radius: 999px; overflow: hidden; }
+  .bt-fill  { height: 100%; border-radius: 999px; transition: width .6s cubic-bezier(.4,0,.2,1); }
+  .pill { display: inline-block; padding: 2px 7px; border-radius: 999px; font-size: 10px; font-weight: 600; letter-spacing: .02em; }
+  .pill-g { background: var(--green-dim); color: var(--green); }
+  .pill-a { background: var(--amber-dim); color: var(--amber); }
+  .pill-r { background: var(--red-dim);   color: var(--red); }
+
+  /* ── TABLE ── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .data-table th {
+    text-align: left; padding: 8px 10px; font-size: 10px; font-weight: 600;
+    color: var(--text3); text-transform: uppercase; letter-spacing: .06em;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  .data-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--text2); }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(255,255,255,.02); }
+  .data-table td.uf { color: var(--text); font-weight: 600; font-family: 'DM Mono', monospace; font-size: 13px; }
+  .data-table td.num { font-family: 'DM Mono', monospace; color: var(--text); }
+  .data-table td.delta-pos { color: var(--red);   font-family: 'DM Mono', monospace; }
+  .data-table td.delta-neg { color: var(--green); font-family: 'DM Mono', monospace; }
+  .tbl-wrap { max-height: 340px; overflow-y: auto; }
+  .tbl-wrap::-webkit-scrollbar { width: 4px; }
+  .tbl-wrap::-webkit-scrollbar-track { background: transparent; }
+  .tbl-wrap::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 999px; }
+
+  /* ── FOOTER ── */
+  .footer {
+    padding: 12px 24px; border-top: 1px solid var(--border);
+    font-size: 11px; color: var(--text3); display: flex;
+    justify-content: space-between; align-items: center;
+  }
+  .footer span { font-family: 'DM Mono', monospace; }
+
+  /* ── TABS ── */
+  .tabs { display: flex; gap: 2px; }
+  .tab {
+    padding: 5px 12px; border-radius: var(--radius-sm);
+    font-size: 12px; font-weight: 500; cursor: pointer;
+    color: var(--text2); border: none; background: transparent;
+    transition: all .15s;
+  }
+  .tab.active { background: var(--bg3); color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo-dot">📦</div>
+    <div>
+      <h1>Controladoria — Lead Time & On-Time</h1>
+      <div class="header-sub" id="headerPeriod">Jan/2025 → Mai/2026 &nbsp;·&nbsp; 14.553 NFs</div>
+    </div>
+  </div>
+  <div class="header-controls">
+    <select id="filterAno" onchange="applyFilters()">
+      <option value="all">Todos os anos</option>
+      <option value="2025">2025</option>
+      <option value="2026">2026</option>
+    </select>
+    <select id="filterRegiao" onchange="applyFilters()">
+      <option value="all">Todas as regiões</option>
+      <option value="Sudeste">Sudeste</option>
+      <option value="Nordeste">Nordeste</option>
+      <option value="Centro-Oeste">Centro-Oeste</option>
+      <option value="Sul">Sul</option>
+      <option value="Norte">Norte</option>
+    </select>
+    <span class="badge-meta">meta On-Time: 70%</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- KPIs -->
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <!-- Evolução mensal + Transportadoras -->
+  <div class="two-col">
+
+    <div class="section">
+      <div class="section-head">
+        <span class="section-title">Evolução mensal</span>
+        <div class="tabs">
+          <button class="tab active" onclick="switchMonthChart('ontime',this)">On-Time %</button>
+          <button class="tab" onclick="switchMonthChart('lead',this)">Lead time</button>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="chart-wrap" style="height:220px"><canvas id="chartMes" role="img" aria-label="Evolução mensal de On-Time e Lead Time">Gráfico de evolução mensal.</canvas></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <span class="section-title">Transportadoras</span>
+        <span class="section-hint">por On-Time % (R$)</span>
+      </div>
+      <div class="section-body">
+        <div class="bar-table" id="transpBars"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- UF Table -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-title">Desempenho por UF</span>
+      <span class="section-hint">ordenado por valor NF desc</span>
+    </div>
+    <div class="tbl-wrap">
+      <table class="data-table" id="ufTable">
+        <thead>
+          <tr>
+            <th>UF</th><th>Região</th><th>NFs</th>
+            <th>Valor NF</th><th>On-Time %</th>
+            <th>Lead Real</th><th>Lead Prom</th><th>Delta</th>
+            <th>No Prazo</th><th>Atrasadas</th>
+          </tr>
+        </thead>
+        <tbody id="ufTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Lead time por mês (barras empilhadas prometido vs realizado) -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-title">Lead prometido vs realizado por mês</span>
+      <span class="section-hint">delta = realizado − prometido</span>
+    </div>
+    <div class="section-body">
+      <div class="chart-wrap" style="height:200px"><canvas id="chartLeadComp" role="img" aria-label="Comparação lead prometido vs realizado por mês">Gráfico de comparação de lead time.</canvas></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>coco-do-vale · Controladoria Lead Time</span>
+  <span id="footerTs"></span>
+</div>
+
+<script>
+const MESES_RAW = [
+  {a:2025,mn:1,mc:"jan",nfs:705,val:9225814,ot:0.431,lr:9.70,lp:7.68,np:260,at:431},
+  {a:2025,mn:2,mc:"fev",nfs:790,val:13111055,ot:0.403,lr:9.79,lp:7.13,np:285,at:488},
+  {a:2025,mn:3,mc:"mar",nfs:1167,val:13142592,ot:0.467,lr:10.10,lp:7.66,np:503,at:648},
+  {a:2025,mn:4,mc:"abr",nfs:945,val:12176369,ot:0.409,lr:10.82,lp:6.58,np:320,at:612},
+  {a:2025,mn:5,mc:"mai",nfs:1383,val:13927189,ot:0.483,lr:10.60,lp:7.67,np:575,at:794},
+  {a:2025,mn:6,mc:"jun",nfs:1278,val:13126891,ot:0.508,lr:9.45,lp:7.60,np:498,at:742},
+  {a:2025,mn:7,mc:"jul",nfs:1001,val:14323003,ot:0.542,lr:8.67,lp:7.40,np:489,at:499},
+  {a:2025,mn:8,mc:"ago",nfs:1116,val:12769017,ot:0.405,lr:10.41,lp:7.30,np:409,at:667},
+  {a:2025,mn:9,mc:"set",nfs:701,val:12089078,ot:0.429,lr:10.46,lp:6.63,np:267,at:412},
+  {a:2025,mn:10,mc:"out",nfs:748,val:12297350,ot:0.340,lr:12.10,lp:6.95,np:207,at:519},
+  {a:2025,mn:11,mc:"nov",nfs:650,val:12454984,ot:0.323,lr:11.84,lp:6.87,np:148,at:479},
+  {a:2025,mn:12,mc:"dez",nfs:521,val:9018091,ot:0.277,lr:13.06,lp:7.24,np:89,at:363},
+  {a:2026,mn:1,mc:"jan",nfs:730,val:11686046,ot:0.417,lr:10.75,lp:6.80,np:208,at:507},
+  {a:2026,mn:2,mc:"fev",nfs:640,val:10001815,ot:0.275,lr:10.32,lp:6.21,np:146,at:482},
+  {a:2026,mn:3,mc:"mar",nfs:811,val:12774718,ot:0.356,lr:11.86,lp:5.86,np:238,at:550},
+  {a:2026,mn:4,mc:"abr",nfs:798,val:12854590,ot:0.377,lr:9.99,lp:6.22,np:292,at:444},
+  {a:2026,mn:5,mc:"mai",nfs:569,val:7531714,ot:0.550,lr:7.23,lp:7.14,np:70,at:120},
+];
+
+const TRANSP_RAW = [
+  {n:"ALIA TRANSPORTES",nfs:7053,val:86054311,ot:0.410,lr:10.20,lp:7.39,np:2607,at:4259},
+  {n:"GRUPOPRIMA",nfs:2822,val:41993474,ot:0.387,lr:10.51,lp:6.95,np:817,at:1663},
+  {n:"RODOMILLI",nfs:1288,val:17807901,ot:0.558,lr:8.37,lp:7.06,np:684,at:583},
+  {n:"SHELBY TRANSP.",nfs:1121,val:23269305,ot:0.383,lr:8.41,lp:4.99,np:255,at:797},
+  {n:"SERVIMAR",nfs:428,val:7563006,ot:0.876,lr:2.33,lp:3.91,np:336,at:83},
+  {n:"RACA",nfs:445,val:6082710,ot:0.297,lr:18.13,lp:13.72,np:106,at:286},
+  {n:"BOMFIM",nfs:384,val:2639585,ot:0.137,lr:12.94,lp:6.12,np:76,at:279},
+  {n:"TECMAR",nfs:293,val:2703058,ot:0.114,lr:20.41,lp:5.18,np:38,at:254},
+  {n:"RODOPRIMA",nfs:216,val:6103617,ot:0.463,lr:9.49,lp:6.42,np:64,at:148},
+];
+
+const UF_RAW = [
+  {uf:"SP",reg:"Sudeste",nfs:4549,val:51461227,ot:0.314,lr:10.67,lp:6.87,np:1260,at:3040},
+  {uf:"RJ",reg:"Sudeste",nfs:2408,val:35297818,ot:0.452,lr:9.65,lp:7.21,np:1025,at:1205},
+  {uf:"MG",reg:"Sudeste",nfs:1040,val:35074629,ot:0.649,lr:7.44,lp:6.22,np:455,at:527},
+  {uf:"SC",reg:"Sul",nfs:817,val:20089970,ot:0.269,lr:9.72,lp:7.05,np:255,at:539},
+  {uf:"ES",reg:"Sudeste",nfs:1225,val:9937648,ot:0.704,lr:7.32,lp:7.31,np:752,at:436},
+  {uf:"GO",reg:"Centro-Oeste",nfs:1200,val:8392357,ot:0.360,lr:12.17,lp:7.73,np:449,at:701},
+  {uf:"PE",reg:"Nordeste",nfs:461,val:8115343,ot:0.846,lr:2.76,lp:4.05,np:345,at:105},
+  {uf:"BA",reg:"Nordeste",nfs:869,val:7194629,ot:0.061,lr:16.57,lp:4.25,np:43,at:761},
+  {uf:"DF",reg:"Centro-Oeste",nfs:352,val:5128662,ot:0.376,lr:12.47,lp:7.35,np:133,at:214},
+  {uf:"AP",reg:"Norte",nfs:215,val:3382614,ot:0.156,lr:28.53,lp:15.71,np:38,at:151},
+  {uf:"AM",reg:"Norte",nfs:163,val:3326853,ot:null,lr:33.34,lp:13.34,np:0,at:150},
+  {uf:"CE",reg:"Nordeste",nfs:263,val:2486382,ot:0.169,lr:8.47,lp:4.39,np:51,at:195},
+  {uf:"RS",reg:"Sul",nfs:251,val:2276949,ot:0.128,lr:14.51,lp:9.94,np:49,at:185},
+  {uf:"MA",reg:"Nordeste",nfs:151,val:2085162,ot:0.309,lr:14.72,lp:7.48,np:57,at:92},
+  {uf:"PR",reg:"Sul",nfs:93,val:2052327,ot:0.158,lr:10.20,lp:4.81,np:13,at:71},
+  {uf:"PA",reg:"Norte",nfs:150,val:1925837,ot:0.108,lr:21.48,lp:12.80,np:9,at:130},
+  {uf:"PI",reg:"Nordeste",nfs:110,val:1600324,ot:0.306,lr:11.74,lp:8.40,np:28,at:74},
+  {uf:"PB",reg:"Nordeste",nfs:88,val:1062800,ot:0.219,lr:2.75,lp:1.38,np:29,at:53},
+  {uf:"TO",reg:"Norte",nfs:62,val:796960,ot:0.121,lr:24.10,lp:10.54,np:9,at:51},
+  {uf:"SE",reg:"Nordeste",nfs:55,val:410991,ot:null,lr:19.32,lp:4.49,np:0,at:51},
+];
+
+let mesChart = null;
+let leadCompChart = null;
+let currentMonthMode = 'ontime';
+let filteredMeses = [...MESES_RAW];
+let filteredUFs   = [...UF_RAW];
+
+function otColor(v) {
+  if (v === null) return '#545c6e';
+  if (v >= 0.70) return '#22d07a';
+  if (v >= 0.40) return '#f5a623';
+  return '#f04f59';
+}
+function otPill(v) {
+  if (v === null) return '<span class="pill" style="background:rgba(84,92,110,.2);color:#545c6e">—</span>';
+  const pct = Math.round(v*100);
+  const cls = v>=0.70?'pill-g':v>=0.40?'pill-a':'pill-r';
+  return `<span class="pill ${cls}">${pct}%</span>`;
+}
+function fmtVal(v) { return 'R$ '+(v/1e6).toFixed(1)+'M'; }
+function fmtN(v,d=2) { return v!=null?v.toFixed(d):'—'; }
+
+function applyFilters() {
+  const ano    = document.getElementById('filterAno').value;
+  const regiao = document.getElementById('filterRegiao').value;
+
+  filteredMeses = MESES_RAW.filter(r => ano === 'all' || String(r.a) === ano);
+  filteredUFs   = UF_RAW.filter(r => regiao === 'all' || r.reg === regiao);
+
+  renderKPIs();
+  renderMonthChart(currentMonthMode);
+  renderLeadCompChart();
+  renderTransp();
+  renderUFTable();
+}
+
+function renderKPIs() {
+  const totalNFs   = filteredMeses.reduce((s,r)=>s+r.nfs, 0);
+  const totalVal   = filteredMeses.reduce((s,r)=>s+r.val, 0);
+  const totalNP    = filteredMeses.reduce((s,r)=>s+r.np, 0);
+  const totalAT    = filteredMeses.reduce((s,r)=>s+r.at, 0);
+  const avgOT      = filteredMeses.filter(r=>r.ot!=null).reduce((s,r,_,a)=>s+r.ot/a.length,0);
+  const avgLR      = filteredMeses.filter(r=>r.lr!=null).reduce((s,r,_,a)=>s+r.lr/a.length,0);
+  const avgLP      = filteredMeses.filter(r=>r.lp!=null).reduce((s,r,_,a)=>s+r.lp/a.length,0);
+  const delta      = avgLR - avgLP;
+
+  const otCls = avgOT>=0.70?'green':avgOT>=0.40?'amber':'red';
+
+  document.getElementById('kpiGrid').innerHTML = `
+    <div class="kpi-card ${otCls}">
+      <div class="kpi-label">On-Time % (R$)</div>
+      <div class="kpi-value ${otCls}">${Math.round(avgOT*100)}%</div>
+      <div class="kpi-sub">meta 70% &nbsp;·&nbsp; ${avgOT>=0.70?'✓ atingida':'✗ abaixo'}</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Total NFs</div>
+      <div class="kpi-value">${totalNFs.toLocaleString('pt-BR')}</div>
+      <div class="kpi-sub">${fmtVal(totalVal)} em valor</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Entregues no prazo</div>
+      <div class="kpi-value green">${totalNP.toLocaleString('pt-BR')}</div>
+      <div class="kpi-sub">${Math.round(totalNP/(totalNP+totalAT)*100)}% do total entregue</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Atrasadas</div>
+      <div class="kpi-value red">${totalAT.toLocaleString('pt-BR')}</div>
+      <div class="kpi-sub">${Math.round(totalAT/(totalNP+totalAT)*100)}% do total entregue</div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-label">Lead realizado médio</div>
+      <div class="kpi-value">${avgLR.toFixed(1)}d</div>
+      <div class="kpi-sub">prometido: ${avgLP.toFixed(1)}d</div>
+    </div>
+    <div class="kpi-card ${delta>2?'red':delta>0?'amber':'green'}">
+      <div class="kpi-label">Delta lead (real−prom)</div>
+      <div class="kpi-value ${delta>2?'red':delta>0?'amber':'green'}">+${delta.toFixed(1)}d</div>
+      <div class="kpi-sub">atraso médio acumulado</div>
+    </div>
+  `;
+}
+
+function switchMonthChart(mode, btn) {
+  currentMonthMode = mode;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderMonthChart(mode);
+}
+
+function renderMonthChart(mode) {
+  const labels = filteredMeses.map(r => `${r.mc}/${String(r.a).slice(2)}`);
+  if (mesChart) { mesChart.destroy(); mesChart = null; }
+  const ctx = document.getElementById('chartMes').getContext('2d');
+
+  if (mode === 'ontime') {
+    mesChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'On-Time % (R$)',
+            data: filteredMeses.map(r => r.ot!=null ? Math.round(r.ot*100) : null),
+            borderColor: '#4f8ef7', backgroundColor: 'rgba(79,142,247,0.08)',
+            borderWidth: 2, pointRadius: 4, pointHoverRadius: 6,
+            fill: true, tension: 0.3, spanGaps: true,
+            pointBackgroundColor: filteredMeses.map(r => r.ot!=null ? otColor(r.ot) : '#545c6e'),
+            pointBorderColor: filteredMeses.map(r => r.ot!=null ? otColor(r.ot) : '#545c6e'),
+          },
+          {
+            label: 'Meta 70%',
+            data: filteredMeses.map(()=>70),
+            borderColor: 'rgba(245,166,35,0.4)', borderWidth: 1,
+            borderDash: [6,3], pointRadius: 0, fill: false,
+          }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: {
+          callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.raw}%` }
+        }},
+        scales: {
+          x: { ticks: { color: '#545c6e', font:{size:10} }, grid: { color: 'rgba(255,255,255,.04)' } },
+          y: { ticks: { color: '#545c6e', font:{size:10}, callback: v => v+'%' }, grid: { color: 'rgba(255,255,255,.04)' }, min: 0, max: 100 }
+        }
+      }
+    });
+  } else {
+    mesChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Lead realizado',
+            data: filteredMeses.map(r => +r.lr.toFixed(1)),
+            borderColor: '#f04f59', backgroundColor: 'transparent',
+            borderWidth: 2, pointRadius: 3, tension: 0.3,
+          },
+          {
+            label: 'Lead prometido',
+            data: filteredMeses.map(r => +r.lp.toFixed(1)),
+            borderColor: '#22d07a', backgroundColor: 'transparent',
+            borderWidth: 1.5, borderDash: [5,3], pointRadius: 0, tension: 0.3,
+          }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: {
+          callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.raw}d` }
+        }},
+        scales: {
+          x: { ticks: { color: '#545c6e', font:{size:10} }, grid: { color: 'rgba(255,255,255,.04)' } },
+          y: { ticks: { color: '#545c6e', font:{size:10}, callback: v => v+'d' }, grid: { color: 'rgba(255,255,255,.04)' } }
+        }
+      }
+    });
+  }
+}
+
+function renderLeadCompChart() {
+  const labels = filteredMeses.map(r => `${r.mc}/${String(r.a).slice(2)}`);
+  const deltas = filteredMeses.map(r => +(r.lr - r.lp).toFixed(1));
+  if (leadCompChart) { leadCompChart.destroy(); leadCompChart = null; }
+  const ctx = document.getElementById('chartLeadComp').getContext('2d');
+  leadCompChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Delta (real − prometido)',
+        data: deltas,
+        backgroundColor: deltas.map(d => d > 2 ? 'rgba(240,79,89,0.7)' : d > 0 ? 'rgba(245,166,35,0.7)' : 'rgba(34,208,122,0.7)'),
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: {
+        callbacks: { label: ctx => ` Delta: +${ctx.raw}d` }
+      }},
+      scales: {
+        x: { ticks: { color: '#545c6e', font:{size:10} }, grid: { color: 'rgba(255,255,255,.04)' } },
+        y: { ticks: { color: '#545c6e', font:{size:10}, callback: v => '+'+v+'d' }, grid: { color: 'rgba(255,255,255,.04)' } }
+      }
+    }
+  });
+}
+
+function renderTransp() {
+  const sorted = [...TRANSP_RAW].sort((a,b) => (b.ot??0) - (a.ot??0));
+  const max = Math.max(...sorted.map(r=>r.ot??0));
+  document.getElementById('transpBars').innerHTML = sorted.map(r => {
+    const pct = r.ot != null ? Math.round(r.ot*100) : 0;
+    const fillColor = r.ot>=0.70?'#22d07a':r.ot>=0.40?'#f5a623':'#f04f59';
+    const barW = max > 0 ? Math.round((r.ot??0)/max*100) : 0;
+    return `<div class="bt-row">
+      <div class="bt-header">
+        <span class="bt-name">${r.n}</span>
+        <div class="bt-stats">
+          ${otPill(r.ot)}
+          <span>${r.nfs.toLocaleString('pt-BR')} NFs</span>
+          <span>${r.lr.toFixed(1)}d real</span>
+        </div>
+      </div>
+      <div class="bt-track"><div class="bt-fill" style="width:${barW}%;background:${fillColor}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderUFTable() {
+  const rows = filteredUFs.sort((a,b) => b.val - a.val);
+  document.getElementById('ufTbody').innerHTML = rows.map(r => {
+    const delta = r.lr - r.lp;
+    const deltaCls = delta > 2 ? 'delta-pos' : delta < 0 ? 'delta-neg' : '';
+    return `<tr>
+      <td class="uf">${r.uf}</td>
+      <td>${r.reg}</td>
+      <td class="num">${r.nfs.toLocaleString('pt-BR')}</td>
+      <td class="num">${fmtVal(r.val)}</td>
+      <td>${otPill(r.ot)}</td>
+      <td class="num">${r.lr.toFixed(1)}d</td>
+      <td class="num">${r.lp.toFixed(1)}d</td>
+      <td class="${deltaCls}">+${delta.toFixed(1)}d</td>
+      <td class="num" style="color:#22d07a">${r.np}</td>
+      <td class="num" style="color:#f04f59">${r.at}</td>
+    </tr>`;
+  }).join('');
+}
+
+// init
+document.getElementById('footerTs').textContent = 'Atualizado: '+new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
+applyFilters();
+</script>
+</body>
+</html>
