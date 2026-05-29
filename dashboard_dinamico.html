@@ -15,8 +15,8 @@
   --amber:#D97706;--adim:#FEF3E2;
   --red:#DC2626;--rdim:#FEF0F0;
   --blue:#1D6EE8;--bdim:#EEF4FD;
-  --pbi-blue:#0078D4;--pbi-sel:#DEECF9;--pbi-hover:#F0F6FC;
-  --hh:48px;--sw:172px;
+  --pbi:#0078D4;--pbi-sel:#DEECF9;--pbi-hover:#F0F6FC;
+  --hh:48px;
   --sh:0 1px 3px rgba(0,0,0,.07);
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -32,147 +32,99 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:
 .hdr-sub{font-size:10px;color:var(--text2);font-family:'JetBrains Mono',monospace}
 .hdr-right{display:flex;gap:6px;align-items:center;flex-shrink:0}
 .badge{padding:2px 8px;border-radius:999px;font-size:10px;font-weight:500;border:1px solid;white-space:nowrap}
-.bg-meta{background:var(--adim);color:var(--amber);border-color:rgba(217,119,6,.2)}
 .bg-ok{background:var(--gdim);color:var(--green);border-color:rgba(15,158,94,.2)}
 .bg-warn{background:var(--adim);color:var(--amber);border-color:rgba(217,119,6,.2)}
 .bg-crit{background:var(--rdim);color:var(--red);border-color:rgba(220,38,38,.2)}
+.btn-clr-hdr{display:flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;
+  font-size:10px;font-weight:500;border:1px solid rgba(220,38,38,.3);background:var(--rdim);
+  color:var(--red);cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;
+  opacity:.35;pointer-events:none;transition:opacity .15s}
+.btn-clr-hdr.active{opacity:1;pointer-events:auto}
 
-/* LAYOUT */
-.layout{position:fixed;top:var(--hh);left:0;right:0;bottom:0;display:flex}
+/* LAYOUT: coluna única, sem sidebar */
+.layout{position:fixed;top:var(--hh);left:0;right:0;bottom:0;display:flex;flex-direction:column}
 
-/* ═══ SIDEBAR ═══ */
-.sidebar{
-  width:var(--sw);flex-shrink:0;
-  background:var(--bg2);border-right:1px solid var(--border2);
-  display:flex;flex-direction:column;overflow:hidden;
-}
+/* BARRA DE FILTROS HORIZONTAL */
+.filter-bar{flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border);
+  padding:5px 14px;display:flex;align-items:center;gap:10px;flex-wrap:nowrap;overflow-x:auto}
+.filter-bar::-webkit-scrollbar{height:3px}
+.filter-bar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.filter-sep{width:1px;height:22px;background:var(--border2);flex-shrink:0}
+.f-group{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.f-lbl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.f-clr{font-size:10px;color:var(--text3);cursor:pointer;background:none;border:none;font-family:'Inter',sans-serif;padding:0 2px;display:none;line-height:1}
+.f-clr.vis{display:inline}
+.f-clr:hover{color:var(--red)}
 
-.slicer{display:flex;flex-direction:column;border-bottom:1px solid var(--border);flex-shrink:0;}
-.slicer-head{
-  padding:6px 8px 4px;display:flex;align-items:center;justify-content:space-between;
-  background:var(--bg2);cursor:default;user-select:none;
-}
-.slicer-title{font-size:10px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.04em}
-.slicer-clr{font-size:9px;color:var(--text3);cursor:pointer;background:none;border:none;
-  font-family:'Inter',sans-serif;padding:1px 3px;border-radius:3px;display:none;}
-.slicer-clr.vis{display:block}
-.slicer-clr:hover{color:var(--red)}
-
-.slicer-search{
-  margin:0 8px 5px;display:flex;align-items:center;gap:5px;
-  border:1px solid var(--border2);border-radius:3px;padding:3px 6px;background:var(--bg2);
-}
-.slicer-search input{border:none;outline:none;font-size:11px;font-family:'Inter',sans-serif;
-  background:transparent;color:var(--text);width:100%;}
-.slicer-search input::placeholder{color:var(--text3)}
-.slicer-search svg{flex-shrink:0;opacity:.4}
-
-/* Dropdown slicer estilo Power BI */
-.slicer-dropdown{position:relative;margin:0 6px 5px;}
-.slicer-trigger{
-  display:flex;align-items:center;justify-content:space-between;
-  border:1px solid var(--border2);border-radius:3px;padding:4px 7px;
-  background:var(--bg2);cursor:pointer;font-size:11px;color:var(--text2);
-  user-select:none;gap:4px;
-}
-.slicer-trigger:hover{background:var(--pbi-hover)}
-.slicer-trigger.has-sel{color:var(--text);font-weight:500;border-color:var(--pbi-blue);}
-.slicer-trigger-label{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.slicer-trigger-arrow{font-size:8px;flex-shrink:0;transition:transform .15s}
-.slicer-trigger.open .slicer-trigger-arrow{transform:rotate(180deg)}
-.slicer-panel{
-  position:absolute;top:calc(100% + 3px);left:0;right:0;
-  background:var(--bg2);border:1px solid var(--border2);border-radius:4px;
-  box-shadow:0 4px 12px rgba(0,0,0,.12);z-index:500;
-  display:none;flex-direction:column;
-}
-.slicer-panel.open{display:flex}
-.slicer-panel-search{
-  display:flex;align-items:center;gap:5px;
-  border-bottom:1px solid var(--border);padding:5px 8px;
-}
-.slicer-panel-search input{border:none;outline:none;font-size:11px;width:100%;
-  font-family:'Inter',sans-serif;background:transparent;color:var(--text)}
-.slicer-panel-search input::placeholder{color:var(--text3)}
-.slicer-panel-actions{display:flex;gap:4px;padding:4px 6px;border-bottom:1px solid var(--border)}
-.sp-btn{font-size:10px;color:var(--text3);background:none;border:1px solid var(--border2);
-  border-radius:3px;padding:2px 6px;cursor:pointer;font-family:'Inter',sans-serif;}
+/* DROPDOWN */
+.dd{position:relative}
+.dd-trigger{display:flex;align-items:center;gap:5px;border:1px solid var(--border2);border-radius:5px;
+  padding:4px 9px;background:var(--bg2);cursor:pointer;font-size:11px;color:var(--text2);
+  user-select:none;white-space:nowrap;min-width:110px;transition:all .1s}
+.dd-trigger:hover{background:var(--pbi-hover)}
+.dd-trigger.sel{color:var(--text);font-weight:500;border-color:var(--pbi);background:var(--pbi-sel)}
+.dd-lbl{flex:1;overflow:hidden;text-overflow:ellipsis}
+.dd-arr{font-size:8px;opacity:.45;transition:transform .15s;flex-shrink:0}
+.dd-trigger.open .dd-arr{transform:rotate(180deg)}
+.dd-panel{position:absolute;top:calc(100% + 4px);left:0;min-width:210px;
+  background:var(--bg2);border:1px solid var(--border2);border-radius:6px;
+  box-shadow:0 6px 24px rgba(0,0,0,.14);z-index:999;display:none;flex-direction:column}
+.dd-panel.open{display:flex}
+.dd-search{display:flex;align-items:center;gap:5px;border-bottom:1px solid var(--border);padding:6px 8px}
+.dd-search input{border:none;outline:none;font-size:11px;width:100%;font-family:'Inter',sans-serif;background:transparent;color:var(--text)}
+.dd-search input::placeholder{color:var(--text3)}
+.dd-actions{display:flex;gap:4px;padding:4px 6px;border-bottom:1px solid var(--border)}
+.sp-btn{font-size:10px;color:var(--text3);background:none;border:1px solid var(--border2);border-radius:3px;padding:2px 6px;cursor:pointer;font-family:'Inter',sans-serif}
 .sp-btn:hover{background:var(--bg3);color:var(--text)}
-.slicer-panel-list{max-height:160px;overflow-y:auto;}
-.slicer-panel-list::-webkit-scrollbar{width:4px}
-.slicer-panel-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-
-.sl-item{
-  display:flex;align-items:center;gap:7px;padding:4px 8px;cursor:pointer;
-  font-size:11px;color:var(--text);border-left:2px solid transparent;
-  transition:background .08s;
-}
+.dd-list{max-height:200px;overflow-y:auto}
+.dd-list::-webkit-scrollbar{width:4px}
+.dd-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.sl-item{display:flex;align-items:center;gap:7px;padding:4px 8px;cursor:pointer;font-size:11px;color:var(--text);border-left:2px solid transparent;transition:background .08s}
 .sl-item:hover{background:var(--pbi-hover)}
-.sl-item.on{background:var(--pbi-sel);border-left-color:var(--pbi-blue)}
-.sl-cb{width:13px;height:13px;border:1px solid #8A8886;border-radius:2px;
-  flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#fff;}
-.sl-item.on .sl-cb{background:var(--pbi-blue);border-color:var(--pbi-blue)}
+.sl-item.on{background:var(--pbi-sel);border-left-color:var(--pbi)}
+.sl-cb{width:13px;height:13px;border:1px solid #8A8886;border-radius:2px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#fff}
+.sl-item.on .sl-cb{background:var(--pbi);border-color:var(--pbi)}
 .sl-cb svg{display:none}
 .sl-item.on .sl-cb svg{display:block}
 .sl-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
 
-/* listas normais (ano/mes/uf) */
-.slicer-list{overflow-y:auto;max-height:130px;}
-.slicer-list::-webkit-scrollbar{width:4px}
-.slicer-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-
-.sb-foot{padding:8px 10px;border-top:1px solid var(--border);flex-shrink:0;background:var(--bg2);}
-.btn-clr-all{width:100%;padding:5px;font-size:11px;font-family:'Inter',sans-serif;
-  background:none;border:1px solid var(--border2);border-radius:3px;
-  color:var(--text2);cursor:pointer;transition:all .1s;}
-.btn-clr-all:hover{background:var(--rdim);color:var(--red);border-color:rgba(220,38,38,.3)}
-
-/* ═══ MAIN ═══ */
-.main-wrap{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;background:var(--bg);}
-
-/* KPIs FIXOS — não scrollam */
-.kpi-fixed{
-  flex-shrink:0;padding:10px 14px 0;
-  display:grid;grid-template-columns:repeat(6,1fr);gap:8px;
-  background:var(--bg);
-}
-.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;box-shadow:var(--sh);position:relative;overflow:hidden}
-.kpi::after{content:'';position:absolute;top:0;left:0;width:3px;bottom:0;border-radius:10px 0 0 10px}
-.kg::after{background:var(--green)}.ka::after{background:var(--amber)}
-.kr::after{background:var(--red)}.kb::after{background:var(--blue)}
-.kl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:4px}
-.kv{font-size:18px;font-weight:600;font-family:'JetBrains Mono',monospace;line-height:1}
+/* KPIs */
+.main-wrap{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;background:var(--bg)}
+.kpi-fixed{flex-shrink:0;padding:8px 14px 0;display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;box-shadow:var(--sh);position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;top:0;left:0;width:3px;bottom:0;border-radius:8px 0 0 8px}
+.kg::after{background:var(--green)}.ka::after{background:var(--amber)}.kr::after{background:var(--red)}.kb::after{background:var(--blue)}
+.kl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:3px}
+.kv{font-size:16px;font-weight:600;font-family:'JetBrains Mono',monospace;line-height:1}
 .kv.g{color:var(--green)}.kv.a{color:var(--amber)}.kv.r{color:var(--red)}.kv.b{color:var(--blue)}
-.ks{font-size:9px;color:var(--text3);margin-top:3px}
+.ks{font-size:9px;color:var(--text3);margin-top:2px}
 
-/* área scrollável */
-.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;min-height:0;}
+/* SCROLL */
+.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;min-height:0}
 .scroll-area::-webkit-scrollbar{width:5px}
 .scroll-area::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px}
-.main{padding:10px 14px;display:flex;flex-direction:column;gap:10px;}
+.main{padding:8px 14px;display:flex;flex-direction:column;gap:8px}
 
-/* SECTIONS */
-.sec{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--sh)}
-.sh{padding:8px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+/* CARDS */
+.sec{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:var(--sh)}
+.sh{padding:6px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
 .st{font-size:10px;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.05em}
 .si{font-size:10px;color:var(--text3)}
-.sb{padding:10px 12px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-
-/* TABS */
+.sb{padding:8px 12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .tabs{display:flex;gap:2px;background:var(--bg3);padding:2px;border-radius:6px}
 .tab{padding:3px 8px;border-radius:4px;font-size:10px;font-weight:500;cursor:pointer;color:var(--text2);border:none;background:transparent;font-family:'Inter',sans-serif;transition:all .12s}
 .tab.on{background:var(--bg2);color:var(--text);box-shadow:var(--sh)}
 
-/* BAR TABLE — transportadoras */
-.bt{display:flex;flex-direction:column;gap:5px;max-height:330px;overflow-y:auto;}
+/* TRANSPORTADORAS */
+.bt{display:flex;flex-direction:column;gap:4px;max-height:310px;overflow-y:auto}
 .bt::-webkit-scrollbar{width:4px}
 .bt::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-.br{display:flex;flex-direction:column;gap:3px;cursor:pointer;padding:5px 6px;border-radius:6px;border:1px solid transparent;transition:all .12s}
+.br{display:flex;flex-direction:column;gap:2px;cursor:pointer;padding:4px 6px;border-radius:5px;border:1px solid transparent;transition:all .12s}
 .br:hover{background:var(--bg3)}
 .br.on{background:var(--bdim);border-color:rgba(29,110,232,.2)}
 .bh{display:flex;justify-content:space-between;align-items:center;gap:6px}
-.bn{font-size:11px;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px}
+.bn{font-size:11px;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
 .bs{display:flex;gap:5px;font-size:10px;color:var(--text2);font-family:'JetBrains Mono',monospace;flex-shrink:0}
 .btr{height:4px;background:var(--bg3);border-radius:999px;overflow:hidden}
 .bf{height:100%;border-radius:999px}
@@ -182,64 +134,38 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:
 .pr{background:var(--rdim);color:var(--red);border-color:rgba(220,38,38,.2)}
 .pn{background:var(--bg3);color:var(--text3)}
 
-/* TABLE UF — wrapper com scroll + tfoot fixo */
-.uf-outer{
-  position:relative;
-  height:280px;
-  display:flex;flex-direction:column;
-  overflow:hidden;
-}
-.uf-scroll{overflow-y:auto;overflow-x:auto;flex:1;min-height:0;margin-bottom:0;}
+/* GAUGE menor e compacto */
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;gap:2px}
+.gauge-svg{width:100%;height:auto;display:block}
+.gauge-legend{display:flex;align-items:center;gap:5px;justify-content:center;font-size:10px;color:var(--text2)}
+.gauge-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* TABELA UF */
+.uf-outer{height:230px;display:flex;flex-direction:column;overflow:hidden}
+.uf-scroll{overflow-y:auto;overflow-x:auto;flex:1;min-height:0}
 .uf-scroll::-webkit-scrollbar{width:4px;height:4px}
 .uf-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px}
-
 table{width:100%;border-collapse:collapse;font-size:11px}
-thead th{padding:6px 10px;text-align:left;font-size:9px;font-weight:600;color:var(--text3);
-  text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);
-  white-space:nowrap;background:var(--bg3);cursor:pointer;user-select:none;
-  position:sticky;top:0;z-index:2}
+thead th{padding:5px 10px;text-align:left;font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--bg3);cursor:pointer;user-select:none;position:sticky;top:0;z-index:2}
 thead th:hover{background:var(--bg4)}
-td{padding:5px 10px;border-bottom:1px solid var(--border);color:var(--text2)}
+td{padding:4px 10px;border-bottom:1px solid var(--border);color:var(--text2)}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(--bg3);cursor:pointer}
 tr.on td{background:var(--bdim)!important}
-
-/* tfoot FIXO — fica fora do scroll */
-.uf-foot-wrap{flex-shrink:0;border-top:2px solid var(--border2);background:var(--bg3);}
+.uf-foot-wrap{flex-shrink:0;border-top:2px solid var(--border2);background:var(--bg3)}
 .uf-foot-wrap table{font-size:11px}
-.uf-foot-wrap td{padding:6px 10px;font-size:10px;font-weight:600;color:var(--text);
-  border-bottom:none;white-space:nowrap;}
-
+.uf-foot-wrap td{padding:5px 10px;font-size:10px;font-weight:600;color:var(--text);border-bottom:none;white-space:nowrap}
 .tuf{color:var(--text);font-weight:600;font-family:'JetBrains Mono',monospace;font-size:12px}
 .tn{font-family:'JetBrains Mono',monospace;color:var(--text)}
 .tdp{color:var(--red);font-family:'JetBrains Mono',monospace;font-weight:500}
 .tdn{color:var(--green);font-family:'JetBrains Mono',monospace;font-weight:500}
-
-/* GAUGE */
-.gauge-wrap{display:flex;flex-direction:column;align-items:center;gap:4px}
-.gauge-svg{width:100%;height:auto;display:block}
-.gauge-legend{display:flex;align-items:center;gap:5px;justify-content:center;font-size:10px;color:var(--text2)}
-.gauge-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-
 .ch{position:relative;width:100%}
-
-/* FOOTER */
-.ftr{flex-shrink:0;padding:6px 14px;border-top:1px solid var(--border);
-  background:var(--bg2);display:flex;justify-content:space-between;align-items:center;}
+.col-uf{width:50px}.col-nfs{width:80px}.col-val{width:100px}.col-ot{width:90px}.col-delta{width:80px}.col-np{width:80px}.col-at{width:80px}
+.ftr{flex-shrink:0;padding:5px 14px;border-top:1px solid var(--border);background:var(--bg2);display:flex;justify-content:space-between;align-items:center}
 .ftr span{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace}
-
-/* Cols fixas UF para alinhamento tfoot */
-.col-uf{width:50px}
-.col-nfs{width:80px}
-.col-val{width:100px}
-.col-ot{width:90px}
-.col-delta{width:80px}
-.col-np{width:80px}
-.col-at{width:80px}
 </style>
 </head>
 <body>
-
 <div class="hdr">
   <div class="logo">📦</div>
   <div class="hdr-info">
@@ -247,144 +173,86 @@ tr.on td{background:var(--bdim)!important}
     <div class="hdr-sub">Jan/25 → Mai/26 &nbsp;·&nbsp; 14.553 NFs &nbsp;·&nbsp; R$ 202,5M</div>
   </div>
   <div class="hdr-right">
-    <span class="badge bg-meta">meta: 70%</span>
+    <span class="badge bg-warn">meta: 70%</span>
     <span class="badge bg-crit" id="hBadge">✗ Crítico</span>
-    <button onclick="clearAll()" style="display:flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:10px;font-weight:500;border:1px solid rgba(220,38,38,.3);background:var(--rdim);color:var(--red);cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap" id="btnClearAll">✕ Limpar tudo</button>
+    <button class="btn-clr-hdr" id="btnClrHdr" onclick="clearAll()">✕ Limpar tudo</button>
   </div>
 </div>
 
 <div class="layout">
 
-  <!-- ═══ SIDEBAR ═══ -->
-  <div class="sidebar">
+  <!-- ── FILTROS HORIZONTAIS ── -->
+  <div class="filter-bar">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;opacity:.35"><path d="M2 4h12M4 8h8M6 12h4" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg>
 
-    <!-- Slicer: Transportadora (dropdown) -->
-    <div class="slicer" style="flex-shrink:0">
-      <div class="slicer-head">
-        <span class="slicer-title">Transportadora</span>
-        <button class="slicer-clr" id="clrTr" onclick="clearGroup('tr')">✕ Limpar</button>
-      </div>
-      <div style="padding:0 0 4px">
-        <div class="slicer-dropdown" id="ddTr">
-          <div class="slicer-trigger" id="ddTrTrigger" onclick="toggleDropdown('ddTr')">
-            <span class="slicer-trigger-label" id="ddTrLabel">Selecionar...</span>
-            <span class="slicer-trigger-arrow">▼</span>
-          </div>
-          <div class="slicer-panel" id="ddTrPanel">
-            <div class="slicer-panel-search">
-              <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg>
-              <input type="text" id="trSearch" placeholder="Pesquisar..." oninput="buildTrList()">
-            </div>
-            <div class="slicer-panel-actions">
-              <button class="sp-btn" onclick="selectAllTr()">Selecionar tudo</button>
-              <button class="sp-btn" onclick="clearGroup('tr')">Limpar</button>
-            </div>
-            <div class="slicer-panel-list" id="listTr"></div>
-          </div>
+    <div class="f-group">
+      <span class="f-lbl">Transportadora</span>
+      <button class="f-clr" id="clrTr" onclick="clearGroup('tr')">✕</button>
+      <div class="dd" id="ddTr">
+        <div class="dd-trigger" id="ddTrTrigger" onclick="ddToggle('Tr')"><span class="dd-lbl" id="ddTrLbl">Todas</span><span class="dd-arr">▼</span></div>
+        <div class="dd-panel" id="ddTrPanel">
+          <div class="dd-search"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg><input id="srTr" placeholder="Pesquisar..." oninput="buildList('Tr')"></div>
+          <div class="dd-actions"><button class="sp-btn" onclick="selAll('Tr')">Selecionar tudo</button><button class="sp-btn" onclick="clearGroup('tr')">Limpar</button></div>
+          <div class="dd-list" id="listTr"></div>
         </div>
       </div>
     </div>
 
-    <!-- Slicer: Ano (dropdown) -->
-    <div class="slicer" style="flex-shrink:0">
-      <div class="slicer-head">
-        <span class="slicer-title">Ano</span>
-        <button class="slicer-clr" id="clrAno" onclick="clearGroup('ano')">✕ Limpar</button>
-      </div>
-      <div style="padding:0 0 4px">
-        <div class="slicer-dropdown" id="ddAno">
-          <div class="slicer-trigger" id="ddAnoTrigger" onclick="toggleDropdown('ddAno')">
-            <span class="slicer-trigger-label" id="ddAnoLabel">Selecionar...</span>
-            <span class="slicer-trigger-arrow">▼</span>
-          </div>
-          <div class="slicer-panel" id="ddAnoPanel">
-            <div class="slicer-panel-search">
-              <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg>
-              <input type="text" id="anoSearch" placeholder="Pesquisar..." oninput="buildAnoList()">
-            </div>
-            <div class="slicer-panel-actions">
-              <button class="sp-btn" onclick="selectAll('ano')">Selecionar tudo</button>
-              <button class="sp-btn" onclick="clearGroup('ano')">Limpar</button>
-            </div>
-            <div class="slicer-panel-list" id="listAno"></div>
-          </div>
+    <div class="filter-sep"></div>
+
+    <div class="f-group">
+      <span class="f-lbl">Ano</span>
+      <button class="f-clr" id="clrAno" onclick="clearGroup('ano')">✕</button>
+      <div class="dd" id="ddAno">
+        <div class="dd-trigger" id="ddAnoTrigger" onclick="ddToggle('Ano')"><span class="dd-lbl" id="ddAnoLbl">Todos</span><span class="dd-arr">▼</span></div>
+        <div class="dd-panel" id="ddAnoPanel">
+          <div class="dd-search"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg><input id="srAno" placeholder="Pesquisar..." oninput="buildList('Ano')"></div>
+          <div class="dd-actions"><button class="sp-btn" onclick="selAll('Ano')">Selecionar tudo</button><button class="sp-btn" onclick="clearGroup('ano')">Limpar</button></div>
+          <div class="dd-list" id="listAno"></div>
         </div>
       </div>
     </div>
 
-    <!-- Slicer: Mês (dropdown) -->
-    <div class="slicer" style="flex-shrink:0">
-      <div class="slicer-head">
-        <span class="slicer-title">Mês</span>
-        <button class="slicer-clr" id="clrMes" onclick="clearGroup('mes')">✕ Limpar</button>
-      </div>
-      <div style="padding:0 0 4px">
-        <div class="slicer-dropdown" id="ddMes">
-          <div class="slicer-trigger" id="ddMesTrigger" onclick="toggleDropdown('ddMes')">
-            <span class="slicer-trigger-label" id="ddMesLabel">Selecionar...</span>
-            <span class="slicer-trigger-arrow">▼</span>
-          </div>
-          <div class="slicer-panel" id="ddMesPanel">
-            <div class="slicer-panel-search">
-              <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg>
-              <input type="text" id="mesSearch" placeholder="Pesquisar..." oninput="buildMesList()">
-            </div>
-            <div class="slicer-panel-actions">
-              <button class="sp-btn" onclick="selectAll('mes')">Selecionar tudo</button>
-              <button class="sp-btn" onclick="clearGroup('mes')">Limpar</button>
-            </div>
-            <div class="slicer-panel-list" id="listMes"></div>
-          </div>
+    <div class="filter-sep"></div>
+
+    <div class="f-group">
+      <span class="f-lbl">Mês</span>
+      <button class="f-clr" id="clrMes" onclick="clearGroup('mes')">✕</button>
+      <div class="dd" id="ddMes">
+        <div class="dd-trigger" id="ddMesTrigger" onclick="ddToggle('Mes')"><span class="dd-lbl" id="ddMesLbl">Todos</span><span class="dd-arr">▼</span></div>
+        <div class="dd-panel" id="ddMesPanel">
+          <div class="dd-search"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg><input id="srMes" placeholder="Pesquisar..." oninput="buildList('Mes')"></div>
+          <div class="dd-actions"><button class="sp-btn" onclick="selAll('Mes')">Selecionar tudo</button><button class="sp-btn" onclick="clearGroup('mes')">Limpar</button></div>
+          <div class="dd-list" id="listMes"></div>
         </div>
       </div>
     </div>
 
-    <!-- Slicer: UF (dropdown) -->
-    <div class="slicer" style="flex-shrink:0">
-      <div class="slicer-head">
-        <span class="slicer-title">UF</span>
-        <button class="slicer-clr" id="clrUF" onclick="clearGroup('uf')">✕ Limpar</button>
-      </div>
-      <div style="padding:0 0 4px">
-        <div class="slicer-dropdown" id="ddUF">
-          <div class="slicer-trigger" id="ddUFTrigger" onclick="toggleDropdown('ddUF')">
-            <span class="slicer-trigger-label" id="ddUFLabel">Selecionar...</span>
-            <span class="slicer-trigger-arrow">▼</span>
-          </div>
-          <div class="slicer-panel" id="ddUFPanel">
-            <div class="slicer-panel-search">
-              <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg>
-              <input type="text" id="ufSearch" placeholder="Pesquisar..." oninput="buildUFList()">
-            </div>
-            <div class="slicer-panel-actions">
-              <button class="sp-btn" onclick="selectAll('uf')">Selecionar tudo</button>
-              <button class="sp-btn" onclick="clearGroup('uf')">Limpar</button>
-            </div>
-            <div class="slicer-panel-list" id="listUF"></div>
-          </div>
+    <div class="filter-sep"></div>
+
+    <div class="f-group">
+      <span class="f-lbl">UF</span>
+      <button class="f-clr" id="clrUF" onclick="clearGroup('uf')">✕</button>
+      <div class="dd" id="ddUF">
+        <div class="dd-trigger" id="ddUFTrigger" onclick="ddToggle('UF')"><span class="dd-lbl" id="ddUFLbl">Todas</span><span class="dd-arr">▼</span></div>
+        <div class="dd-panel" id="ddUFPanel">
+          <div class="dd-search"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg><input id="srUF" placeholder="Pesquisar..." oninput="buildList('UF')"></div>
+          <div class="dd-actions"><button class="sp-btn" onclick="selAll('UF')">Selecionar tudo</button><button class="sp-btn" onclick="clearGroup('uf')">Limpar</button></div>
+          <div class="dd-list" id="listUF"></div>
         </div>
       </div>
-    </div>
-
-    <div style="flex:1"></div>
-    <div class="sb-foot">
-      <button class="btn-clr-all" onclick="clearAll()">✕ Limpar todos os filtros</button>
     </div>
   </div>
 
-  <!-- MAIN -->
+  <!-- ── CONTEÚDO PRINCIPAL ── -->
   <div class="main-wrap">
-
-    <!-- KPIs FIXOS -->
     <div class="kpi-fixed" id="kgrid"></div>
-
-    <!-- Área scrollável -->
     <div class="scroll-area">
       <div class="main">
 
         <div class="two">
-          <!-- coluna esquerda: evolução + gauge -->
-          <div style="display:flex;flex-direction:column;gap:10px">
+          <!-- coluna esq: evolução + gauge -->
+          <div style="display:flex;flex-direction:column;gap:8px">
             <div class="sec">
               <div class="sh">
                 <span class="st">Evolução mensal</span>
@@ -394,70 +262,50 @@ tr.on td{background:var(--bdim)!important}
                 </div>
               </div>
               <div class="sb">
-                <div class="ch" style="height:155px"><canvas id="cMesC"></canvas></div>
-                <div style="font-size:10px;color:var(--text3);margin-top:4px;text-align:center">clique em um mês para filtrar</div>
+                <div class="ch" style="height:130px"><canvas id="cMesC"></canvas></div>
+                <div style="font-size:9px;color:var(--text3);margin-top:3px;text-align:center">clique em um mês para filtrar</div>
               </div>
             </div>
-
-            <!-- GAUGE -->
             <div class="sec">
               <div class="sh"><span class="st">Status Lead Time</span><span class="si" id="gaugeLabel">—</span></div>
-              <div class="sb" style="padding:4px 10px 8px">
-                <div class="gauge-wrap">
-                  <svg class="gauge-svg" viewBox="-11 -4 282 161" id="gaugeSVG" style="display:block;width:100%;height:auto"></svg>
-                  <div class="gauge-legend">
-                    <span class="gauge-dot" id="gaugeDot" style="background:#D97706"></span>
-                    <span id="gaugeStatusTxt">—</span>
-                  </div>
+              <div class="sb" style="padding:2px 20px 6px;display:flex;justify-content:center">
+                <div class="gauge-wrap" style="width:100%;max-width:240px">
+                  <svg id="gaugeSVG" viewBox="-11 -4 282 145" style="display:block;width:100%;height:auto"></svg>
+                  <div class="gauge-legend"><span class="gauge-dot" id="gaugeDot" style="background:#D97706"></span><span id="gaugeStatusTxt">—</span></div>
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- coluna direita: transportadoras -->
+          <!-- coluna dir: transportadoras -->
           <div class="sec">
-            <div class="sh"><span class="st">Transportadoras</span><span class="si">clique para filtrar</span></div>
+            <div class="sh"><span class="st">Transportadoras</span><span class="si">clique para filtrar todos os gráficos</span></div>
             <div class="sb"><div class="bt" id="tBt"></div></div>
           </div>
         </div>
 
         <div class="sec">
-          <div class="sh"><span class="st">Delta lead por mês</span><span class="si">realizado − prometido</span></div>
-          <div class="sb"><div class="ch" style="height:110px"><canvas id="cDeltaC"></canvas></div></div>
+          <div class="sh"><span class="st">Delta lead por mês</span><span class="si">realizado − prometido · clique para filtrar</span></div>
+          <div class="sb"><div class="ch" style="height:95px"><canvas id="cDeltaC"></canvas></div></div>
         </div>
 
         <div class="sec">
-          <div class="sh">
-            <span class="st">Desempenho por UF</span>
-            <span class="si">cabeçalho para ordenar · clique para filtrar</span>
-          </div>
-          <!-- wrapper externo com scroll + tfoot fixo -->
+          <div class="sh"><span class="st">Desempenho por UF</span><span class="si">cabeçalho para ordenar · clique para filtrar</span></div>
           <div class="uf-outer">
-            <div class="uf-scroll" id="ufScroll">
-              <table id="ufTbl">
-                <colgroup>
-                  <col class="col-uf"><col class="col-nfs"><col class="col-val">
-                  <col class="col-ot"><col class="col-delta"><col class="col-np"><col class="col-at">
-                </colgroup>
+            <div class="uf-scroll">
+              <table>
+                <colgroup><col class="col-uf"><col class="col-nfs"><col class="col-val"><col class="col-ot"><col class="col-delta"><col class="col-np"><col class="col-at"></colgroup>
                 <thead><tr>
-                  <th onclick="sortUF('uf')">UF</th>
-                  <th onclick="sortUF('nfs')">NFs</th>
-                  <th onclick="sortUF('val')">Valor NF</th>
-                  <th onclick="sortUF('ot')">On-Time %</th>
-                  <th onclick="sortUF('delta')">Delta</th>
-                  <th onclick="sortUF('np')">No prazo</th>
+                  <th onclick="sortUF('uf')">UF</th><th onclick="sortUF('nfs')">NFs</th>
+                  <th onclick="sortUF('val')">Valor NF</th><th onclick="sortUF('ot')">On-Time %</th>
+                  <th onclick="sortUF('delta')">Delta</th><th onclick="sortUF('np')">No prazo</th>
                   <th onclick="sortUF('at')">Atrasadas</th>
                 </tr></thead>
                 <tbody id="ufTb"></tbody>
               </table>
             </div>
-            <!-- tfoot FIXO fora do scroll -->
-            <div class="uf-foot-wrap" id="ufFoot">
+            <div class="uf-foot-wrap">
               <table>
-                <colgroup>
-                  <col class="col-uf"><col class="col-nfs"><col class="col-val">
-                  <col class="col-ot"><col class="col-delta"><col class="col-np"><col class="col-at">
-                </colgroup>
+                <colgroup><col class="col-uf"><col class="col-nfs"><col class="col-val"><col class="col-ot"><col class="col-delta"><col class="col-np"><col class="col-at"></colgroup>
                 <tbody id="ufTf"></tbody>
               </table>
             </div>
@@ -466,255 +314,290 @@ tr.on td{background:var(--bdim)!important}
 
       </div>
     </div>
-
     <div class="ftr">
       <span>coco-do-vale · Controladoria Lead Time</span>
       <span id="ftrTs"></span>
     </div>
   </div>
-
 </div>
 
 <script>
-function pN(s){return parseFloat((s||'0').replace(',','.'))||0}
-function pI(s){return parseInt((s||'0').replace(/\./g,''))||0}
-function pRows(s){return s?s.split(';').filter(Boolean).map(r=>r.split('|')):[]}
-function getParam(n){try{return new URL(location.href).searchParams.get(n)||''}catch(e){return ''}}
+/* ══════════════════════════════════════════════
+   DADOS BRUTOS
+   Cada NF tem: transportadora, ano, mês, UF, valor, on_time, lead_real, lead_prom
+   Como não temos granularidade de NF individual, geramos registros
+   AGREGADOS por (transportadora × mês) baseados nos totais conhecidos.
+══════════════════════════════════════════════ */
 
-const _m=(getParam('m')||'').replace(/~/g,';')||'jan/25|705|9226|43,1|9,70|7,68|260|431;fev/25|790|13111|40,3|9,79|7,13|285|488;mar/25|1167|13143|46,7|10,10|7,66|503|648;abr/25|945|12176|40,9|10,82|6,58|320|612;mai/25|1383|13927|48,3|10,60|7,67|575|794;jun/25|1278|13127|50,8|9,45|7,60|498|742;jul/25|1001|14323|54,2|8,67|7,40|489|499;ago/25|1116|12769|40,5|10,41|7,30|409|667;set/25|701|12089|42,9|10,46|6,63|267|412;out/25|748|12297|34,0|12,10|6,95|207|519;nov/25|650|12455|32,3|11,84|6,87|148|479;dez/25|521|9018|27,7|13,06|7,24|89|363;jan/26|730|11686|41,7|10,75|6,80|208|507;fev/26|640|10002|27,5|10,32|6,21|146|482;mar/26|811|12775|35,6|11,86|5,86|238|550;abr/26|798|12855|37,7|9,99|6,22|292|444;mai/26|569|7532|55,0|7,23|7,14|70|120';
-const _t=(getParam('t')||'').replace(/~/g,';')||'ALIA TRANSPORTES|7053|41,0|10,20|7,39|2607|4259;GRUPOPRIMA LOGISTICA|2822|38,7|10,51|6,95|817|1663;RODOMILLI|1288|55,8|8,37|7,06|684|583;SHELBY TRANSPORTES|1121|38,3|8,41|4,99|255|797;RACA|445|29,7|18,13|13,72|106|286;SERVIMAR TRANSPORTES|428|87,6|2,33|3,91|336|83;BOMFIM|384|13,7|12,94|6,12|76|279;TECMAR|293|11,4|20,41|5,18|38|254;CDJ EXPRESS E LOGIST|264|0,0|30,13|9,35|0|251;RODOPRIMA|216|46,3|9,49|6,42|64|148;LOG-IN|61|0,0|26,73|16,00|0|61';
-const _u=(getParam('u')||'').replace(/~/g,';')||'SP|3,8|4549|51,46|31|1410|3139;MG|1,2|1040|35,07|65|676|364;RJ|2,4|2408|35,30|45|1084|1324;SC|2,7|817|20,09|27|221|596;ES|0,0|1225|9,94|70|858|367;GO|4,4|1200|8,39|36|432|768;PE|-1,3|461|8,12|85|392|69;BA|12,3|869|7,19|6|52|817;DF|5,1|352|5,13|38|134|218;CE|4,1|263|2,49|17|45|218;RS|4,6|251|2,28|13|33|218;MA|7,2|151|2,09|31|47|104;PR|5,4|93|2,05|16|15|78;PA|8,7|150|1,93|11|17|133;PI|3,3|110|1,60|31|34|76;AP|12,8|215|3,38|16|34|181;AM|20,0|163|3,33|0|0|163;PB|1,4|88|1,06|22|19|69;TO|13,6|62|0,80|12|7|55;SE|14,8|55|0,41|0|0|55;MS|7,3|11|0,15|13|1|10;RR|17,7|10|0,13|0|0|10;AL|10,0|5|0,11|0|0|5;RN|-2,5|3|0,01|100|3|0;MT|14,0|2|0,01|0|0|2';
+/* Dados mensais totais */
+const RAW_M = [
+  {label:'jan/25',ano:2025,mes:'jan',nfs:705, val:9226, ot:43.1,lr:9.70,lp:7.68,np:260,at:431},
+  {label:'fev/25',ano:2025,mes:'fev',nfs:790, val:13111,ot:40.3,lr:9.79,lp:7.13,np:285,at:488},
+  {label:'mar/25',ano:2025,mes:'mar',nfs:1167,val:13143,ot:46.7,lr:10.10,lp:7.66,np:503,at:648},
+  {label:'abr/25',ano:2025,mes:'abr',nfs:945, val:12176,ot:40.9,lr:10.82,lp:6.58,np:320,at:612},
+  {label:'mai/25',ano:2025,mes:'mai',nfs:1383,val:13927,ot:48.3,lr:10.60,lp:7.67,np:575,at:794},
+  {label:'jun/25',ano:2025,mes:'jun',nfs:1278,val:13127,ot:50.8,lr:9.45, lp:7.60,np:498,at:742},
+  {label:'jul/25',ano:2025,mes:'jul',nfs:1001,val:14323,ot:54.2,lr:8.67, lp:7.40,np:489,at:499},
+  {label:'ago/25',ano:2025,mes:'ago',nfs:1116,val:12769,ot:40.5,lr:10.41,lp:7.30,np:409,at:667},
+  {label:'set/25',ano:2025,mes:'set',nfs:701, val:12089,ot:42.9,lr:10.46,lp:6.63,np:267,at:412},
+  {label:'out/25',ano:2025,mes:'out',nfs:748, val:12297,ot:34.0,lr:12.10,lp:6.95,np:207,at:519},
+  {label:'nov/25',ano:2025,mes:'nov',nfs:650, val:12455,ot:32.3,lr:11.84,lp:6.87,np:148,at:479},
+  {label:'dez/25',ano:2025,mes:'dez',nfs:521, val:9018, ot:27.7,lr:13.06,lp:7.24,np:89, at:363},
+  {label:'jan/26',ano:2026,mes:'jan',nfs:730, val:11686,ot:41.7,lr:10.75,lp:6.80,np:208,at:507},
+  {label:'fev/26',ano:2026,mes:'fev',nfs:640, val:10002,ot:27.5,lr:10.32,lp:6.21,np:146,at:482},
+  {label:'mar/26',ano:2026,mes:'mar',nfs:811, val:12775,ot:35.6,lr:11.86,lp:5.86,np:238,at:550},
+  {label:'abr/26',ano:2026,mes:'abr',nfs:798, val:12855,ot:37.7,lr:9.99, lp:6.22,np:292,at:444},
+  {label:'mai/26',ano:2026,mes:'mai',nfs:569, val:7532, ot:55.0,lr:7.23, lp:7.14,np:70, at:120},
+];
 
-const MESES=pRows(_m).map(r=>({label:r[0],ano:parseInt('20'+(r[0].split('/')[1]||'25')),mes:r[0].split('/')[0],nfs:pI(r[1]),val:pN(r[2]),ot:pN(r[3]),lr:pN(r[4]),lp:pN(r[5]),np:pI(r[6]),at:pI(r[7])}));
-const TRANSP=pRows(_t).map(r=>({nome:r[0],nfs:pI(r[1]),ot:pN(r[2]),lr:pN(r[3]),lp:pN(r[4]),np:pI(r[5]),at:pI(r[6])}));
-const UF=pRows(_u).filter(r=>r[0]&&r[0].length===2).map(r=>({uf:r[0],delta:pN(r[1]),nfs:pI(r[2]),val:pN(r[3]),ot:pN(r[4]),np:pI(r[5]||'0'),at:pI(r[6]||'0')}));
+/* Dados por transportadora (totais no período) */
+const RAW_T = [
+  {nome:'ALIA TRANSPORTES',     nfs:7053,ot:41.0,lr:10.20,lp:7.39,np:2607,at:4259},
+  {nome:'GRUPOPRIMA LOGISTICA', nfs:2822,ot:38.7,lr:10.51,lp:6.95,np:817, at:1663},
+  {nome:'RODOMILLI',            nfs:1288,ot:55.8,lr:8.37, lp:7.06,np:684, at:583},
+  {nome:'SHELBY TRANSPORTES',   nfs:1121,ot:38.3,lr:8.41, lp:4.99,np:255, at:797},
+  {nome:'RACA',                 nfs:445, ot:29.7,lr:18.13,lp:13.72,np:106,at:286},
+  {nome:'SERVIMAR TRANSPORTES', nfs:428, ot:87.6,lr:2.33, lp:3.91,np:336, at:83},
+  {nome:'BOMFIM',               nfs:384, ot:13.7,lr:12.94,lp:6.12,np:76,  at:279},
+  {nome:'TECMAR',               nfs:293, ot:11.4,lr:20.41,lp:5.18,np:38,  at:254},
+  {nome:'CDJ EXPRESS E LOGIST', nfs:264, ot:0.0, lr:30.13,lp:9.35,np:0,   at:251},
+  {nome:'RODOPRIMA',            nfs:216, ot:46.3,lr:9.49, lp:6.42,np:64,  at:148},
+  {nome:'LOG-IN',               nfs:61,  ot:0.0, lr:26.73,lp:16.00,np:0,  at:61},
+];
 
-let sAnos=new Set(),sMes=new Set(),sUF=new Set(),sTr=new Set();
-let ufKey='val',ufDir=-1,mesMode='ot';
-let cMesI=null,cDeltaI=null;
+/* Dados por UF */
+const RAW_UF = [
+  {uf:'SP',delta:3.8, nfs:4549,val:51.46,ot:31,np:1410,at:3139},
+  {uf:'MG',delta:1.2, nfs:1040,val:35.07,ot:65,np:676, at:364},
+  {uf:'RJ',delta:2.4, nfs:2408,val:35.30,ot:45,np:1084,at:1324},
+  {uf:'SC',delta:2.7, nfs:817, val:20.09,ot:27,np:221, at:596},
+  {uf:'ES',delta:0.0, nfs:1225,val:9.94, ot:70,np:858, at:367},
+  {uf:'GO',delta:4.4, nfs:1200,val:8.39, ot:36,np:432, at:768},
+  {uf:'PE',delta:-1.3,nfs:461, val:8.12, ot:85,np:392, at:69},
+  {uf:'BA',delta:12.3,nfs:869, val:7.19, ot:6, np:52,  at:817},
+  {uf:'DF',delta:5.1, nfs:352, val:5.13, ot:38,np:134, at:218},
+  {uf:'CE',delta:4.1, nfs:263, val:2.49, ot:17,np:45,  at:218},
+  {uf:'RS',delta:4.6, nfs:251, val:2.28, ot:13,np:33,  at:218},
+  {uf:'MA',delta:7.2, nfs:151, val:2.09, ot:31,np:47,  at:104},
+  {uf:'PR',delta:5.4, nfs:93,  val:2.05, ot:16,np:15,  at:78},
+  {uf:'PA',delta:8.7, nfs:150, val:1.93, ot:11,np:17,  at:133},
+  {uf:'PI',delta:3.3, nfs:110, val:1.60, ot:31,np:34,  at:76},
+  {uf:'AP',delta:12.8,nfs:215, val:3.38, ot:16,np:34,  at:181},
+  {uf:'AM',delta:20.0,nfs:163, val:3.33, ot:0, np:0,   at:163},
+  {uf:'PB',delta:1.4, nfs:88,  val:1.06, ot:22,np:19,  at:69},
+  {uf:'TO',delta:13.6,nfs:62,  val:0.80, ot:12,np:7,   at:55},
+  {uf:'SE',delta:14.8,nfs:55,  val:0.41, ot:0, np:0,   at:55},
+  {uf:'MS',delta:7.3, nfs:11,  val:0.15, ot:13,np:1,   at:10},
+  {uf:'RR',delta:17.7,nfs:10,  val:0.13, ot:0, np:0,   at:10},
+  {uf:'AL',delta:10.0,nfs:5,   val:0.11, ot:0, np:0,   at:5},
+  {uf:'RN',delta:-2.5,nfs:3,   val:0.01, ot:100,np:3,  at:0},
+  {uf:'MT',delta:14.0,nfs:2,   val:0.01, ot:0, np:0,   at:2},
+];
 
+/*
+  MODELO DE CRUZAMENTO:
+  Cada registro FACT = {mes, ano, label, transportadora, nfs, val, ot, lr, lp, np, at}
+  gerado distribuindo proporcionalmente os totais mensais pelas transportadoras
+  (peso = participação da transportadora no total de NFs)
+*/
+const TOTAL_NFS = RAW_T.reduce((s,r)=>s+r.nfs,0);
+const FACTS = [];
+RAW_M.forEach(m=>{
+  RAW_T.forEach(t=>{
+    const peso = t.nfs / TOTAL_NFS;
+    FACTS.push({
+      label: m.label,
+      ano:   m.ano,
+      mes:   m.mes,
+      tr:    t.nome,
+      nfs:   Math.round(m.nfs * peso),
+      val:   m.val * peso,
+      ot:    t.ot,          // on-time é característica da transportadora
+      lr:    t.lr,          // lead realizado da transportadora
+      lp:    t.lp,          // lead prometido da transportadora
+      np:    Math.round(m.np * peso),
+      at:    Math.round(m.at * peso),
+    });
+  });
+});
+
+/* Estado de filtros */
+let sAnos=new Set(), sMes=new Set(), sUF=new Set(), sTr=new Set();
+let ufKey='val', ufDir=-1, mesMode='ot';
+let cMesI=null, cDeltaI=null;
+
+/* ── FILTRO CENTRAL: retorna FACTS filtrados ── */
+function filtered(){
+  return FACTS.filter(f=>
+    (!sAnos.size || sAnos.has(f.ano)) &&
+    (!sMes.size  || sMes.has(f.mes)) &&
+    (!sTr.size   || sTr.has(f.tr))
+  );
+  /* UF não está em FACTS, UF é dimensão separada */
+}
+
+/* ── AGREGAÇÃO SOBRE OS FACTS FILTRADOS ── */
+function agg(){
+  const F = filtered();
+  if(!F.length) return {ot:0,lr:0,lp:0,nfs:0,val:0,np:0,at:0};
+  const totNfs = F.reduce((s,f)=>s+f.nfs,0);
+  const totVal = F.reduce((s,f)=>s+f.val,0);
+  const ot  = totNfs>0 ? F.reduce((s,f)=>s+f.ot*f.nfs,0)/totNfs : 0;
+  const lr  = totNfs>0 ? F.reduce((s,f)=>s+f.lr*f.nfs,0)/totNfs : 0;
+  const lp  = totNfs>0 ? F.reduce((s,f)=>s+f.lp*f.nfs,0)/totNfs : 0;
+  const np  = F.reduce((s,f)=>s+f.np,0);
+  const at  = F.reduce((s,f)=>s+f.at,0);
+  return {ot,lr,lp,nfs:totNfs,val:totVal/1000,np,at};
+}
+
+/* ── AGG POR MÊS (para gráficos de linha/barra) ── */
+function aggByMes(){
+  const F = filtered();
+  const map = new Map();
+  RAW_M.forEach(m=>map.set(m.label,{label:m.label,ano:m.ano,mes:m.mes,nfs:0,val:0,ot_sum:0,lr_sum:0,lp_sum:0,np:0,at:0}));
+  F.forEach(f=>{
+    const r=map.get(f.label);
+    if(!r)return;
+    r.nfs+=f.nfs; r.val+=f.val; r.ot_sum+=f.ot*f.nfs;
+    r.lr_sum+=f.lr*f.nfs; r.lp_sum+=f.lp*f.nfs; r.np+=f.np; r.at+=f.at;
+  });
+  return [...map.values()]
+    .filter(r=>(!sAnos.size||sAnos.has(r.ano))&&(!sMes.size||sMes.has(r.mes)))
+    .map(r=>({...r, ot:r.nfs>0?r.ot_sum/r.nfs:0, lr:r.nfs>0?r.lr_sum/r.nfs:0, lp:r.nfs>0?r.lp_sum/r.nfs:0}));
+}
+
+/* ── AGG POR TRANSPORTADORA ── */
+function aggByTr(){
+  const F = FACTS.filter(f=>
+    (!sAnos.size||sAnos.has(f.ano))&&(!sMes.size||sMes.has(f.mes))
+  );
+  const map = new Map();
+  RAW_T.forEach(t=>map.set(t.nome,{nome:t.nome,nfs:0,ot_sum:0,lr_sum:0,lp_sum:0,np:0,at:0}));
+  F.forEach(f=>{
+    const r=map.get(f.tr);
+    if(!r)return;
+    r.nfs+=f.nfs; r.ot_sum+=f.ot*f.nfs; r.lr_sum+=f.lr*f.nfs; r.lp_sum+=f.lp*f.nfs;
+    r.np+=f.np; r.at+=f.at;
+  });
+  return [...map.values()].map(r=>({...r,
+    ot:r.nfs>0?r.ot_sum/r.nfs:0,
+    lr:r.nfs>0?r.lr_sum/r.nfs:0,
+    lp:r.nfs>0?r.lp_sum/r.nfs:0,
+  })).sort((a,b)=>b.ot-a.ot);
+}
+
+/* helpers */
 function otC(v){return!v||isNaN(v)?'#9AA0AD':v>=70?'#0F9E5E':v>=40?'#D97706':'#DC2626'}
 function otP(v){
   if(v===null||v===undefined||isNaN(v))return '<span class="pill pn">—</span>';
   return `<span class="pill ${v>=70?'pg':v>=40?'pa':'pr'}">${v.toFixed(1)}%</span>`;
 }
 
-/* ─── FILTROS ─── */
-function fMeses(){
-  return MESES.filter(r=>
-    (!sAnos.size||sAnos.has(r.ano))&&
-    (!sMes.size||sMes.has(r.mes))
-  );
-}
-function fUF(){return UF.filter(r=>!sUF.size||sUF.has(r.uf))}
-function fTransp(){return TRANSP.filter(r=>!sTr.size||sTr.has(r.nome))}
-
-/* ─── AGG: agrega KPIs respeitando TODOS os filtros ─── */
-function agg(){
-  const m=fMeses().length?fMeses():MESES;
-  const tr=fTransp();
-  const totTrNfs=tr.reduce((s,r)=>s+r.nfs,0);
-  const totAllNfs=TRANSP.reduce((s,r)=>s+r.nfs,0);
-  const ratio=sTr.size&&totAllNfs>0?totTrNfs/totAllNfs:1;
-
-  const totMesNfs=m.reduce((s,r)=>s+r.nfs,0);
-  const valW=m.reduce((s,r)=>s+(r.val||0),0);
-
-  /* on-time ponderado por transportadora selecionada */
-  const ot=sTr.size&&totTrNfs>0
-    ? tr.reduce((s,r)=>s+r.ot*r.nfs,0)/totTrNfs
-    : valW>0?m.filter(r=>r.ot>0).reduce((s,r)=>s+r.ot*(r.val||0),0)/valW:0;
-
-  /* lead ponderado */
-  const lr=sTr.size&&totTrNfs>0
-    ? tr.reduce((s,r)=>s+r.lr*r.nfs,0)/totTrNfs
-    : totMesNfs>0?m.reduce((s,r)=>s+r.lr*r.nfs,0)/totMesNfs:0;
-  const lp=sTr.size&&totTrNfs>0
-    ? tr.reduce((s,r)=>s+r.lp*r.nfs,0)/totTrNfs
-    : totMesNfs>0?m.reduce((s,r)=>s+r.lp*r.nfs,0)/totMesNfs:0;
-
-  const nfs=Math.round(m.reduce((s,r)=>s+r.nfs,0)*ratio);
-  const np =Math.round(m.reduce((s,r)=>s+r.np,0)*ratio);
-  const at =Math.round(m.reduce((s,r)=>s+r.at,0)*ratio);
-  const val=valW/1000;
-  return{ot,lr,lp,nfs,val,np,at};
-}
-
-/* ─── DROPDOWN de transportadoras ─── */
-function toggleDropdown(id){
-  const panel=document.getElementById(id+'Panel');
-  const trigger=document.getElementById(id+'Trigger');
+/* ══════ DROPDOWN ══════ */
+function ddToggle(key){
+  const panel=document.getElementById('dd'+key+'Panel');
+  const trigger=document.getElementById('dd'+key+'Trigger');
   const isOpen=panel.classList.contains('open');
-  // fecha todos
-  document.querySelectorAll('.slicer-panel.open').forEach(p=>p.classList.remove('open'));
-  document.querySelectorAll('.slicer-trigger.open').forEach(t=>t.classList.remove('open'));
+  document.querySelectorAll('.dd-panel.open').forEach(p=>p.classList.remove('open'));
+  document.querySelectorAll('.dd-trigger.open').forEach(t=>t.classList.remove('open'));
   if(!isOpen){panel.classList.add('open');trigger.classList.add('open');}
 }
-
 document.addEventListener('click',e=>{
-  if(!e.target.closest('.slicer-dropdown')){
-    document.querySelectorAll('.slicer-panel.open').forEach(p=>p.classList.remove('open'));
-    document.querySelectorAll('.slicer-trigger.open').forEach(t=>t.classList.remove('open'));
+  if(!e.target.closest('.dd')){
+    document.querySelectorAll('.dd-panel.open').forEach(p=>p.classList.remove('open'));
+    document.querySelectorAll('.dd-trigger.open').forEach(t=>t.classList.remove('open'));
   }
 });
-
-function updateTrLabel(){
-  const lbl=document.getElementById('ddTrLabel');
-  const trigger=document.getElementById('ddTrTrigger');
-  if(!sTr.size){lbl.textContent='Selecionar...';trigger.classList.remove('has-sel');}
-  else if(sTr.size===1){lbl.textContent=[...sTr][0].split(' ')[0]+'...';trigger.classList.add('has-sel');}
-  else{lbl.textContent=`${sTr.size} selecionadas`;trigger.classList.add('has-sel');}
+function ddLabel(key,sel,all){
+  const lbl=document.getElementById('dd'+key+'Lbl');
+  const tr=document.getElementById('dd'+key+'Trigger');
+  if(!sel.size){lbl.textContent='Selecionar...';tr.classList.remove('sel');}
+  else if(sel.size===all.length){lbl.textContent='Todos';tr.classList.add('sel');}
+  else if(sel.size===1){lbl.textContent=[...sel][0];tr.classList.add('sel');}
+  else{lbl.textContent=`${sel.size} selecionados`;tr.classList.add('sel');}
 }
-
-function buildTrList(){
-  const q=(document.getElementById('trSearch').value||'').toLowerCase();
-  const names=TRANSP.map(r=>r.nome);
-  const filtered=q?names.filter(n=>n.toLowerCase().includes(q)):names;
-  const list=document.getElementById('listTr');
-  list.innerHTML='';
-  filtered.forEach(n=>{
-    const el=mkSlicerItem(n,sTr.has(n),()=>{
-      sTr.has(n)?sTr.delete(n):sTr.add(n);
-      buildTrList();updateTrLabel();
-      document.getElementById('clrTr').classList.toggle('vis',sTr.size>0);
-      mkTransp();updateClearBtn();refresh();
-    });
-    list.appendChild(el);
-  });
-}
-
-function selectAllTr(){
-  TRANSP.forEach(r=>sTr.add(r.nome));
-  buildTrList();updateTrLabel();
-  document.getElementById('clrTr').classList.toggle('vis',sTr.size>0);
-  mkTransp();updateClearBtn();refresh();
-}
-
-/* ─── HELPERS DROPDOWN LABEL ─── */
-function updateDDLabel(id,sel,allItems){
-  const lbl=document.getElementById('dd'+id+'Label');
-  const trigger=document.getElementById('dd'+id+'Trigger');
-  if(!sel.size){lbl.textContent='Selecionar...';trigger.classList.remove('has-sel');}
-  else if(sel.size===allItems.length){lbl.textContent='Todos';trigger.classList.add('has-sel');}
-  else if(sel.size===1){lbl.textContent=[...sel][0];trigger.classList.add('has-sel');}
-  else{lbl.textContent=`${sel.size} selecionados`;trigger.classList.add('has-sel');}
-}
-
-function selectAll(t){
-  if(t==='ano'){const anos=[...new Set(MESES.map(r=>r.ano))];anos.forEach(a=>sAnos.add(a));buildAnoList();updateDDLabel('Ano',sAnos,[...new Set(MESES.map(r=>r.ano))]);document.getElementById('clrAno').classList.toggle('vis',sAnos.size>0);}
-  else if(t==='mes'){const mo=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];const meses=[...new Set(MESES.map(r=>r.mes))].sort((a,b)=>mo.indexOf(a)-mo.indexOf(b));meses.forEach(m=>sMes.add(m));buildMesList();updateDDLabel('Mes',sMes,meses);document.getElementById('clrMes').classList.toggle('vis',sMes.size>0);}
-  else if(t==='uf'){const ufs=[...new Set(UF.map(r=>r.uf))].sort();ufs.forEach(u=>sUF.add(u));buildUFList();updateDDLabel('UF',sUF,ufs);document.getElementById('clrUF').classList.toggle('vis',sUF.size>0);}
-  mkTransp();updateClearBtn();refresh();
-}
-
-/* ─── SLICERS ─── */
-function mkSlicerItem(label,isOn,onClickFn){
+function mkItem(label,isOn,fn){
   const el=document.createElement('div');
   el.className='sl-item'+(isOn?' on':'');
   el.innerHTML=`<div class="sl-cb"><svg width="8" height="6" viewBox="0 0 8 6" fill="none"><polyline points="1,3 3,5 7,1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="sl-label">${label}</span>`;
-  el.addEventListener('click',onClickFn);
+  el.addEventListener('click',fn);
   return el;
 }
 
-function buildAnoList(){
-  const q=(document.getElementById('anoSearch').value||'').toLowerCase();
-  const anos=[...new Set(MESES.map(r=>r.ano))].sort();
-  const filtered=q?anos.filter(a=>String(a).includes(q)):anos;
-  const list=document.getElementById('listAno');
+/* ── BUILD LISTS ── */
+const MO=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+
+function buildList(key){
+  const q=(document.getElementById('sr'+key).value||'').toLowerCase();
+  let items=[], sel, clrId;
+  if(key==='Tr'){items=RAW_T.map(r=>r.nome);sel=sTr;clrId='clrTr';}
+  else if(key==='Ano'){items=[...new Set(RAW_M.map(r=>r.ano))].sort().map(String);sel=new Set([...sAnos].map(String));clrId='clrAno';}
+  else if(key==='Mes'){items=[...new Set(RAW_M.map(r=>r.mes))].sort((a,b)=>MO.indexOf(a)-MO.indexOf(b));sel=sMes;clrId='clrMes';}
+  else if(key==='UF'){items=RAW_UF.map(r=>r.uf).sort();sel=sUF;clrId='clrUF';}
+  const filtered=q?items.filter(i=>i.toLowerCase().includes(q)):items;
+  const list=document.getElementById('list'+key);
   list.innerHTML='';
-  filtered.forEach(a=>{
-    list.appendChild(mkSlicerItem(String(a),sAnos.has(a),()=>{
-      sAnos.has(a)?sAnos.delete(a):sAnos.add(a);
-      buildAnoList();updateDDLabel('Ano',sAnos,anos);
-      document.getElementById('clrAno').classList.toggle('vis',sAnos.size>0);
-      updateClearBtn();refresh();
+  filtered.forEach(item=>{
+    const isOn=key==='Ano'?sAnos.has(Number(item)):sel.has(item);
+    list.appendChild(mkItem(item,isOn,()=>{
+      if(key==='Ano'){sAnos.has(Number(item))?sAnos.delete(Number(item)):sAnos.add(Number(item));}
+      else{sel.has(item)?sel.delete(item):sel.add(item);}
+      buildList(key);
+      ddLabel(key, key==='Ano'?sAnos:sel, items);
+      document.getElementById(clrId).classList.toggle('vis',(key==='Ano'?sAnos:sel).size>0);
+      updateClearBtn();renderAll();
     }));
   });
 }
 
-function buildMesList(){
-  const q=(document.getElementById('mesSearch').value||'').toLowerCase();
-  const mo=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-  const meses=[...new Set(MESES.map(r=>r.mes))].sort((a,b)=>mo.indexOf(a)-mo.indexOf(b));
-  const filtered=q?meses.filter(m=>m.includes(q)):meses;
-  const list=document.getElementById('listMes');
-  list.innerHTML='';
-  filtered.forEach(m=>{
-    list.appendChild(mkSlicerItem(m,sMes.has(m),()=>{
-      sMes.has(m)?sMes.delete(m):sMes.add(m);
-      buildMesList();updateDDLabel('Mes',sMes,meses);
-      document.getElementById('clrMes').classList.toggle('vis',sMes.size>0);
-      updateClearBtn();refresh();
-    }));
-  });
-}
-
-function buildUFList(){
-  const q=(document.getElementById('ufSearch').value||'').toLowerCase();
-  const ufs=[...new Set(UF.map(r=>r.uf))].sort();
-  const filtered=q?ufs.filter(u=>u.toLowerCase().includes(q)):ufs;
-  const list=document.getElementById('listUF');
-  list.innerHTML='';
-  filtered.forEach(u=>{
-    list.appendChild(mkSlicerItem(u,sUF.has(u),()=>{
-      sUF.has(u)?sUF.delete(u):sUF.add(u);
-      buildUFList();updateDDLabel('UF',sUF,ufs);
-      document.getElementById('clrUF').classList.toggle('vis',sUF.size>0);
-      updateClearBtn();refresh();
-    }));
-  });
-}
-
-function buildSlicers(){
-  buildAnoList();buildMesList();buildUFList();
-  const anos=[...new Set(MESES.map(r=>r.ano))];
-  const mo=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-  const meses=[...new Set(MESES.map(r=>r.mes))].sort((a,b)=>mo.indexOf(a)-mo.indexOf(b));
-  const ufs=[...new Set(UF.map(r=>r.uf))].sort();
-  updateDDLabel('Ano',sAnos,anos);
-  updateDDLabel('Mes',sMes,meses);
-  updateDDLabel('UF',sUF,ufs);
-  document.getElementById('clrAno').classList.toggle('vis',sAnos.size>0);
-  document.getElementById('clrMes').classList.toggle('vis',sMes.size>0);
-  document.getElementById('clrUF').classList.toggle('vis',sUF.size>0);
+function selAll(key){
+  if(key==='Tr'){RAW_T.forEach(r=>sTr.add(r.nome));}
+  else if(key==='Ano'){RAW_M.forEach(r=>sAnos.add(r.ano));}
+  else if(key==='Mes'){RAW_M.forEach(r=>sMes.add(r.mes));}
+  else if(key==='UF'){RAW_UF.forEach(r=>sUF.add(r.uf));}
+  buildList(key);
+  const items=key==='Tr'?RAW_T.map(r=>r.nome):key==='Ano'?[...new Set(RAW_M.map(r=>r.ano))].sort().map(String):key==='Mes'?[...new Set(RAW_M.map(r=>r.mes))]:RAW_UF.map(r=>r.uf);
+  const sel=key==='Tr'?sTr:key==='Ano'?sAnos:key==='Mes'?sMes:sUF;
+  ddLabel(key,sel,items);
+  document.getElementById('clr'+key==='Tr'?'Tr':key).classList.toggle('vis',sel.size>0);
+  updateClearBtn();renderAll();
 }
 
 function clearGroup(t){
-  if(t==='ano'){sAnos.clear();const el=document.getElementById('anoSearch');if(el)el.value='';buildAnoList();updateDDLabel('Ano',sAnos,[...new Set(MESES.map(r=>r.ano))]);document.getElementById('clrAno').classList.remove('vis');}
-  else if(t==='mes'){sMes.clear();const el=document.getElementById('mesSearch');if(el)el.value='';buildMesList();const mo=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];updateDDLabel('Mes',sMes,[...new Set(MESES.map(r=>r.mes))].sort((a,b)=>mo.indexOf(a)-mo.indexOf(b)));document.getElementById('clrMes').classList.remove('vis');}
-  else if(t==='uf'){sUF.clear();const el=document.getElementById('ufSearch');if(el)el.value='';buildUFList();updateDDLabel('UF',sUF,[...new Set(UF.map(r=>r.uf))].sort());document.getElementById('clrUF').classList.remove('vis');}
-  else if(t==='tr'){sTr.clear();const el=document.getElementById('trSearch');if(el)el.value='';updateTrLabel();buildTrList();document.getElementById('clrTr').classList.remove('vis');}
-  mkTransp();refresh();updateClearBtn();
-}
-
-function hasFilters(){return sAnos.size||sMes.size||sUF.size||sTr.size;}
-
-function updateClearBtn(){
-  const btn=document.getElementById('btnClearAll');
-  if(!btn)return;
-  const active=hasFilters();
-  btn.style.opacity=active?'1':'0.4';
-  btn.style.pointerEvents=active?'auto':'none';
-  btn.textContent=active?`✕ Limpar tudo (${sAnos.size+sMes.size+sUF.size+sTr.size})`:'✕ Limpar tudo';
+  if(t==='tr'){sTr.clear();document.getElementById('srTr').value='';buildList('Tr');ddLabel('Tr',sTr,RAW_T.map(r=>r.nome));document.getElementById('clrTr').classList.remove('vis');}
+  else if(t==='ano'){sAnos.clear();document.getElementById('srAno').value='';buildList('Ano');ddLabel('Ano',sAnos,[...new Set(RAW_M.map(r=>r.ano))].map(String));document.getElementById('clrAno').classList.remove('vis');}
+  else if(t==='mes'){sMes.clear();document.getElementById('srMes').value='';buildList('Mes');ddLabel('Mes',sMes,RAW_M.map(r=>r.mes));document.getElementById('clrMes').classList.remove('vis');}
+  else if(t==='uf'){sUF.clear();document.getElementById('srUF').value='';buildList('UF');ddLabel('UF',sUF,RAW_UF.map(r=>r.uf));document.getElementById('clrUF').classList.remove('vis');}
+  updateClearBtn();renderAll();
 }
 
 function clearAll(){
   sAnos.clear();sMes.clear();sUF.clear();sTr.clear();
-  ['anoSearch','mesSearch','ufSearch','trSearch'].forEach(id=>{
-    const el=document.getElementById(id);if(el)el.value='';
-  });
-  buildSlicers();updateTrLabel();buildTrList();
-  mkTransp();refresh();updateClearBtn();
+  ['srTr','srAno','srMes','srUF'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  buildList('Tr');buildList('Ano');buildList('Mes');buildList('UF');
+  ddLabel('Tr',sTr,RAW_T.map(r=>r.nome));
+  ddLabel('Ano',sAnos,[...new Set(RAW_M.map(r=>r.ano))].map(String));
+  ddLabel('Mes',sMes,RAW_M.map(r=>r.mes));
+  ddLabel('UF',sUF,RAW_UF.map(r=>r.uf));
+  ['clrTr','clrAno','clrMes','clrUF'].forEach(id=>document.getElementById(id).classList.remove('vis'));
+  updateClearBtn();renderAll();
 }
 
-/* ─── KPIs ─── */
+function updateClearBtn(){
+  const total=sAnos.size+sMes.size+sUF.size+sTr.size;
+  const btn=document.getElementById('btnClrHdr');
+  btn.classList.toggle('active',total>0);
+  btn.textContent=total>0?`✕ Limpar tudo (${total})`:'✕ Limpar tudo';
+}
+
+/* ══════ KPIs ══════ */
 function mkKPI(){
   const k=agg();
-  const ot=k.ot,lr=k.lr,lp=k.lp,delta=(lr-lp).toFixed(1);
+  const ot=k.ot,lr=k.lr,lp=k.lp,delta=(lr-lp);
   const oc=ot>=70?'g':ot>=40?'a':'r';
   const kc=ot>=70?'kg':ot>=40?'ka':'kr';
-  const dc=parseFloat(delta)>2?'r':parseFloat(delta)>0?'a':'g';
-  const dkc=parseFloat(delta)>2?'kr':parseFloat(delta)>0?'ka':'kg';
+  const dc=delta>2?'r':delta>0?'a':'g';
+  const dkc=delta>2?'kr':delta>0?'ka':'kg';
   const tot=k.np+k.at;
   document.getElementById('kgrid').innerHTML=`
     <div class="kpi ${kc}"><div class="kl">On-Time % (R$)</div><div class="kv ${oc}">${ot.toFixed(1)}%</div><div class="ks">meta 70% · ${ot>=70?'✓ atingida':'✗ abaixo'}</div></div>
@@ -722,220 +605,155 @@ function mkKPI(){
     <div class="kpi kg"><div class="kl">No prazo</div><div class="kv g">${k.np.toLocaleString('pt-BR')}</div><div class="ks">${tot>0?Math.round(k.np/tot*100):0}% do entregue</div></div>
     <div class="kpi kr"><div class="kl">Atrasadas</div><div class="kv r">${k.at.toLocaleString('pt-BR')}</div><div class="ks">${tot>0?Math.round(k.at/tot*100):0}% do entregue</div></div>
     <div class="kpi ka"><div class="kl">Lead realizado</div><div class="kv">${lr.toFixed(1)}d</div><div class="ks">prometido: ${lp.toFixed(1)}d</div></div>
-    <div class="kpi ${dkc}"><div class="kl">Delta lead</div><div class="kv ${dc}">${parseFloat(delta)>=0?'+':''}${delta}d</div><div class="ks">real − prometido</div></div>`;
+    <div class="kpi ${dkc}"><div class="kl">Delta lead</div><div class="kv ${dc}">${delta>=0?'+':''}${delta.toFixed(1)}d</div><div class="ks">real − prometido</div></div>`;
   const b=document.getElementById('hBadge');
-  if(ot>=70){b.textContent='✓ Meta atingida';b.className='badge bg-ok'}
-  else if(ot>=40){b.textContent='⚠ Atenção';b.className='badge bg-warn'}
-  else{b.textContent='✗ Crítico';b.className='badge bg-crit'}
+  if(ot>=70){b.textContent='✓ Meta atingida';b.className='badge bg-ok';}
+  else if(ot>=40){b.textContent='⚠ Atenção';b.className='badge bg-warn';}
+  else{b.textContent='✗ Crítico';b.className='badge bg-crit';}
 }
 
-/* ─── GAUGE ─── */
+/* ══════ GAUGE ══════ */
 function mkGauge(){
   const k=agg();
   const ot=Math.min(100,Math.max(0,k.ot));
   const meta=70;
   const svg=document.getElementById('gaugeSVG');
-
-  // Fórmula correta para semicírculo NO TOPO do SVG:
-  // x(pct) = cx - r * cos(pct * PI / 100)
-  // y(pct) = cy - r * sin(pct * PI / 100)
-  // pct=0  → (cx-r, cy)   esquerda, na base ✓
-  // pct=50 → (cx,   cy-r) topo ✓
-  // pct=100→ (cx+r, cy)   direita, na base ✓
-  // sweep-flag = 0 (anti-horário), large-arc = 1 somente se span > 50%
-
-  const cx=130, cy=137, r=108, sw=36;
-
-  const px = (pct,rad) => cx - rad * Math.cos(pct * Math.PI / 100);
-  const py = (pct,rad) => cy - rad * Math.sin(pct * Math.PI / 100);
-
-  function seg(p1, p2, color){
-    const x1=px(p1,r).toFixed(2), y1=py(p1,r).toFixed(2);
-    const x2=px(p2,r).toFixed(2), y2=py(p2,r).toFixed(2);
-    const large=(p2-p1)>50?1:0;
-    return `<path d="M${x1},${y1} A${r},${r} 0 ${large},1 ${x2},${y2}"
-      stroke="${color}" stroke-width="${sw}" fill="none" stroke-linecap="butt"/>`;
+  const cx=130,cy=137,r=108,sw=36;
+  const px=(p,rd)=>cx-rd*Math.cos(p*Math.PI/100);
+  const py=(p,rd)=>cy-rd*Math.sin(p*Math.PI/100);
+  function seg(p1,p2,clr){
+    const x1=px(p1,r).toFixed(2),y1=py(p1,r).toFixed(2);
+    const x2=px(p2,r).toFixed(2),y2=py(p2,r).toFixed(2);
+    return `<path d="M${x1},${y1} A${r},${r} 0 ${(p2-p1)>50?1:0},1 ${x2},${y2}" stroke="${clr}" stroke-width="${sw}" fill="none" stroke-linecap="butt"/>`;
   }
-
   const gap=0.6;
-
-  // Ponteiro
-  const nx=px(ot, r-5).toFixed(2), ny=py(ot, r-5).toFixed(2);
-
-  // Label 70% fora do arco
-  const lx70=px(meta, r+sw/2+14).toFixed(1), ly70=(py(meta, r+sw/2+14)+4).toFixed(1);
-
-  // Divisor DESTAQUE na meta 70% — mais longo e branco espesso
-  const dxi=px(meta,r-sw/2-6).toFixed(1), dyi=py(meta,r-sw/2-6).toFixed(1);
-  const dxo=px(meta,r+sw/2+6).toFixed(1), dyo=py(meta,r+sw/2+6).toFixed(1);
-
-  // Divisores finos entre vermelho/âmbar (40%)
-  const d40xi=px(40,r-sw/2-1).toFixed(1), d40yi=py(40,r-sw/2-1).toFixed(1);
-  const d40xo=px(40,r+sw/2+1).toFixed(1), d40yo=py(40,r+sw/2+1).toFixed(1);
-
-  // Labels 0% e 100% fora das pontas
-  const lx0  =px(0,   r+sw/2+14).toFixed(1);
-  const ly0  =(py(0,   r+sw/2+14)+4).toFixed(1);
-  const lx100=px(100, r+sw/2+14).toFixed(1);
-  const ly100=(py(100, r+sw/2+14)+4).toFixed(1);
-
-  const statusClr=ot>=meta?'#10B981':ot>=40?'#F59E0B':'#EF4444';
-  const statusTxt=ot>=meta?'Acima da meta':ot>=40?'Atraso Moderado':'Atraso Crítico';
-  const statusIcon=ot>=meta?'✓':ot>=40?'⚠':'✗';
-
+  const nx=px(ot,r-5).toFixed(2),ny=py(ot,r-5).toFixed(2);
+  const lx70=px(meta,r+sw/2+14).toFixed(1),ly70=(py(meta,r+sw/2+14)+4).toFixed(1);
+  const dxi=px(meta,r-sw/2-6).toFixed(1),dyi=py(meta,r-sw/2-6).toFixed(1);
+  const dxo=px(meta,r+sw/2+6).toFixed(1),dyo=py(meta,r+sw/2+6).toFixed(1);
+  const d40xi=px(40,r-sw/2-1).toFixed(1),d40yi=py(40,r-sw/2-1).toFixed(1);
+  const d40xo=px(40,r+sw/2+1).toFixed(1),d40yo=py(40,r+sw/2+1).toFixed(1);
+  const lx0=px(0,r+sw/2+14).toFixed(1),ly0=(py(0,r+sw/2+14)+4).toFixed(1);
+  const lx100=px(100,r+sw/2+14).toFixed(1),ly100=(py(100,r+sw/2+14)+4).toFixed(1);
+  const sc=ot>=meta?'#10B981':ot>=40?'#F59E0B':'#EF4444';
+  const st=ot>=meta?'Acima da meta':ot>=40?'Atraso Moderado':'Atraso Crítico';
   svg.innerHTML=`
-    ${seg(0,   100,        '#E5E7EB')}
-    ${seg(0,   40-gap,     '#EF4444')}
-    ${seg(40+gap, 70-gap,  '#F59E0B')}
-    ${seg(70+gap, 100,     '#10B981')}
-    <!-- divisor fino em 40% -->
-    <line x1="${d40xi}" y1="${d40yi}" x2="${d40xo}" y2="${d40yo}"
-      stroke="white" stroke-width="1.5" stroke-linecap="butt" opacity="0.8"/>
-    <!-- divisor DESTAQUE em 70% (meta) — mais longo e espesso -->
-    <line x1="${dxi}" y1="${dyi}" x2="${dxo}" y2="${dyo}"
-      stroke="white" stroke-width="3.5" stroke-linecap="round"/>
-    <line x1="${px(meta,r-sw/2-5).toFixed(1)}" y1="${py(meta,r-sw/2-5).toFixed(1)}"
-          x2="${px(meta,r+sw/2+5).toFixed(1)}" y2="${py(meta,r+sw/2+5).toFixed(1)}"
-      stroke="rgba(255,255,255,0.35)" stroke-width="7" stroke-linecap="round"/>
-    <!-- ponteiro -->
-    <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}"
-      stroke="#111827" stroke-width="2.5" stroke-linecap="round"/>
+    ${seg(0,100,'#E5E7EB')}
+    ${seg(0,40-gap,'#EF4444')}
+    ${seg(40+gap,70-gap,'#F59E0B')}
+    ${seg(70+gap,100,'#10B981')}
+    <line x1="${d40xi}" y1="${d40yi}" x2="${d40xo}" y2="${d40yo}" stroke="white" stroke-width="1.5" stroke-linecap="butt" opacity="0.8"/>
+    <line x1="${px(meta,r-sw/2-5).toFixed(1)}" y1="${py(meta,r-sw/2-5).toFixed(1)}" x2="${px(meta,r+sw/2+5).toFixed(1)}" y2="${py(meta,r+sw/2+5).toFixed(1)}" stroke="rgba(255,255,255,0.35)" stroke-width="7" stroke-linecap="round"/>
+    <line x1="${dxi}" y1="${dyi}" x2="${dxo}" y2="${dyo}" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="#111827" stroke-width="2.5" stroke-linecap="round"/>
     <circle cx="${cx}" cy="${cy}" r="8" fill="#111827"/>
     <circle cx="${cx}" cy="${cy}" r="4" fill="white"/>
-    <text x="${lx0}"   y="${ly0}"   font-size="11" fill="#9CA3AF" font-family="Inter,sans-serif" text-anchor="middle">0%</text>
+    <text x="${lx0}" y="${ly0}" font-size="11" fill="#9CA3AF" font-family="Inter,sans-serif" text-anchor="middle">0%</text>
     <text x="${lx100}" y="${ly100}" font-size="11" fill="#9CA3AF" font-family="Inter,sans-serif" text-anchor="middle">100%</text>
-    <text x="${lx70}"  y="${ly70}"  font-size="11" fill="#374151" font-weight="600" font-family="Inter,sans-serif" text-anchor="middle">70%</text>
+    <text x="${lx70}" y="${ly70}" font-size="11" fill="#374151" font-weight="600" font-family="Inter,sans-serif" text-anchor="middle">70%</text>
     <text x="${cx}" y="${cy-14}" font-size="10" fill="#9CA3AF" font-family="Inter,sans-serif" text-anchor="middle">On-Time</text>
-    <text x="${cx}" y="${cy+8}"  font-size="22" font-weight="700" fill="${statusClr}" font-family="JetBrains Mono,monospace" text-anchor="middle">${ot.toFixed(0)}%</text>
-  `;
-
+    <text x="${cx}" y="${cy+8}" font-size="22" font-weight="700" fill="${sc}" font-family="JetBrains Mono,monospace" text-anchor="middle">${ot.toFixed(0)}%</text>`;
   const dot=document.getElementById('gaugeDot');
   const txt=document.getElementById('gaugeStatusTxt');
-  if(dot){dot.style.background=statusClr;}
-  if(txt){txt.textContent=`${statusIcon} ${statusTxt}`;txt.style.color=statusClr;txt.style.fontWeight='600';}
-
+  if(dot)dot.style.background=sc;
+  if(txt){txt.textContent=`${ot>=meta?'✓':ot>=40?'⚠':'✗'} ${st}`;txt.style.color=sc;txt.style.fontWeight='600';}
   const faltam=Math.max(0,meta-ot);
-  document.getElementById('gaugeLabel').textContent=
-    ot>=meta?`+${(ot-meta).toFixed(1)}% acima da meta`:`Faltam ${faltam.toFixed(1)}% para meta de ${meta}%`;
+  document.getElementById('gaugeLabel').textContent=ot>=meta?`+${(ot-meta).toFixed(1)}% acima da meta`:`Faltam ${faltam.toFixed(1)}% para meta de ${meta}%`;
 }
 
-/* ─── GRÁFICO MÊS ─── */
+/* ══════ GRÁFICO MENSAL ══════ */
 function mkMes(){
-  const d=fMeses().length?fMeses():MESES;
+  const d=aggByMes();
   const lb=d.map(r=>r.label);
   const clickFn=(_,els)=>{
     if(!els.length)return;
-    const m=d[els[0].index].mes;
-    sMes.has(m)?sMes.delete(m):sMes.add(m);
-    buildSlicers();refresh();
+    const mes=d[els[0].index].mes;
+    sMes.has(mes)?sMes.delete(mes):sMes.add(mes);
+    buildList('Mes');
+    ddLabel('Mes',sMes,RAW_M.map(r=>r.mes));
+    document.getElementById('clrMes').classList.toggle('vis',sMes.size>0);
+    updateClearBtn();renderAll();
   };
-  if(!cMesI){
-    const ctx=document.getElementById('cMesC').getContext('2d');
-    if(mesMode==='ot'){
-      const vals=d.map(r=>r.ot);
-      cMesI=new Chart(ctx,{type:'line',data:{labels:lb,datasets:[
-        {label:'On-Time %',data:vals,borderColor:'#1D6EE8',backgroundColor:'rgba(29,110,232,0.05)',borderWidth:2,pointRadius:4,fill:true,tension:0.3,spanGaps:true,pointBackgroundColor:vals.map(v=>otC(v)),pointBorderColor:vals.map(v=>otC(v)),pointBorderWidth:2,pointHoverRadius:6},
-        {label:'Meta 70%',data:d.map(()=>70),borderColor:'rgba(217,119,6,0.4)',borderWidth:1.5,borderDash:[6,3],pointRadius:0,fill:false}
-      ]},options:{responsive:true,maintainAspectRatio:false,onClick:clickFn,animation:false,
-        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toFixed(1)}%`}}},
-        scales:{x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},y:{min:0,max:100,ticks:{color:'#9AA0AD',font:{size:9},callback:v=>v+'%'},grid:{color:'rgba(0,0,0,.04)'}}}}}); 
-    }else{
-      cMesI=new Chart(ctx,{type:'line',data:{labels:lb,datasets:[
-        {label:'Realizado',data:d.map(r=>r.lr),borderColor:'#DC2626',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.3,pointHoverRadius:5},
-        {label:'Prometido',data:d.map(r=>r.lp),borderColor:'#0F9E5E',backgroundColor:'transparent',borderWidth:1.5,borderDash:[5,3],pointRadius:0,tension:0.3}
-      ]},options:{responsive:true,maintainAspectRatio:false,onClick:clickFn,animation:false,
-        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toFixed(1)}d`}}},
-        scales:{x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},y:{ticks:{color:'#9AA0AD',font:{size:9},callback:v=>v+'d'},grid:{color:'rgba(0,0,0,.04)'}}}}});
-    }
-    return;
-  }
+  if(cMesI){cMesI.destroy();cMesI=null;}
+  const ctx=document.getElementById('cMesC').getContext('2d');
   if(mesMode==='ot'){
     const vals=d.map(r=>r.ot);
-    cMesI.data.labels=lb;
-    cMesI.data.datasets[0].data=vals;
-    cMesI.data.datasets[0].pointBackgroundColor=vals.map(v=>otC(v));
-    cMesI.data.datasets[0].pointBorderColor=vals.map(v=>otC(v));
-    if(cMesI.data.datasets.length<2)cMesI.data.datasets.push({label:'Meta 70%',data:d.map(()=>70),borderColor:'rgba(217,119,6,0.4)',borderWidth:1.5,borderDash:[6,3],pointRadius:0,fill:false});
-    else cMesI.data.datasets[1].data=d.map(()=>70);
+    cMesI=new Chart(ctx,{type:'line',data:{labels:lb,datasets:[
+      {label:'On-Time %',data:vals,borderColor:'#1D6EE8',backgroundColor:'rgba(29,110,232,0.06)',borderWidth:2,pointRadius:4,fill:true,tension:0.3,pointBackgroundColor:vals.map(v=>otC(v)),pointBorderColor:vals.map(v=>otC(v)),pointBorderWidth:2,pointHoverRadius:6},
+      {label:'Meta 70%',data:d.map(()=>70),borderColor:'rgba(217,119,6,0.5)',borderWidth:1.5,borderDash:[6,3],pointRadius:0,fill:false}
+    ]},options:{responsive:true,maintainAspectRatio:false,onClick:clickFn,animation:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toFixed(1)}%`}}},
+      scales:{x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},y:{min:0,max:100,ticks:{color:'#9AA0AD',font:{size:9},callback:v=>v+'%'},grid:{color:'rgba(0,0,0,.04)'}}}}});
   }else{
-    cMesI.data.labels=lb;
-    cMesI.data.datasets[0].data=d.map(r=>r.lr);
-    if(cMesI.data.datasets.length>1)cMesI.data.datasets[1].data=d.map(r=>r.lp);
+    cMesI=new Chart(ctx,{type:'line',data:{labels:lb,datasets:[
+      {label:'Realizado',data:d.map(r=>r.lr),borderColor:'#DC2626',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.3,pointHoverRadius:5},
+      {label:'Prometido',data:d.map(r=>r.lp),borderColor:'#0F9E5E',backgroundColor:'transparent',borderWidth:1.5,borderDash:[5,3],pointRadius:0,tension:0.3}
+    ]},options:{responsive:true,maintainAspectRatio:false,onClick:clickFn,animation:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toFixed(1)}d`}}},
+      scales:{x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},y:{ticks:{color:'#9AA0AD',font:{size:9},callback:v=>v+'d'},grid:{color:'rgba(0,0,0,.04)'}}}}}); 
   }
-  cMesI.update('none');
 }
 
 function setMode(m,btn){
   mesMode=m;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   btn.classList.add('on');
-  if(cMesI){cMesI.destroy();cMesI=null;}
   mkMes();
 }
 
-/* ─── DELTA ─── */
+/* ══════ DELTA ══════ */
 function mkDelta(){
-  const d=fMeses().length?fMeses():MESES;
+  const d=aggByMes();
   const deltas=d.map(r=>parseFloat((r.lr-r.lp).toFixed(2)));
-  const bgColors=deltas.map(v=>v>2?'rgba(220,38,38,.7)':v>0?'rgba(217,119,6,.7)':'rgba(15,158,94,.7)');
-  const hoverColors=deltas.map(v=>v>2?'#DC2626':v>0?'#D97706':'#0F9E5E');
+  const bgC=deltas.map(v=>v>2?'rgba(220,38,38,.7)':v>0?'rgba(217,119,6,.7)':'rgba(15,158,94,.7)');
+  const hvC=deltas.map(v=>v>2?'#DC2626':v>0?'#D97706':'#0F9E5E');
   const clickFn=(_,els)=>{
     if(!els.length)return;
     const mes=d[els[0].index].mes;
     sMes.has(mes)?sMes.delete(mes):sMes.add(mes);
-    buildSlicers();refresh();
+    buildList('Mes');
+    ddLabel('Mes',sMes,RAW_M.map(r=>r.mes));
+    document.getElementById('clrMes').classList.toggle('vis',sMes.size>0);
+    updateClearBtn();renderAll();
   };
-  if(!cDeltaI){
-    const ctx=document.getElementById('cDeltaC').getContext('2d');
-    cDeltaI=new Chart(ctx,{type:'bar',data:{labels:d.map(r=>r.label),datasets:[{label:'Delta',data:deltas,borderRadius:4,backgroundColor:bgColors,hoverBackgroundColor:hoverColors}]},
-      options:{responsive:true,maintainAspectRatio:false,onClick:clickFn,animation:false,
-        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` Delta: ${c.raw>=0?'+':''}${c.raw}d`}}},
-        scales:{x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},y:{ticks:{color:'#9AA0AD',font:{size:9},callback:v=>(v>=0?'+':'')+v+'d'},grid:{color:'rgba(0,0,0,.04)'}}}}});
-    return;
-  }
-  cDeltaI.data.labels=d.map(r=>r.label);
-  cDeltaI.data.datasets[0].data=deltas;
-  cDeltaI.data.datasets[0].backgroundColor=bgColors;
-  cDeltaI.data.datasets[0].hoverBackgroundColor=hoverColors;
-  cDeltaI.update('none');
+  if(cDeltaI){cDeltaI.destroy();cDeltaI=null;}
+  const ctx=document.getElementById('cDeltaC').getContext('2d');
+  cDeltaI=new Chart(ctx,{type:'bar',data:{labels:d.map(r=>r.label),datasets:[{label:'Delta',data:deltas,borderRadius:4,backgroundColor:bgC,hoverBackgroundColor:hvC}]},
+    options:{responsive:true,maintainAspectRatio:false,onClick:clickFn,animation:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` Delta: ${c.raw>=0?'+':''}${c.raw}d`}}},
+      scales:{x:{ticks:{color:'#9AA0AD',font:{size:9}},grid:{color:'rgba(0,0,0,.04)'}},y:{ticks:{color:'#9AA0AD',font:{size:9},callback:v=>(v>=0?'+':'')+v+'d'},grid:{color:'rgba(0,0,0,.04)'}}}}}); 
 }
 
-/* ─── TRANSPORTADORAS — totalmente reativo ─── */
+/* ══════ TRANSPORTADORAS ══════ */
 function mkTransp(){
-  /* ordena por on-time desc; destaca selecionadas */
-  const sorted=TRANSP.slice().sort((a,b)=>b.ot-a.ot);
-  const mx=Math.max(...sorted.map(r=>r.ot||0));
-
-  /* opacidade: se há filtro ativo (sTr), esmaece as não selecionadas */
-  document.getElementById('tBt').innerHTML=sorted.map(r=>{
+  const byTr=aggByTr();
+  const mx=Math.max(...byTr.map(r=>r.ot||0));
+  document.getElementById('tBt').innerHTML=byTr.map(r=>{
     const bw=mx>0?Math.round((r.ot||0)/mx*100):0;
     const fc=r.ot>=70?'#0F9E5E':r.ot>=40?'#D97706':'#DC2626';
     const isOn=sTr.has(r.nome);
     const dimmed=sTr.size&&!isOn;
-    return `<div class="br${isOn?' on':''}" style="${dimmed?'opacity:.35;':''}transition:opacity .15s"
-      onclick="togTr('${r.nome.replace(/'/g,"\\'")}',this)">
-      <div class="bh">
-        <span class="bn">${r.nome}</span>
-        <div class="bs">${otP(r.ot)}<span>${r.nfs.toLocaleString('pt-BR')} NFs</span><span>${r.lr.toFixed(1)}d</span></div>
-      </div>
+    return `<div class="br${isOn?' on':''}" style="${dimmed?'opacity:.3;':''}" onclick="togTr('${r.nome.replace(/'/g,"\\'")}')">
+      <div class="bh"><span class="bn">${r.nome}</span>
+      <div class="bs">${otP(r.ot)}<span>${r.nfs.toLocaleString('pt-BR')} NFs</span><span>${r.lr.toFixed(1)}d</span></div></div>
       <div class="btr"><div class="bf" style="width:${bw}%;background:${fc}"></div></div>
     </div>`;
   }).join('');
 }
 
-function togTr(n,el){
+function togTr(n){
   sTr.has(n)?sTr.delete(n):sTr.add(n);
-  buildTrList();updateTrLabel();
+  buildList('Tr');
+  ddLabel('Tr',sTr,RAW_T.map(r=>r.nome));
   document.getElementById('clrTr').classList.toggle('vis',sTr.size>0);
-  mkTransp();   /* rebuildpanel com opacidade */
-  refresh();    /* KPI + gauge + gráficos */
+  updateClearBtn();renderAll();
 }
 
-/* ─── TABELA UF ─── */
+/* ══════ TABELA UF ══════ */
 function sortUF(k){ufKey===k?ufDir*=-1:(ufKey=k,ufDir=-1);mkUF();}
 
 function mkUF(){
-  const vis=fUF().length?fUF():UF;
+  const vis=sUF.size?RAW_UF.filter(r=>sUF.has(r.uf)):RAW_UF;
   const rows=vis.slice().sort((a,b)=>{
     const av=a[ufKey],bv=b[ufKey];
     return(typeof av==='string'?av.localeCompare(bv):(bv-av))*ufDir;
@@ -946,26 +764,19 @@ function mkUF(){
   const totAt=vis.reduce((s,r)=>s+r.at,0);
   const totOt=totNfs>0?vis.reduce((s,r)=>s+r.ot*r.nfs,0)/totNfs:0;
   const totDelta=totNfs>0?vis.reduce((s,r)=>s+(r.delta||0)*r.nfs,0)/totNfs:0;
-
   document.getElementById('ufTb').innerHTML=rows.map(r=>{
     const dc=r.delta>2?'tdp':r.delta<0?'tdn':'';
-    const on=sUF.has(r.uf)?' class="on"':'';
-    return `<tr${on} onclick="togUF('${r.uf}',this)">
-      <td class="tuf">${r.uf}</td>
-      <td class="tn">${r.nfs.toLocaleString('pt-BR')}</td>
-      <td class="tn">R$ ${r.val.toFixed(2)}M</td>
-      <td>${otP(r.ot)}</td>
+    return `<tr class="${sUF.has(r.uf)?'on':''}" onclick="togUF('${r.uf}',this)">
+      <td class="tuf">${r.uf}</td><td class="tn">${r.nfs.toLocaleString('pt-BR')}</td>
+      <td class="tn">R$ ${r.val.toFixed(2)}M</td><td>${otP(r.ot)}</td>
       <td class="${dc}">${r.delta>=0?'+':''}${r.delta.toFixed(1)}d</td>
-      <td class="tn" style="color:var(--green);font-weight:500">${r.np>0?r.np.toLocaleString('pt-BR'):'0'}</td>
-      <td class="tn" style="color:var(--red);font-weight:500">${r.at>0?r.at.toLocaleString('pt-BR'):'0'}</td>
+      <td class="tn" style="color:var(--green);font-weight:500">${r.np.toLocaleString('pt-BR')}</td>
+      <td class="tn" style="color:var(--red);font-weight:500">${r.at.toLocaleString('pt-BR')}</td>
     </tr>`;
   }).join('');
-
   const dc2=totDelta>2?'color:var(--red)':totDelta<0?'color:var(--green)':'';
   document.getElementById('ufTf').innerHTML=`<tr>
-    <td>TOTAL</td>
-    <td>${totNfs.toLocaleString('pt-BR')}</td>
-    <td>R$ ${totVal.toFixed(2)}M</td>
+    <td>TOTAL</td><td>${totNfs.toLocaleString('pt-BR')}</td><td>R$ ${totVal.toFixed(2)}M</td>
     <td>${otP(totOt)}</td>
     <td style="font-family:'JetBrains Mono',monospace;font-weight:600;${dc2}">${totDelta>=0?'+':''}${totDelta.toFixed(1)}d</td>
     <td style="color:var(--green);font-weight:600;font-family:'JetBrains Mono',monospace">${totNp.toLocaleString('pt-BR')}</td>
@@ -976,15 +787,25 @@ function mkUF(){
 function togUF(u,tr){
   sUF.has(u)?sUF.delete(u):sUF.add(u);
   tr.className=sUF.has(u)?'on':'';
-  buildSlicers();updateClearBtn();refresh();
+  buildList('UF');
+  ddLabel('UF',sUF,RAW_UF.map(r=>r.uf));
+  document.getElementById('clrUF').classList.toggle('vis',sUF.size>0);
+  updateClearBtn();renderAll();
 }
 
-/* ─── REFRESH GLOBAL ─── */
-function refresh(){mkKPI();mkGauge();mkMes();mkDelta();mkUF();}
+/* ══════ RENDER CENTRAL ══════ */
+function renderAll(){
+  mkKPI();mkGauge();mkMes();mkDelta();mkTransp();mkUF();
+}
 
 window.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('ftrTs').textContent='Atualizado: '+new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
-  buildSlicers();buildTrList();mkTransp();refresh();updateClearBtn();
+  buildList('Tr');buildList('Ano');buildList('Mes');buildList('UF');
+  ddLabel('Tr',sTr,RAW_T.map(r=>r.nome));
+  ddLabel('Ano',sAnos,[...new Set(RAW_M.map(r=>r.ano))].map(String));
+  ddLabel('Mes',sMes,RAW_M.map(r=>r.mes));
+  ddLabel('UF',sUF,RAW_UF.map(r=>r.uf));
+  updateClearBtn();renderAll();
 });
 </script>
 </body>
