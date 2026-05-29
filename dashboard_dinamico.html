@@ -184,11 +184,12 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:
 
 /* TABLE UF — wrapper com scroll + tfoot fixo */
 .uf-outer{
-  display:flex;flex-direction:column;
-  max-height:280px;overflow:hidden;
   position:relative;
+  height:280px;
+  display:flex;flex-direction:column;
+  overflow:hidden;
 }
-.uf-scroll{overflow-y:auto;overflow-x:auto;flex:1;min-height:0;}
+.uf-scroll{overflow-y:auto;overflow-x:auto;flex:1;min-height:0;margin-bottom:0;}
 .uf-scroll::-webkit-scrollbar{width:4px;height:4px}
 .uf-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px}
 
@@ -214,10 +215,11 @@ tr.on td{background:var(--bdim)!important}
 .tdp{color:var(--red);font-family:'JetBrains Mono',monospace;font-weight:500}
 .tdn{color:var(--green);font-family:'JetBrains Mono',monospace;font-weight:500}
 
-/* GAUGE corrigido */
-.gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:4px 0 2px}
-.gauge-svg{width:100%;max-width:200px}
-.gauge-info{font-size:10px;color:var(--text3);margin-top:2px;text-align:center}
+/* GAUGE */
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:0}
+.gauge-svg{width:100%;max-width:240px;display:block}
+.gauge-legend{display:flex;align-items:center;gap:5px;justify-content:center;margin-top:2px;font-size:10px;color:var(--text2)}
+.gauge-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
 .ch{position:relative;width:100%}
 
@@ -282,37 +284,88 @@ tr.on td{background:var(--bdim)!important}
       </div>
     </div>
 
-    <!-- Slicer: Ano -->
-    <div class="slicer">
+    <!-- Slicer: Ano (dropdown) -->
+    <div class="slicer" style="flex-shrink:0">
       <div class="slicer-head">
         <span class="slicer-title">Ano</span>
         <button class="slicer-clr" id="clrAno" onclick="clearGroup('ano')">✕ Limpar</button>
       </div>
-      <div class="slicer-list" id="listAno"></div>
+      <div style="padding:0 8px 6px">
+        <div class="slicer-dropdown" id="ddAno">
+          <div class="slicer-trigger" id="ddAnoTrigger" onclick="toggleDropdown('ddAno')">
+            <span class="slicer-trigger-label" id="ddAnoLabel">Selecionar...</span>
+            <span class="slicer-trigger-arrow">▼</span>
+          </div>
+          <div class="slicer-panel" id="ddAnoPanel">
+            <div class="slicer-panel-search">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <input type="text" id="anoSearch" placeholder="Pesquisar..." oninput="buildAnoList()">
+            </div>
+            <div class="slicer-panel-actions">
+              <button class="sp-btn" onclick="selectAll('ano')">Selecionar tudo</button>
+              <button class="sp-btn" onclick="clearGroup('ano')">Limpar</button>
+            </div>
+            <div class="slicer-panel-list" id="listAno"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Slicer: Mês -->
-    <div class="slicer">
+    <!-- Slicer: Mês (dropdown) -->
+    <div class="slicer" style="flex-shrink:0">
       <div class="slicer-head">
         <span class="slicer-title">Mês</span>
         <button class="slicer-clr" id="clrMes" onclick="clearGroup('mes')">✕ Limpar</button>
       </div>
-      <div class="slicer-list" id="listMes"></div>
+      <div style="padding:0 8px 6px">
+        <div class="slicer-dropdown" id="ddMes">
+          <div class="slicer-trigger" id="ddMesTrigger" onclick="toggleDropdown('ddMes')">
+            <span class="slicer-trigger-label" id="ddMesLabel">Selecionar...</span>
+            <span class="slicer-trigger-arrow">▼</span>
+          </div>
+          <div class="slicer-panel" id="ddMesPanel">
+            <div class="slicer-panel-search">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <input type="text" id="mesSearch" placeholder="Pesquisar..." oninput="buildMesList()">
+            </div>
+            <div class="slicer-panel-actions">
+              <button class="sp-btn" onclick="selectAll('mes')">Selecionar tudo</button>
+              <button class="sp-btn" onclick="clearGroup('mes')">Limpar</button>
+            </div>
+            <div class="slicer-panel-list" id="listMes"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Slicer: UF (com busca, flex-grow) -->
-    <div class="slicer" style="flex:1;min-height:0;display:flex;flex-direction:column">
+    <!-- Slicer: UF (dropdown) -->
+    <div class="slicer" style="flex-shrink:0">
       <div class="slicer-head">
         <span class="slicer-title">UF</span>
         <button class="slicer-clr" id="clrUF" onclick="clearGroup('uf')">✕ Limpar</button>
       </div>
-      <div class="slicer-search">
-        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg>
-        <input type="text" id="ufSearch" placeholder="Pesquisar..." oninput="filterUFList()">
+      <div style="padding:0 8px 6px">
+        <div class="slicer-dropdown" id="ddUF">
+          <div class="slicer-trigger" id="ddUFTrigger" onclick="toggleDropdown('ddUF')">
+            <span class="slicer-trigger-label" id="ddUFLabel">Selecionar...</span>
+            <span class="slicer-trigger-arrow">▼</span>
+          </div>
+          <div class="slicer-panel" id="ddUFPanel">
+            <div class="slicer-panel-search">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#555" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="#555" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <input type="text" id="ufSearch" placeholder="Pesquisar..." oninput="buildUFList()">
+            </div>
+            <div class="slicer-panel-actions">
+              <button class="sp-btn" onclick="selectAll('uf')">Selecionar tudo</button>
+              <button class="sp-btn" onclick="clearGroup('uf')">Limpar</button>
+            </div>
+            <div class="slicer-panel-list" id="listUF"></div>
+          </div>
+        </div>
       </div>
-      <div class="slicer-list" style="flex:1;max-height:none" id="listUF"></div>
     </div>
 
+    <div style="flex:1"></div>
     <div class="sb-foot">
       <button class="btn-clr-all" onclick="clearAll()">✕ Limpar todos os filtros</button>
     </div>
@@ -345,12 +398,16 @@ tr.on td{background:var(--bdim)!important}
               </div>
             </div>
 
-            <!-- GAUGE corrigido -->
+            <!-- GAUGE -->
             <div class="sec">
               <div class="sh"><span class="st">Status Lead Time</span><span class="si" id="gaugeLabel">—</span></div>
-              <div class="sb" style="padding:8px 12px">
+              <div class="sb" style="padding:6px 12px 10px">
                 <div class="gauge-wrap">
-                  <svg class="gauge-svg" viewBox="0 0 220 120" id="gaugeSVG"></svg>
+                  <svg class="gauge-svg" viewBox="0 0 260 150" id="gaugeSVG"></svg>
+                  <div class="gauge-legend">
+                    <span class="gauge-dot" id="gaugeDot" style="background:#D97706"></span>
+                    <span id="gaugeStatusTxt">—</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -536,6 +593,23 @@ function selectAllTr(){
   refresh();mkTransp();
 }
 
+/* ─── HELPERS DROPDOWN LABEL ─── */
+function updateDDLabel(id,sel,allItems){
+  const lbl=document.getElementById('dd'+id+'Label');
+  const trigger=document.getElementById('dd'+id+'Trigger');
+  if(!sel.size){lbl.textContent='Selecionar...';trigger.classList.remove('has-sel');}
+  else if(sel.size===allItems.length){lbl.textContent='Todos';trigger.classList.add('has-sel');}
+  else if(sel.size===1){lbl.textContent=[...sel][0];trigger.classList.add('has-sel');}
+  else{lbl.textContent=`${sel.size} selecionados`;trigger.classList.add('has-sel');}
+}
+
+function selectAll(t){
+  if(t==='ano'){const anos=[...new Set(MESES.map(r=>r.ano))];anos.forEach(a=>sAnos.add(a));buildAnoList();updateDDLabel('Ano',sAnos,[...new Set(MESES.map(r=>r.ano))]);document.getElementById('clrAno').classList.toggle('vis',sAnos.size>0);}
+  else if(t==='mes'){const mo=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];const meses=[...new Set(MESES.map(r=>r.mes))].sort((a,b)=>mo.indexOf(a)-mo.indexOf(b));meses.forEach(m=>sMes.add(m));buildMesList();updateDDLabel('Mes',sMes,meses);document.getElementById('clrMes').classList.toggle('vis',sMes.size>0);}
+  else if(t==='uf'){const ufs=[...new Set(UF.map(r=>r.uf))].sort();ufs.forEach(u=>sUF.add(u));buildUFList();updateDDLabel('UF',sUF,ufs);document.getElementById('clrUF').classList.toggle('vis',sUF.size>0);}
+  refresh();mkTransp();
+}
+
 /* ─── SLICERS ─── */
 function mkSlicerItem(label,isOn,onClickFn){
   const el=document.createElement('div');
@@ -545,65 +619,82 @@ function mkSlicerItem(label,isOn,onClickFn){
   return el;
 }
 
-function buildSlicers(){
+function buildAnoList(){
+  const q=(document.getElementById('anoSearch').value||'').toLowerCase();
   const anos=[...new Set(MESES.map(r=>r.ano))].sort();
+  const filtered=q?anos.filter(a=>String(a).includes(q)):anos;
+  const list=document.getElementById('listAno');
+  list.innerHTML='';
+  filtered.forEach(a=>{
+    list.appendChild(mkSlicerItem(String(a),sAnos.has(a),()=>{
+      sAnos.has(a)?sAnos.delete(a):sAnos.add(a);
+      buildAnoList();updateDDLabel('Ano',sAnos,anos);
+      document.getElementById('clrAno').classList.toggle('vis',sAnos.size>0);
+      refresh();
+    }));
+  });
+}
+
+function buildMesList(){
+  const q=(document.getElementById('mesSearch').value||'').toLowerCase();
   const mo=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
   const meses=[...new Set(MESES.map(r=>r.mes))].sort((a,b)=>mo.indexOf(a)-mo.indexOf(b));
-
-  const listAno=document.getElementById('listAno');
-  listAno.innerHTML='';
-  anos.forEach(a=>{
-    listAno.appendChild(mkSlicerItem(String(a),sAnos.has(a),()=>{
-      sAnos.has(a)?sAnos.delete(a):sAnos.add(a);buildSlicers();refresh();
+  const filtered=q?meses.filter(m=>m.includes(q)):meses;
+  const list=document.getElementById('listMes');
+  list.innerHTML='';
+  filtered.forEach(m=>{
+    list.appendChild(mkSlicerItem(m,sMes.has(m),()=>{
+      sMes.has(m)?sMes.delete(m):sMes.add(m);
+      buildMesList();updateDDLabel('Mes',sMes,meses);
+      document.getElementById('clrMes').classList.toggle('vis',sMes.size>0);
+      refresh();
     }));
   });
+}
 
-  const listMes=document.getElementById('listMes');
-  listMes.innerHTML='';
-  meses.forEach(m=>{
-    listMes.appendChild(mkSlicerItem(m,sMes.has(m),()=>{
-      sMes.has(m)?sMes.delete(m):sMes.add(m);buildSlicers();refresh();
+function buildUFList(){
+  const q=(document.getElementById('ufSearch').value||'').toLowerCase();
+  const ufs=[...new Set(UF.map(r=>r.uf))].sort();
+  const filtered=q?ufs.filter(u=>u.toLowerCase().includes(q)):ufs;
+  const list=document.getElementById('listUF');
+  list.innerHTML='';
+  filtered.forEach(u=>{
+    list.appendChild(mkSlicerItem(u,sUF.has(u),()=>{
+      sUF.has(u)?sUF.delete(u):sUF.add(u);
+      buildUFList();updateDDLabel('UF',sUF,ufs);
+      document.getElementById('clrUF').classList.toggle('vis',sUF.size>0);
+      refresh();
     }));
   });
+}
 
-  buildUFList(document.getElementById('ufSearch').value);
-
+function buildSlicers(){
+  buildAnoList();buildMesList();buildUFList();
+  const anos=[...new Set(MESES.map(r=>r.ano))];
+  const mo=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  const meses=[...new Set(MESES.map(r=>r.mes))].sort((a,b)=>mo.indexOf(a)-mo.indexOf(b));
+  const ufs=[...new Set(UF.map(r=>r.uf))].sort();
+  updateDDLabel('Ano',sAnos,anos);
+  updateDDLabel('Mes',sMes,meses);
+  updateDDLabel('UF',sUF,ufs);
   document.getElementById('clrAno').classList.toggle('vis',sAnos.size>0);
   document.getElementById('clrMes').classList.toggle('vis',sMes.size>0);
   document.getElementById('clrUF').classList.toggle('vis',sUF.size>0);
 }
 
-function buildUFList(q=''){
-  const ufs=[...new Set(UF.map(r=>r.uf))].sort();
-  const filtered=q?ufs.filter(u=>u.toLowerCase().includes(q.toLowerCase())):ufs;
-  const listUF=document.getElementById('listUF');
-  listUF.innerHTML='';
-  filtered.forEach(u=>{
-    listUF.appendChild(mkSlicerItem(u,sUF.has(u),()=>{
-      sUF.has(u)?sUF.delete(u):sUF.add(u);buildSlicers();refresh();
-    }));
-  });
-}
-
-function filterUFList(){buildUFList(document.getElementById('ufSearch').value)}
-
 function clearGroup(t){
-  if(t==='ano')sAnos.clear();
-  else if(t==='mes')sMes.clear();
-  else if(t==='uf'){sUF.clear();document.getElementById('ufSearch').value='';}
-  else if(t==='tr'){
-    sTr.clear();document.getElementById('trSearch').value='';
-    updateTrLabel();buildTrList();
-  }
-  buildSlicers();refresh();mkTransp();
+  if(t==='ano'){sAnos.clear();document.getElementById('anoSearch').value='';buildAnoList();updateDDLabel('Ano',sAnos,[...new Set(MESES.map(r=>r.ano))]);document.getElementById('clrAno').classList.remove('vis');}
+  else if(t==='mes'){sMes.clear();document.getElementById('mesSearch').value='';buildMesList();const mo=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];updateDDLabel('Mes',sMes,[...new Set(MESES.map(r=>r.mes))].sort((a,b)=>mo.indexOf(a)-mo.indexOf(b)));document.getElementById('clrMes').classList.remove('vis');}
+  else if(t==='uf'){sUF.clear();document.getElementById('ufSearch').value='';buildUFList();updateDDLabel('UF',sUF,[...new Set(UF.map(r=>r.uf))].sort());document.getElementById('clrUF').classList.remove('vis');}
+  else if(t==='tr'){sTr.clear();document.getElementById('trSearch').value='';updateTrLabel();buildTrList();document.getElementById('clrTr').classList.remove('vis');}
+  refresh();mkTransp();
 }
 
 function clearAll(){
   sAnos.clear();sMes.clear();sUF.clear();sTr.clear();
-  document.getElementById('ufSearch').value='';
-  document.getElementById('trSearch').value='';
-  updateTrLabel();buildTrList();
-  buildSlicers();refresh();mkTransp();
+  ['anoSearch','mesSearch','ufSearch','trSearch'].forEach(id=>document.getElementById(id).value='');
+  buildSlicers();updateTrLabel();buildTrList();
+  refresh();mkTransp();
 }
 
 /* ─── KPIs ─── */
@@ -628,54 +719,86 @@ function mkKPI(){
   else{b.textContent='✗ Crítico';b.className='badge bg-crit'}
 }
 
-/* ─── GAUGE corrigido ─── */
+/* ─── GAUGE — idêntico à referência ─── */
 function mkGauge(){
   const k=agg();
   const ot=Math.min(100,Math.max(0,k.ot));
   const meta=70;
   const svg=document.getElementById('gaugeSVG');
-  const cx=110,cy=105,r=80,stroke=18;
 
-  function arcPath(fromPct,toPct){
-    const startAng=Math.PI-(fromPct/100)*Math.PI;
-    const endAng=Math.PI-(toPct/100)*Math.PI;
-    const x1=cx+r*Math.cos(startAng),y1=cy+r*Math.sin(startAng);
-    const x2=cx+r*Math.cos(endAng),  y2=cy+r*Math.sin(endAng);
-    const lg=(toPct-fromPct)>50?1:0;
-    return `M${x1},${y1} A${r},${r} 0 ${lg},0 ${x2},${y2}`;
+  /* viewBox="0 0 260 150"
+     semicírculo centrado em cx=130, cy=128
+     raio externo=115, raio interno=70  → stroke=45 grosso igual à ref */
+  const cx=130, cy=128, r=95, stroke=38;
+
+  /* arco de pct1 a pct2 (0=esquerda, 100=direita, sentido anti-horário no topo) */
+  function arc(p1,p2,clr){
+    const a1=Math.PI-(p1/100)*Math.PI;
+    const a2=Math.PI-(p2/100)*Math.PI;
+    const x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1);
+    const x2=cx+r*Math.cos(a2), y2=cy+r*Math.sin(a2);
+    const large=(p2-p1)>50?1:0;
+    return `<path d="M${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${large},0 ${x2.toFixed(2)},${y2.toFixed(2)}"
+      stroke="${clr}" stroke-width="${stroke}" fill="none" stroke-linecap="butt"/>`;
   }
 
+  /* ponteiro */
   const ang=Math.PI-(ot/100)*Math.PI;
-  const needleLen=r-6;
-  const nx=cx+needleLen*Math.cos(ang);
-  const ny=cy+needleLen*Math.sin(ang);
+  const nLen=r-4;
+  const nx=(cx+nLen*Math.cos(ang)).toFixed(2);
+  const ny=(cy+nLen*Math.sin(ang)).toFixed(2);
+
+  /* label 70% — posição externa no arco */
+  const metaAng=Math.PI-(meta/100)*Math.PI;
+  const lblR=r+stroke/2+10;
+  const lx=(cx+lblR*Math.cos(metaAng)).toFixed(1);
+  const ly=(cy+lblR*Math.sin(metaAng)+3).toFixed(1);
+
+  /* label 0% e 100% */
+  const lx0=(cx-r-stroke/2-6).toFixed(1);
+  const lx100=(cx+r+stroke/2+6).toFixed(1);
 
   const statusClr=ot>=meta?'#0F9E5E':ot>=40?'#D97706':'#DC2626';
-  const status=ot>=meta?'✓ Meta atingida':ot>=40?'⚠ Atenção':'✗ Crítico';
+  const statusTxt=ot>=meta?'Acima da meta':ot>=40?'Atraso Moderado':'Atraso Crítico';
 
   svg.innerHTML=`
-    <!-- fundo cinza -->
-    <path d="${arcPath(0,100)}" stroke="#E5E7EB" stroke-width="${stroke}" fill="none" stroke-linecap="butt"/>
-    <!-- zona vermelha 0-40 -->
-    <path d="${arcPath(0,39.5)}" stroke="#DC2626" stroke-width="${stroke}" fill="none" stroke-linecap="butt"/>
-    <!-- zona amber 40-70 -->
-    <path d="${arcPath(40.5,69.5)}" stroke="#D97706" stroke-width="${stroke}" fill="none" stroke-linecap="butt"/>
-    <!-- zona verde 70-100 -->
-    <path d="${arcPath(70.5,100)}" stroke="#0F9E5E" stroke-width="${stroke}" fill="none" stroke-linecap="butt"/>
+    ${arc(0,100,'#E5E7EB')}
+    ${arc(0,40,'#DC2626')}
+    ${arc(40.8,70,'#F59E0B')}
+    ${arc(70.8,100,'#0F9E5E')}
+    <!-- divisor meta -->
+    <line
+      x1="${(cx+(r-stroke/2-1)*Math.cos(metaAng)).toFixed(1)}"
+      y1="${(cy+(r-stroke/2-1)*Math.sin(metaAng)).toFixed(1)}"
+      x2="${(cx+(r+stroke/2+1)*Math.cos(metaAng)).toFixed(1)}"
+      y2="${(cy+(r+stroke/2+1)*Math.sin(metaAng)).toFixed(1)}"
+      stroke="white" stroke-width="3" stroke-linecap="butt"/>
     <!-- ponteiro -->
-    <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="#1A1D23" stroke-width="2.5" stroke-linecap="round"/>
-    <circle cx="${cx}" cy="${cy}" r="6" fill="#1A1D23"/>
-    <circle cx="${cx}" cy="${cy}" r="3" fill="white"/>
-    <!-- labels -->
-    <text x="${cx-r-4}" y="${cy+14}" font-size="9" fill="#9AA0AD" font-family="Inter,sans-serif" text-anchor="middle">0%</text>
-    <text x="${cx+r+4}" y="${cy+14}" font-size="9" fill="#9AA0AD" font-family="Inter,sans-serif" text-anchor="middle">100%</text>
-    <text x="${cx}" y="${cy-10}" font-size="9" text-anchor="middle" fill="#9AA0AD" font-family="Inter,sans-serif">On-Time</text>
-    <text x="${cx}" y="${cy+4}" font-size="17" font-weight="600" text-anchor="middle" fill="${statusClr}" font-family="JetBrains Mono,monospace">${ot.toFixed(1)}%</text>
-    <text x="${cx}" y="${cy+17}" font-size="9" text-anchor="middle" fill="${statusClr}" font-family="Inter,sans-serif" font-weight="500">${status}</text>
-    <!-- marcador meta -->
-    <line x1="${cx+(r-stroke/2-2)*Math.cos(Math.PI-(meta/100)*Math.PI)}" y1="${cy+(r-stroke/2-2)*Math.sin(Math.PI-(meta/100)*Math.PI)}" x2="${cx+(r+stroke/2+2)*Math.cos(Math.PI-(meta/100)*Math.PI)}" y2="${cy+(r+stroke/2+2)*Math.sin(Math.PI-(meta/100)*Math.PI)}" stroke="white" stroke-width="2" stroke-linecap="round"/>
-    <text x="${cx+(r+stroke/2+6)*Math.cos(Math.PI-(meta/100)*Math.PI)}" y="${cy+(r+stroke/2+6)*Math.sin(Math.PI-(meta/100)*Math.PI)+3}" font-size="8" fill="#D97706" font-family="Inter,sans-serif" text-anchor="middle">70%</text>
+    <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}"
+      stroke="#2D2D2D" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="${cx}" cy="${cy}" r="7" fill="#2D2D2D"/>
+    <circle cx="${cx}" cy="${cy}" r="3.5" fill="white"/>
+    <!-- 0% e 100% -->
+    <text x="${lx0}" y="${cy+8}" font-size="10" fill="#9AA0AD"
+      font-family="Inter,sans-serif" text-anchor="middle">0%</text>
+    <text x="${lx100}" y="${cy+8}" font-size="10" fill="#9AA0AD"
+      font-family="Inter,sans-serif" text-anchor="middle">100%</text>
+    <!-- 70% label externo -->
+    <text x="${lx}" y="${ly}" font-size="10" fill="#6B7280"
+      font-family="Inter,sans-serif" text-anchor="middle">70%</text>
+    <!-- valor central -->
+    <text x="${cx}" y="${cy-6}" font-size="10" text-anchor="middle"
+      fill="#9AA0AD" font-family="Inter,sans-serif">On-Time</text>
+    <text x="${cx}" y="${cy+12}" font-size="22" font-weight="700"
+      text-anchor="middle" fill="${statusClr}"
+      font-family="JetBrains Mono,monospace">${ot.toFixed(1)}%</text>
   `;
+
+  /* legenda com bolinha embaixo */
+  const dot=document.getElementById('gaugeDot');
+  const txt=document.getElementById('gaugeStatusTxt');
+  if(dot){dot.style.background=statusClr;}
+  if(txt){txt.textContent=statusTxt;txt.style.color=statusClr;txt.style.fontWeight='600';}
 
   const faltam=Math.max(0,meta-ot);
   document.getElementById('gaugeLabel').textContent=
